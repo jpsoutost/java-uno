@@ -17,9 +17,11 @@ public class Server {
     private ServerSocket serverSocket;
     private ExecutorService service;
     private final List<ClientConnectionHandler> clients;
+    private final List<ServerSocket> rooms;
 
     public Server() {
         clients = new CopyOnWriteArrayList<>();
+        rooms = new CopyOnWriteArrayList<>();
     }
 
     public void start(int port) throws IOException {
@@ -47,7 +49,7 @@ public class Server {
     private void addClient(ClientConnectionHandler clientConnectionHandler) {
         clients.add(clientConnectionHandler);
         clientConnectionHandler.send(Messages.WELCOME);
-        broadcast(clientConnectionHandler.getName(), Messages.CLIENT_ENTERED_CHAT);
+        broadcast(clientConnectionHandler.getName(), Messages.PLAYER_ENTERED_LOBBY);
     }
 
     public void broadcast(String name, String message) {
@@ -60,6 +62,12 @@ public class Server {
     public String listClients() {
         StringBuffer buffer = new StringBuffer();
         clients.forEach(client -> buffer.append(client.getName()).append("\n"));
+        return buffer.toString();
+    }
+
+    public String listRooms() { // this is WRONG!!!️
+        StringBuffer buffer = new StringBuffer();
+        rooms.forEach(room -> buffer.append(serverSocket.getInetAddress()).append("\n"));
         return buffer.toString();
     }
 
@@ -108,7 +116,7 @@ public class Server {
                     broadcast(name, message);
                 }
             } catch (IOException e) {
-                System.err.println(Messages.CLIENT_ERROR + e.getMessage());
+                System.err.println(Messages.PLAYER_ERROR + e.getMessage());
             } finally {
                 removeClient(this);
             }

@@ -1,9 +1,8 @@
 package academy.mindswap.server.commands;
 
-import java.util.concurrent.Executor;
-
 public enum Command {
-    LIST("/list", new ListHandler()),
+    LIST_PLAYER("/players", new PlayerListHandler()),
+    LIST_SERVER("/rooms", new RoomListHandler()),
     HELP("/help", new HelpHandler()),
     WHISPER("/whisper", new WhisperHandler()),
     QUIT("/quit", new QuitHandler());
