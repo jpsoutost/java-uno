@@ -14,7 +14,7 @@ public class Main {
         Client client2 = new Client();
         Client client3 = new Client();
         List<Client> playersList = new ArrayList<Client>(
-                Arrays.asList(client1, client2,client3));
+                Arrays.asList(client1, client2, client3));
         try {
             game.start(playersList);
         } catch (IOException e) {

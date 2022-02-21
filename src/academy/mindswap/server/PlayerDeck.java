@@ -19,6 +19,10 @@ public class PlayerDeck {
         return playerDeck;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
     @Override
     public String toString() {
         String string="";

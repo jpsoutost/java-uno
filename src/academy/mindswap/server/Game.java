@@ -17,6 +17,7 @@ public class Game {
     private List <PlayerDeck> playersDecks;
     private boolean isThereAWinner;
     int indexOfPlayerTurn;
+    private Card lastCardPlayed;
 
 
     public Game() {
@@ -37,22 +38,62 @@ public class Game {
     public void start(List<Client> playersList) throws IOException {
         this.players = playersList;
         setPlayersDecks();
-        getFirstCard();
+        this.lastCardPlayed = getFirstCard();
+        boolean canFinishTurn = false;
+
 
         while (!isThereAWinner){
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             String play = in.readLine();
 
             if(play.equals("/list")){
-                System.out.println(playersDecks.get(indexOfPlayerTurn));
+                System.out.println(indexOfPlayerTurn + " - " + playersDecks.get(indexOfPlayerTurn));
                 continue;
             }
-            System.out.println(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().remove(Integer.parseInt(play)));
 
             if(play.equals("/finishTurn")){
-                System.out.println("End of Turn");
-                indexOfPlayerTurn = indexOfPlayerTurn == players.size()-1 ? 0:indexOfPlayerTurn++;
+                if (canFinishTurn) {
+                    System.out.println("End of Turn");
+                    if (indexOfPlayerTurn == players.size() - 1) {
+                        indexOfPlayerTurn = 0;
+                    } else {
+                        indexOfPlayerTurn++;
+                    }
+                    canFinishTurn=false;
+                    continue;
+                }else{
+                    System.out.println("You have to play or draw a card first.");
+                    continue;
+                }
             }
+            if(play.equals("/draw")){
+                if(!canFinishTurn){
+                    Card newCard = deck.poll();
+                    playersDecks.get(indexOfPlayerTurn).getPlayerDeck().add(newCard);
+                    System.out.println("You draw a " + newCard);
+                    canFinishTurn = true;
+                    continue;
+                }else{
+                    System.out.println("You can't draw more than one card each turn.");
+                    continue;
+                }
+
+            }
+            if(!play.matches("[0-" + (playersDecks.get(indexOfPlayerTurn).getPlayerDeck().size() -1) + "]")){
+                System.out.println("Play not legal.");
+                continue;
+            }
+
+            Card choosenCard = playersDecks.get(indexOfPlayerTurn).getPlayerDeck().get(Integer.parseInt(play));
+            if(choosenCard.getColor() == lastCardPlayed.getColor() || choosenCard.getNumber() == lastCardPlayed.getNumber()){
+                System.out.println(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().remove(Integer.parseInt(play)));
+                lastCardPlayed = choosenCard;
+                canFinishTurn = true;
+            }else{
+                System.out.println("Play not allowed");
+                continue;
+            }
+            checkIfWinner();
         }
     }
 
@@ -66,7 +107,16 @@ public class Game {
       });
     }
 
-    private void getFirstCard(){
-        System.out.println(this.deck.poll());
+    private Card getFirstCard(){
+        Card card=this.deck.poll();
+        System.out.println(card);
+        return card;
+    }
+
+    private void checkIfWinner(){
+        if(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().size()==0){
+            isThereAWinner=true;
+            System.out.println(indexOfPlayerTurn + "finished his deck and is the winner.");
+        }
     }
 }
