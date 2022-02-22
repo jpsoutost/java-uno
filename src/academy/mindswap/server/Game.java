@@ -40,19 +40,20 @@ public class Game {
         setPlayersDecks();
         this.lastCardPlayed = getFirstCard();
         boolean canFinishTurn = false;
+        boolean canFinishTurn2 = false; // This variable prevents the draw action to not work properly.
 
 
-        while (!isThereAWinner){
+        while (!isThereAWinner) {
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             String play = in.readLine();
 
-            if(play.equals("/list")){
+            if (play.equals("/list")) {
                 System.out.println(indexOfPlayerTurn + " - " + playersDecks.get(indexOfPlayerTurn));
                 continue;
             }
 
-            if(play.equals("/finishTurn")){
-                if (canFinishTurn) {
+            if (play.equals("/finishTurn")) {
+                if (canFinishTurn || canFinishTurn2) {
                     System.out.println("End of Turn");
                     if (indexOfPlayerTurn == players.size() - 1) {
                         indexOfPlayerTurn = 0;
@@ -60,42 +61,51 @@ public class Game {
                         indexOfPlayerTurn++;
                     }
 
-                    canFinishTurn=false;
+                    canFinishTurn = false;
+                    canFinishTurn2 = false;
                     continue;
-                }else{
+                } else {
                     System.out.println("You have to play or draw a card first.");
                     continue;
                 }
             }
-            if(play.equals("/draw")){
-                if(!canFinishTurn){
+            if (play.equals("/draw")) {
+                if (!canFinishTurn) {
                     Card newCard = deck.poll();
                     playersDecks.get(indexOfPlayerTurn).getPlayerDeck().add(newCard);
                     System.out.println("You draw a " + newCard);
-                    canFinishTurn = true;
+                    canFinishTurn2 = true;
                     continue;
-                }else{
+                } else {
                     System.out.println("You can't draw more than one card each turn.");
                     continue;
                 }
 
             }
-            if(!play.matches("[0-" + (playersDecks.get(indexOfPlayerTurn).getPlayerDeck().size() -1) + "]")){
+            if (!play.matches("[0-" + (playersDecks.get(indexOfPlayerTurn).getPlayerDeck().size() - 1) + "]")) {
                 System.out.println("Play not legal.");
                 continue;
             }
 
             Card chosenCard = playersDecks.get(indexOfPlayerTurn).getPlayerDeck().get(Integer.parseInt(play));
-            if(chosenCard.getNumber() == lastCardPlayed.getNumber() || chosenCard.getColor() == lastCardPlayed.getColor()){
-                System.out.println(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().remove(Integer.parseInt(play)));
-                canFinishTurn = true;
-                if (chosenCard.getNumber() == lastCardPlayed.getNumber()) {
-                    canFinishTurn = true;
-                    this.lastCardPlayed = chosenCard;
+
+            if (!canFinishTurn) {
+                if (chosenCard.getNumber() == lastCardPlayed.getNumber() || chosenCard.getColor() == lastCardPlayed.getColor()) {
+                    System.out.println(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().remove(Integer.parseInt(play)));
+                    lastCardPlayed = chosenCard;
+                    // gruardar numa variavel numero daquela carta
+                    // quando o deck size = 0
                 }
+                canFinishTurn = true;
+            }
+            else if (chosenCard.getNumber() != lastCardPlayed.getNumber() && chosenCard.getColor() == lastCardPlayed.getColor()) {
+                System.out.println("Invalid!");
+                continue;
+            }
+            else if (chosenCard.getNumber() == lastCardPlayed.getNumber()) {
+                System.out.println(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().remove(Integer.parseInt(play)));
                 lastCardPlayed = chosenCard;
-                // gruardar numa variavel numero daquela carta
-                // quando o deck size = 0
+                continue;
             } else {
                 System.out.println("Play not allowed");
                 continue;
