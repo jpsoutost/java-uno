@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Game {
     private LinkedList<Card> deck;
@@ -34,6 +35,8 @@ public class Game {
         }
         Collections.shuffle(this.deck);
     }
+
+
 
     public void start(List<Client> playersList) throws IOException {
         this.players = playersList;
@@ -88,13 +91,13 @@ public class Game {
             }
 
             Card chosenCard = playersDecks.get(indexOfPlayerTurn).getPlayerDeck().get(Integer.parseInt(play));
+            LinkedList<Card> cardsOnTable = new LinkedList<>();
 
             if (!canFinishTurn) {
                 if (chosenCard.getNumber() == lastCardPlayed.getNumber() || chosenCard.getColor() == lastCardPlayed.getColor()) {
                     System.out.println(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().remove(Integer.parseInt(play)));
                     lastCardPlayed = chosenCard;
-                    // gruardar numa variavel numero daquela carta
-                    // quando o deck size = 0
+                    cardsOnTable.add(lastCardPlayed);
                 }
                 canFinishTurn = true;
             }
@@ -105,14 +108,20 @@ public class Game {
             else if (chosenCard.getNumber() == lastCardPlayed.getNumber()) {
                 System.out.println(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().remove(Integer.parseInt(play)));
                 lastCardPlayed = chosenCard;
+                cardsOnTable.add(lastCardPlayed);
                 continue;
             } else {
                 System.out.println("Play not allowed");
                 continue;
             }
+            /*if (deck.size() == 0) {
+                cardsOnTable.stream()
+                        .collect(Collectors.toList())
+                        .forEach(i -> deck.add(cardsOnTable.element()));
+            }*/
             checkIfWinner();
+            }
         }
-    }
 
     private void setPlayersDecks(){
         this.playersDecks = new ArrayList<>();
@@ -133,7 +142,14 @@ public class Game {
     private void checkIfWinner(){
         if(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().size()==0){
             isThereAWinner=true;
-            System.out.println(indexOfPlayerTurn + "finished his deck and is the winner.");
+            System.out.println(indexOfPlayerTurn + " has no more cards and he's the winner.");
         }
     }
+    /*private void newDeck() {
+        if (deck.size() == 0) {
+                cardsOnTable.stream()
+                        .collect(Collectors.toList())
+                        .forEach(i -> deck.add(cardsOnTable.element()));
+            }
+    }*/
 }
