@@ -1,12 +1,14 @@
 package academy.mindswap.server.commands;
 
 public enum Command {
-    LIST_PLAYER("/players", new PlayerListHandler()),
-    LIST_SERVER("/rooms", new RoomListHandler()),
+    LIST_PLAYERS("/players", new PlayerListHandler()),
+    LIST_ROOMS("/openRooms", new RoomListHandler()),
     HELP("/help", new HelpHandler()),
     WHISPER("/whisper", new WhisperHandler()),
-    QUIT("/quit", new QuitHandler());
-    //SHOUT("/shout", new ShoutHandler());
+    MUTE("/mute", new QuitHandler()),
+    NEW_ROOM("/createRoom", new NewRoomHandler()),
+    JOIN_ROOM("/JoinRoom", new JoinRoomHandler()),
+    READY("/Ready", new ReadyHandler());
 
     private String description;
     private CommandHandler handler;

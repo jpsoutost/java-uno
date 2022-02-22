@@ -2,9 +2,11 @@ package academy.mindswap.server.commands;
 
 import academy.mindswap.server.Server;
 
-public class RoomListHandler implements CommandHandler {
+public class ReadyHandler implements CommandHandler{
     @Override
     public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
-        clientConnectionHandler.send(server.listOpenRooms());
+
+        boolean ready = clientConnectionHandler.isReady() ? false:true;
+        clientConnectionHandler.setReady(ready);
     }
 }

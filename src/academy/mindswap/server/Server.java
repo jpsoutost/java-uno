@@ -11,49 +11,54 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class Server {
 
     private ServerSocket serverSocket;
     private ExecutorService service;
-    private final List<ClientConnectionHandler> clients;
-    private final List<ServerSocket> rooms;
+    private List<ClientConnectionHandler> clients;
+    private List<ClientConnectionHandler> clientsOnGeneral;
+    private List<Game> openGames;
+    private List<Game> closedGames;
 
     public Server() {
         clients = new CopyOnWriteArrayList<>();
-        rooms = new CopyOnWriteArrayList<>();
     }
 
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         service = Executors.newCachedThreadPool();
-        int numberOfConnections = 0;
+        openGames = new ArrayList<Game>();
+        closedGames = new ArrayList<Game>();
 
         while (true) {
-            acceptConnection(numberOfConnections);
-            ++numberOfConnections;
+            acceptConnection();
         }
     }
 
-    private void acceptConnection(int numberOfConnections) throws IOException {
-      //  Socket clientSocket =
+    private void acceptConnection() throws IOException {
         ClientConnectionHandler clientConnectionHandler =
-                new ClientConnectionHandler(serverSocket.accept(),
-                Messages.DEFAULT_NAME + numberOfConnections);
-
+                new ClientConnectionHandler(serverSocket.accept());
 
         service.submit(clientConnectionHandler);
-       // addClient(clientConnectionHandler);
     }
 
     private void addClient(ClientConnectionHandler clientConnectionHandler) {
         clients.add(clientConnectionHandler);
+        clientsOnGeneral.add(clientConnectionHandler);
         clientConnectionHandler.send(Messages.WELCOME);
         broadcast(clientConnectionHandler.getName(), Messages.PLAYER_ENTERED_LOBBY);
     }
 
     public void broadcast(String name, String message) {
-        clients.stream()
+        clientsOnGeneral.stream()
+                .filter(handler -> !handler.getName().equals(name))
+                .forEach(handler -> handler.send(name + ": " + message));
+    }
+
+    public void roomBroadcast(Game game, String name, String message) {
+        game.getClients().stream()
                 .filter(handler -> !handler.getName().equals(name))
                 .forEach(handler -> handler.send(name + ": " + message));
     }
@@ -61,45 +66,70 @@ public class Server {
 
     public String listClients() {
         StringBuffer buffer = new StringBuffer();
-        clients.forEach(client -> buffer.append(client.getName()).append("\n"));
-        return buffer.toString();
+        return clients.stream().map(c -> c.getName()).collect(Collectors.joining(" ,"));
     }
 
-    public String listRooms() { // this is WRONG!!!️
+    public String listOpenRooms() {
         StringBuffer buffer = new StringBuffer();
-        rooms.forEach(room -> buffer.append(serverSocket.getInetAddress()).append("\n"));
+        openGames.forEach(game -> {
+            buffer.append(game.getName() + " ");
+            buffer.append(game.getClients().size + "/" + 5 + " ");
+            buffer.append(game.getCliets().toString() + "\n");
+        });
+
         return buffer.toString();
     }
 
     public void removeClient(ClientConnectionHandler clientConnectionHandler) {
         clients.remove(clientConnectionHandler);
-
     }
 
     public Optional<ClientConnectionHandler> getClientByName(String name) {
-        return clients.stream()
+        return clientsOnGeneral.stream()
                 .filter(clientConnectionHandler -> clientConnectionHandler.getName().equalsIgnoreCase(name))
                 .findFirst();
+    }
+
+    public List<Game> getOpenGames() {
+        return openGames;
+    }
+
+    public List<ClientConnectionHandler> getClientsOnGeneral() {
+        return clientsOnGeneral;
     }
 
     public class ClientConnectionHandler implements Runnable {
 
         private final String name;
         private final Socket clientSocket;
-        private final BufferedWriter out;
+        private BufferedWriter out;
         private String message;
+        private BufferedReader in;
+        private Game game;
+        private boolean isReady;
 
-        public ClientConnectionHandler(Socket clientSocket, String name) throws IOException {
+
+        public ClientConnectionHandler(Socket clientSocket) throws IOException {
             this.clientSocket = clientSocket;
-            this.name = name;
+            this.name = generateName();
             this.out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+            this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        }
+
+        public String generateName() throws IOException {
+            send("Choose username:");
+            String username = in.readLine();
+            if (clients.stream().map(c -> c.name).collect(Collectors.toList()).contains(username)){
+                send("Username Aalready in use.");
+                username = generateName();
+            }
+            return username;
         }
 
         @Override
         public void run() {
             addClient(this);
             try {
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
                 while (!clientSocket.isClosed()) {
                     message = in.readLine();
@@ -165,6 +195,18 @@ public class Server {
 
         public String getMessage() {
             return message;
+        }
+
+        public void setGame(Game game) {
+            this.game = game;
+        }
+
+        public boolean isReady() {
+            return isReady;
+        }
+
+        public void setReady(boolean ready) {
+            isReady = ready;
         }
     }
 
