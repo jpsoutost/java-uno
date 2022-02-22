@@ -59,6 +59,7 @@ public class Game {
                     } else {
                         indexOfPlayerTurn++;
                     }
+
                     canFinishTurn=false;
                     continue;
                 }else{
@@ -84,12 +85,18 @@ public class Game {
                 continue;
             }
 
-            Card choosenCard = playersDecks.get(indexOfPlayerTurn).getPlayerDeck().get(Integer.parseInt(play));
-            if(choosenCard.getColor() == lastCardPlayed.getColor() || choosenCard.getNumber() == lastCardPlayed.getNumber()){
+            Card chosenCard = playersDecks.get(indexOfPlayerTurn).getPlayerDeck().get(Integer.parseInt(play));
+            if(chosenCard.getNumber() == lastCardPlayed.getNumber() || chosenCard.getColor() == lastCardPlayed.getColor()){
                 System.out.println(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().remove(Integer.parseInt(play)));
-                lastCardPlayed = choosenCard;
                 canFinishTurn = true;
-            }else{
+                if (chosenCard.getNumber() == lastCardPlayed.getNumber()) {
+                    canFinishTurn = true;
+                    this.lastCardPlayed = chosenCard;
+                }
+                lastCardPlayed = chosenCard;
+                // gruardar numa variavel numero daquela carta
+                // quando o deck size = 0
+            } else {
                 System.out.println("Play not allowed");
                 continue;
             }
