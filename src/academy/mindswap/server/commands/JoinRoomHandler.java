@@ -1,5 +1,6 @@
 package academy.mindswap.server.commands;
 
+import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
 import academy.mindswap.server.messages.Messages;
 
@@ -15,19 +16,19 @@ public class JoinRoomHandler implements CommandHandler {
             return;
         }
 
-        message = message.split(" ")[1];
+        String roomName = message.split(" ")[1];
 
-        Optional<Game> game = server.getOpenGames().stream().filter(room -> room.getname().equals(message)).findFirst();
+        Optional<Game> game = server.getOpenGames().stream().filter(room -> room.getRoomName().equals(roomName)).findFirst();
 
         if (game.isEmpty()) {
             clientConnectionHandler.send("No such room.");
             return;
         }
 
+        game.get().addClient(clientConnectionHandler);
         clientConnectionHandler.setGame(game.get());
-        game.get().getClients().add();
         server.getClientsOnGeneral().remove(clientConnectionHandler);
         clientConnectionHandler.send("You joined room " + message);
-        server.roomBroadcast(game.get(),clientConnectionHandler.getName(),clientConnectionHandler.getName() + " entered the room.")
+        server.roomBroadcast(game.get(),clientConnectionHandler.getName(),clientConnectionHandler.getName() + " entered the room.");
     }
 }

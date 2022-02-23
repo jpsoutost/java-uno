@@ -10,17 +10,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Game {
+    private final String roomName;
     private LinkedList<Card> deck;
     private LinkedList<Card> playedCards;
-    private List <Client> players;
+    private List <Server.ClientConnectionHandler> players;
     private List <PlayerDeck> playersDecks;
     private boolean isThereAWinner;
     int indexOfPlayerTurn;
     private Card lastCardPlayed;
 
 
-    public Game() {
+    public Game(String roomName) {
+        this.roomName = roomName;
         createDeck();
+        this.players = new ArrayList<>();
     }
 
     private void createDeck(){
@@ -45,8 +48,11 @@ public class Game {
         Collections.shuffle(this.deck);
     }
 
-    public void start(List<Client> playersList) throws IOException {
-        this.players = playersList;
+    public void addClient(Server.ClientConnectionHandler clientConnectionHandler){
+        this.players.add(clientConnectionHandler);
+    }
+
+    public void start() throws IOException {
         setPlayersDecks();
         this.lastCardPlayed = getFirstCard();
         boolean playerPlayedAlreadyOneCard = false;
@@ -176,7 +182,7 @@ public class Game {
 
     private void setPlayersDecks(){
         this.playersDecks = new ArrayList<>();
-        this.players.stream().forEach(player -> playersDecks.add(new PlayerDeck(player)));
+        this.players.stream().map(player -> player.getName()).forEach(player -> playersDecks.add(new PlayerDeck(player)));
         playersDecks.forEach(playersDecks -> {
           for (int i = 0; i < 3; i++) {
               playersDecks.getPlayerDeck().add(this.deck.poll());
@@ -195,5 +201,9 @@ public class Game {
             isThereAWinner=true;
             System.out.println(indexOfPlayerTurn + "finished his deck and is the winner.");
         }
+    }
+
+    public String getRoomName() {
+        return roomName;
     }
 }

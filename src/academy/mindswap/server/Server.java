@@ -103,9 +103,10 @@ public class Server {
         private final String name;
         private final Socket clientSocket;
         private BufferedWriter out;
-        private String message;
         private BufferedReader in;
+        private String message;
         private Game game;
+        private List<Card> deck;
         private boolean isReady;
 
 
@@ -114,6 +115,7 @@ public class Server {
             this.name = generateName();
             this.out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
             this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            this.deck = new ArrayList<>();
         }
 
         public String generateName() throws IOException {
