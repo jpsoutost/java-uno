@@ -144,10 +144,42 @@ public class Game implements Runnable {
                 continue;
             }
 
+            if(play.equals("/blue")){
+                lastCardPlayed.setColor(CardColors.BLUE);
+                continue;
+            }
+            if(play.equals("/yellow")){
+                lastCardPlayed.setColor(CardColors.YELLOW);
+                continue;
+            }
+            if(play.equals("/green")){
+                lastCardPlayed.setColor(CardColors.GREEN);
+                continue;
+            }
+            if(play.equals("/red")){
+                lastCardPlayed.setColor(CardColors.RED);
+                continue;
+            }
+
 
             if (canPlayAgain) {
 
                 Card chosenCard = playerToPlay.getDeck().get(Integer.parseInt(play));
+
+                if(chosenCard.getNumber() == 13){
+                    for (int i = 0; i < 4; i++) {
+                        cardsToDraw++;
+                    }
+                    playerToPlay.getDeck().remove(chosenCard);
+                    playerToPlay.send(chosenCard.toString());
+                    server.roomBroadcast(this,playerToPlay.getName(),chosenCard.toString());
+                    this.playedCards.add(lastCardPlayed);
+                    lastCardPlayed=chosenCard;
+                    playerToPlay.send("Choose color:");
+                    playerPlayedAlreadyOneCard = true;
+                    canFinishTurn = true;
+                    continue;
+                }
 
 
                 if (chosenCard.getNumber() == lastCardPlayed.getNumber()) {

@@ -4,8 +4,8 @@ package academy.mindswap.server;
  * A class that represents the cards of the game.
  */
 public class Card {
-    private final CardColors color;
-    private final int number;//10-skip Cards, 11-plus2Cards, 12-invertCards
+    private CardColors color;
+    private int number;//10-skip Cards, 11-plus2Cards, 12-invertCards
 
     /**
      * Method that create a card.
@@ -29,6 +29,14 @@ public class Card {
      */
     public int getNumber() {
         return number;
+    }
+
+    public void setColor(CardColors color) {
+        this.color = color;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     @Override
