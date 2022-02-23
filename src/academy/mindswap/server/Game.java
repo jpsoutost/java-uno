@@ -139,19 +139,19 @@ public class Game implements Runnable {
                 continue;
             }
 
-            if(play.equals("/blue")){
+            if(play.equals("/blue") && lastCardPlayed.getNumber()==13){
                 lastCardPlayed.setColor(CardColors.BLUE);
                 continue;
             }
-            if(play.equals("/yellow")){
+            if(play.equals("/yellow") && lastCardPlayed.getNumber()==13){
                 lastCardPlayed.setColor(CardColors.YELLOW);
                 continue;
             }
-            if(play.equals("/green")){
+            if(play.equals("/green") && lastCardPlayed.getNumber()==13){
                 lastCardPlayed.setColor(CardColors.GREEN);
                 continue;
             }
-            if(play.equals("/red")){
+            if(play.equals("/red") && lastCardPlayed.getNumber()==13){
                 lastCardPlayed.setColor(CardColors.RED);
                 continue;
             }
@@ -161,10 +161,20 @@ public class Game implements Runnable {
 
                 Card chosenCard = playerToPlay.getDeck().get(Integer.parseInt(play));
 
-                if(chosenCard.getNumber() == 13){
-                    for (int i = 0; i < 4; i++) {
-                        cardsToDraw++;
+                if (cardsToDraw != 0){
+                    if (chosenCard.getNumber() != lastCardPlayed.getNumber()) {
+                        for (int i = 0; i < cardsToDraw; i++) {
+                            Card newCard = deck.poll();
+                            playerToPlay.getDeck().add(newCard);
+                            System.out.println("You draw a " + newCard);
+                            cardsToDraw = 0;
+                            canFinishTurn = false;
+                        }
                     }
+                }
+
+                if(chosenCard.getNumber() == 13){
+                    cardsToDraw=+4;
                     playerToPlay.getDeck().remove(chosenCard);
                     playerToPlay.send(chosenCard.toString());
                     server.roomBroadcast(this,playerToPlay.getName(),chosenCard.toString());
@@ -216,13 +226,6 @@ public class Game implements Runnable {
                         cardsToDraw++;
                     }
 
-                    if (cardsToDraw != 0 & chosenCard.getNumber() != 11){
-                        for (int i = 0; i < cardsToDraw; i++) {
-                            Card newCard = deck.poll();
-                            playerToPlay.getDeck().add(newCard);
-                            System.out.println("You draw a " + newCard);
-                        }
-                    }
                     playerToPlay.getDeck().remove(chosenCard);
                     playerToPlay.send(chosenCard.toString());
                     server.roomBroadcast(this,playerToPlay.getName(),chosenCard.toString());
