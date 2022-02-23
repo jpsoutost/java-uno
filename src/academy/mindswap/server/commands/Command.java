@@ -1,7 +1,5 @@
 package academy.mindswap.server.commands;
 
-import java.util.concurrent.Executor;
-
 /**
  * A ENUM that sets the game commands.
  */

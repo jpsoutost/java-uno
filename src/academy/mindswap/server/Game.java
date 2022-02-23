@@ -1,11 +1,6 @@
 package academy.mindswap.server;
 
-import academy.mindswap.client.Client;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -216,8 +211,12 @@ public class Game implements Runnable {
                             indexToReverse--;
                         }
                         players = Arrays.stream(temp).collect(Collectors.toList());
+                    }else if (chosenCard.getNumber()==11) {
+                        cardsToDraw++;
+                        cardsToDraw++;
                     }
-                    if (cardsToDraw != 0){
+
+                    if (cardsToDraw != 0 & chosenCard.getNumber() != 11){
                         for (int i = 0; i < cardsToDraw; i++) {
                             Card newCard = deck.poll();
                             playerToPlay.getDeck().add(newCard);
