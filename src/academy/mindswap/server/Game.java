@@ -9,6 +9,9 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * A class that represents the game.
+ */
 public class Game implements Runnable {
     private final String roomName;
     private LinkedList<Card> deck;
@@ -19,7 +22,9 @@ public class Game implements Runnable {
     private Card lastCardPlayed;
     Server server;
 
-
+    /**
+     * Game initialized by creating a new card deck.
+     */
     public Game(String roomName, Server server) {
         this.roomName = roomName;
         this.server = server;
@@ -27,6 +32,9 @@ public class Game implements Runnable {
         this.players = new ArrayList<>();
     }
 
+    /**
+     * Method that create a deck of cards into a linked list.
+     */
     private void createDeck(){
         this.deck = new LinkedList<>();
 
@@ -49,6 +57,13 @@ public class Game implements Runnable {
         Collections.shuffle(this.deck);
     }
 
+    /**
+     * Method that starts the game and verify the winner.
+     * The game is initialized by setting the deck of the players.
+     * While isn't there a winner, the game is running by verifying the player's turn and by validating the draw played.
+     * @param playersList The list of the players that is going to play the game.
+     * @throws IOException To consider the exceptions produced by failed or interrupted I/O operations.
+     */
     public void addClient(Server.ClientConnectionHandler clientConnectionHandler){
         this.players.add(clientConnectionHandler);
     }
@@ -198,6 +213,9 @@ public class Game implements Runnable {
         }
     }
 
+    /**
+     * Method that set the players deck into an Array List.
+     */
     private void setPlayersDecks(){
         this.players.stream().map(player -> player.getDeck()).forEach(playerDeck -> {
             for (int i = 0; i < 3; i++) {
@@ -206,6 +224,9 @@ public class Game implements Runnable {
       });
     }
 
+    /**
+     * @return The first card of a player.
+     */
     private Card getFirstCard(){
         Card card=this.deck.poll();
         Server.ClientConnectionHandler playerToPlay = players.get(0);
@@ -214,6 +235,10 @@ public class Game implements Runnable {
         return card;
     }
 
+    /**
+     * Check if a player is a winner, and if it's true validate de boolean parameter.
+     * If it's true, prints the winner player.
+     */
     private void checkIfWinner(){
         Server.ClientConnectionHandler playerToPlay = players.get(indexOfPlayerTurn);
         if(playerToPlay.getDeck().size()==0){
