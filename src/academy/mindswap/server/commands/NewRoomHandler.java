@@ -26,7 +26,7 @@ public class NewRoomHandler implements CommandHandler {
             if (openGames.contains(roomName)) {
                 clientConnectionHandler.send("Room with that name already created.");
             } else {
-                Game game = new Game(roomName);
+                Game game = new Game(roomName, server);
                 game.addClient(clientConnectionHandler);
                 clientConnectionHandler.setGame(game);
                 server.getOpenGames().add(game);

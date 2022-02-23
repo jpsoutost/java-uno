@@ -23,24 +23,26 @@ public class Server {
     private List<Game> closedGames;
 
     public Server() {
-        clients = new CopyOnWriteArrayList<>();
+
     }
 
     public void start(int port) throws IOException {
+        clients = new ArrayList<>();
+        clientsOnGeneral = new ArrayList<>();
         serverSocket = new ServerSocket(port);
         service = Executors.newCachedThreadPool();
         openGames = new ArrayList<Game>();
         closedGames = new ArrayList<Game>();
+        new Thread(new ReadyChecker(openGames,closedGames,service)).start();
 
         while (true) {
             acceptConnection();
         }
+
     }
 
     private void acceptConnection() throws IOException {
-        ClientConnectionHandler clientConnectionHandler =
-                new ClientConnectionHandler(serverSocket.accept());
-
+        ClientConnectionHandler clientConnectionHandler = new ClientConnectionHandler(serverSocket.accept());
         service.submit(clientConnectionHandler);
     }
 
@@ -58,7 +60,7 @@ public class Server {
     }
 
     public void roomBroadcast(Game game, String name, String message) {
-        game.getClients().stream()
+        game.getPlayers().stream()
                 .filter(handler -> !handler.getName().equals(name))
                 .forEach(handler -> handler.send(name + ": " + message));
     }
@@ -72,9 +74,9 @@ public class Server {
     public String listOpenRooms() {
         StringBuffer buffer = new StringBuffer();
         openGames.forEach(game -> {
-            buffer.append(game.getName() + " ");
-            buffer.append(game.getClients().size + "/" + 5 + " ");
-            buffer.append(game.getCliets().toString() + "\n");
+            buffer.append(game.getRoomName() + " ");
+            buffer.append(game.getPlayers().size() + "/" + 10 + " ");
+            buffer.append(game.getPlayers().toString() + "\n");
         });
 
         return buffer.toString();
@@ -108,21 +110,22 @@ public class Server {
         private Game game;
         private List<Card> deck;
         private boolean isReady;
+        public boolean messageChanged;
 
 
         public ClientConnectionHandler(Socket clientSocket) throws IOException {
             this.clientSocket = clientSocket;
-            this.name = generateName();
             this.out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
             this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             this.deck = new ArrayList<>();
+            this.name = generateName();
         }
 
         public String generateName() throws IOException {
             send("Choose username:");
             String username = in.readLine();
             if (clients.stream().map(c -> c.name).collect(Collectors.toList()).contains(username)){
-                send("Username Aalready in use.");
+                send("Username Already in use.");
                 username = generateName();
             }
             return username;
@@ -135,6 +138,7 @@ public class Server {
 
                 while (!clientSocket.isClosed()) {
                     message = in.readLine();
+                    messageChanged = true;
 
                     if (isCommand(message)) {
                         dealWithCommand(message);
@@ -145,7 +149,11 @@ public class Server {
                         return;
                     }
 
-                    broadcast(name, message);
+                    if(this.game == null) {
+                        broadcast(name, message);
+                    }else{
+                        roomBroadcast(game,name, message);
+                    }
                 }
             } catch (IOException e) {
                 System.err.println(Messages.PLAYER_ERROR + e.getMessage());
@@ -209,6 +217,16 @@ public class Server {
 
         public void setReady(boolean ready) {
             isReady = ready;
+        }
+
+        public List<Card> getDeck() {
+            return deck;
+        }
+
+        @Override
+        public String toString() {
+            return "{" + name + ", isReady=" + isReady +
+                     "}";
         }
     }
 

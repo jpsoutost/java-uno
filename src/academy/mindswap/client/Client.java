@@ -8,7 +8,7 @@ public class Client {
     public static void main(String[] args) {
         Client client = new Client();
         try {
-            client.start("localhost", 8082);
+            client.start("localhost", 8080);
         } catch (IOException e) {
             System.out.println("Connection closed...");
         }
