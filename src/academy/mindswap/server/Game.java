@@ -35,7 +35,7 @@ public class Game {
             deck.add(new Card(CardColors.RED,i));
             deck.add(new Card(CardColors.YELLOW,i));
         }
-        for (int i=10; i < 13; i++){
+        for (int i=10; i <= 13; i++){
             deck.add(new Card(CardColors.BLUE,i));
             deck.add(new Card(CardColors.BLUE,i));
             deck.add(new Card(CardColors.GREEN,i));
@@ -60,6 +60,7 @@ public class Game {
         boolean canPlayAgain = true; // This variable prevents the draw action to not work properly.
         int playersToSkip = 0; //to use increment when skip cards are played
         int cardsToDraw = 0; //to use when plus2 cards are played;
+        CardColors changeCard;
 
 
         while (!isThereAWinner) {
@@ -109,6 +110,19 @@ public class Game {
                 }
 
             }
+            if (play.equals("/blue")) {
+                lastCardPlayed = new Card(CardColors.BLUE, lastCardPlayed.getNumber());
+            }
+            if (play.equals("/red")) {
+                lastCardPlayed = new Card(CardColors.RED, lastCardPlayed.getNumber());
+            }
+            if (play.equals("/green")) {
+                lastCardPlayed = new Card(CardColors.GREEN, lastCardPlayed.getNumber());
+            }
+            if (play.equals("/yellow")) {
+                lastCardPlayed = new Card(CardColors.YELLOW, lastCardPlayed.getNumber());
+            }
+
             if (!play.matches("[0-" + (playersDecks.get(indexOfPlayerTurn).getPlayerDeck().size() - 1) + "]")) {
                 System.out.println("Play not legal.");
                 continue;
@@ -135,6 +149,12 @@ public class Game {
                             indexToReverse--;
                         }
                         playersDecks = Arrays.stream(temp).collect(Collectors.toList());
+                        // changing this:
+                    } else if (chosenCard.getNumber() == 13) {
+                        cardsToDraw++;
+                        cardsToDraw++;
+                        cardsToDraw++;
+                        cardsToDraw++;
                     }
 
                     System.out.println(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().remove(Integer.parseInt(play)));
@@ -143,6 +163,9 @@ public class Game {
                     playerPlayedAlreadyOneCard = true;
                     canFinishTurn = true;
                     continue;
+                }
+                if (chosenCard.getNumber() == 13) {
+                    System.out.println("Please chose a color so the next player can play");
                 }
                 if (chosenCard.getColor() == lastCardPlayed.getColor() || !playerPlayedAlreadyOneCard) {
                     if (chosenCard.getNumber()==10){
