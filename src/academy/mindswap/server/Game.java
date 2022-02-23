@@ -6,14 +6,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Game {
     private LinkedList<Card> deck;
+    private LinkedList<Card> playedCards;
     private List <Client> players;
     private List <PlayerDeck> playersDecks;
     private boolean isThereAWinner;
@@ -27,28 +25,46 @@ public class Game {
 
     private void createDeck(){
         this.deck = new LinkedList<>();
-        for (int i = 0; i < 5; i++) {
+        this.playersDecks = new LinkedList<>();
+        for (int i = 0; i < 10; i++) {
             deck.add(new Card(CardColors.BLUE,i));
             deck.add(new Card(CardColors.GREEN,i));
             deck.add(new Card(CardColors.RED,i));
             deck.add(new Card(CardColors.YELLOW,i));
         }
+        for (int i=10; i < 13; i++){
+            deck.add(new Card(CardColors.BLUE,i));
+            deck.add(new Card(CardColors.BLUE,i));
+            deck.add(new Card(CardColors.GREEN,i));
+            deck.add(new Card(CardColors.GREEN,i));
+            deck.add(new Card(CardColors.RED,i));
+            deck.add(new Card(CardColors.RED,i));
+            deck.add(new Card(CardColors.YELLOW,i));
+            deck.add(new Card(CardColors.YELLOW,i));
+        }
         Collections.shuffle(this.deck);
     }
-
-
 
     public void start(List<Client> playersList) throws IOException {
         this.players = playersList;
         setPlayersDecks();
         this.lastCardPlayed = getFirstCard();
-        boolean canFinishTurn = false;
-        boolean canFinishTurn2 = false; // This variable prevents the draw action to not work properly.
+        boolean playerPlayedAlreadyOneCard = false;
+        boolean canFinishTurn=false;
+        boolean canPlayAgain = true; // This variable prevents the draw action to not work properly.
+        int playersToSkip = 0; //to use increment when skip cards are played
+        int cardsToDraw = 0; //to use when plus2 cards are played;
 
 
         while (!isThereAWinner) {
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             String play = in.readLine();
+
+            if(deck.isEmpty()){
+                Collections.shuffle(this.playedCards);
+                this.deck = this.playedCards;
+                this.playedCards.clear();
+            }
 
             if (play.equals("/list")) {
                 System.out.println(indexOfPlayerTurn + " - " + playersDecks.get(indexOfPlayerTurn));
@@ -56,16 +72,18 @@ public class Game {
             }
 
             if (play.equals("/finishTurn")) {
-                if (canFinishTurn || canFinishTurn2) {
+                if (canFinishTurn) {
                     System.out.println("End of Turn");
-                    if (indexOfPlayerTurn == players.size() - 1) {
-                        indexOfPlayerTurn = 0;
-                    } else {
-                        indexOfPlayerTurn++;
+                    indexOfPlayerTurn+=playersToSkip;
+                    indexOfPlayerTurn++;
+                    if (indexOfPlayerTurn > players.size() - 1) {
+                        indexOfPlayerTurn -= players.size() - 1;
                     }
 
-                    canFinishTurn = false;
-                    canFinishTurn2 = false;
+                    playerPlayedAlreadyOneCard = false;
+                    canPlayAgain = true;
+                    canFinishTurn=false;
+                    playersToSkip=0;
                     continue;
                 } else {
                     System.out.println("You have to play or draw a card first.");
@@ -73,14 +91,14 @@ public class Game {
                 }
             }
             if (play.equals("/draw")) {
-                if (!canFinishTurn) {
+                if (!playerPlayedAlreadyOneCard) {
                     Card newCard = deck.poll();
                     playersDecks.get(indexOfPlayerTurn).getPlayerDeck().add(newCard);
                     System.out.println("You draw a " + newCard);
-                    canFinishTurn2 = true;
+                    canFinishTurn=true;
                     continue;
                 } else {
-                    System.out.println("You can't draw more than one card each turn.");
+                    System.out.println("You can't draw more than one card each turn nor if you have already played a card.");
                     continue;
                 }
 
@@ -90,38 +108,71 @@ public class Game {
                 continue;
             }
 
-            Card chosenCard = playersDecks.get(indexOfPlayerTurn).getPlayerDeck().get(Integer.parseInt(play));
-            LinkedList<Card> cardsOnTable = new LinkedList<>();
 
-            if (!canFinishTurn) {
-                if (chosenCard.getNumber() == lastCardPlayed.getNumber() || chosenCard.getColor() == lastCardPlayed.getColor()) {
+
+            if (canPlayAgain) {
+
+                Card chosenCard = playersDecks.get(indexOfPlayerTurn).getPlayerDeck().get(Integer.parseInt(play));
+
+
+                if (chosenCard.getNumber() == lastCardPlayed.getNumber()) {
+                    if (chosenCard.getNumber()==10){
+                        playersToSkip++;
+                    }else if (chosenCard.getNumber()==11) {
+                        cardsToDraw++;
+                        cardsToDraw++;
+                    }else if (chosenCard.getNumber()==12){
+                        int indexToReverse = playersDecks.size()-1;
+                        PlayerDeck[] temp = new PlayerDeck[playersDecks.size()];
+                        for (PlayerDeck pd:playersDecks) {
+                            temp[indexToReverse] = pd;
+                            indexToReverse--;
+                        }
+                        playersDecks = Arrays.stream(temp).collect(Collectors.toList());
+                    }
+
                     System.out.println(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().remove(Integer.parseInt(play)));
+                    this.playedCards.add(lastCardPlayed);
                     lastCardPlayed = chosenCard;
-                    cardsOnTable.add(lastCardPlayed);
+                    playerPlayedAlreadyOneCard = true;
+                    canFinishTurn = true;
+                    continue;
                 }
-                canFinishTurn = true;
+                if (chosenCard.getColor() == lastCardPlayed.getColor() || !playerPlayedAlreadyOneCard) {
+                    if (chosenCard.getNumber()==10){
+                        playersToSkip++;
+                    }else if (chosenCard.getNumber()==12){
+                        int indexToReverse = playersDecks.size()-1;
+                        PlayerDeck[] temp = new PlayerDeck[playersDecks.size()];
+                        for (PlayerDeck pd:playersDecks) {
+                            temp[indexToReverse] = pd;
+                            indexToReverse--;
+                        }
+                        playersDecks = Arrays.stream(temp).collect(Collectors.toList());
+                    }
+                    if (cardsToDraw != 0){
+                        for (int i = 0; i < cardsToDraw; i++) {
+                            Card newCard = deck.poll();
+                            playersDecks.get(indexOfPlayerTurn).getPlayerDeck().add(newCard);
+                            System.out.println("You draw a " + newCard);
+                        }
+                    }
+                    System.out.println(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().remove(Integer.parseInt(play)));
+                    this.playedCards.add(lastCardPlayed);
+                    lastCardPlayed = chosenCard;
+                    playerPlayedAlreadyOneCard = true;
+                    canPlayAgain=false;
+                    canFinishTurn = true;
+                    continue;
+                }else {
+                    System.out.println("Play not allowed");
+                    continue;
+                }
             }
-            else if (chosenCard.getNumber() != lastCardPlayed.getNumber() && chosenCard.getColor() == lastCardPlayed.getColor()) {
-                System.out.println("Invalid!");
-                continue;
-            }
-            else if (chosenCard.getNumber() == lastCardPlayed.getNumber()) {
-                System.out.println(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().remove(Integer.parseInt(play)));
-                lastCardPlayed = chosenCard;
-                cardsOnTable.add(lastCardPlayed);
-                continue;
-            } else {
-                System.out.println("Play not allowed");
-                continue;
-            }
-            /*if (deck.size() == 0) {
-                cardsOnTable.stream()
-                        .collect(Collectors.toList())
-                        .forEach(i -> deck.add(cardsOnTable.element()));
-            }*/
+
             checkIfWinner();
-            }
         }
+    }
 
     private void setPlayersDecks(){
         this.playersDecks = new ArrayList<>();
@@ -142,14 +193,7 @@ public class Game {
     private void checkIfWinner(){
         if(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().size()==0){
             isThereAWinner=true;
-            System.out.println(indexOfPlayerTurn + " has no more cards and he's the winner.");
+            System.out.println(indexOfPlayerTurn + "finished his deck and is the winner.");
         }
     }
-    /*private void newDeck() {
-        if (deck.size() == 0) {
-                cardsOnTable.stream()
-                        .collect(Collectors.toList())
-                        .forEach(i -> deck.add(cardsOnTable.element()));
-            }
-    }*/
 }
