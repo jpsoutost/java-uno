@@ -11,6 +11,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * A class that represents the game.
+ */
 public class Game {
     private LinkedList<Card> deck;
     private List <Client> players;
@@ -19,11 +22,16 @@ public class Game {
     int indexOfPlayerTurn;
     private Card lastCardPlayed;
 
-
+    /**
+     * Game initialized by creating a new card deck.
+     */
     public Game() {
         createDeck();
     }
 
+    /**
+     * Method that create a deck of cards into a linked list.
+     */
     private void createDeck(){
         this.deck = new LinkedList<>();
         for (int i = 0; i < 5; i++) {
@@ -35,6 +43,13 @@ public class Game {
         Collections.shuffle(this.deck);
     }
 
+    /**
+     * Method that starts the game and verify the winner.
+     * The game is initialized by setting the deck of the players.
+     * While isn't there a winner, the game is running by verifying the player's turn and by validating the draw played.
+     * @param playersList The list of the players that is going to play the game.
+     * @throws IOException To consider the exceptions produced by failed or interrupted I/O operations.
+     */
     public void start(List<Client> playersList) throws IOException {
         this.players = playersList;
         setPlayersDecks();
@@ -97,6 +112,9 @@ public class Game {
         }
     }
 
+    /**
+     * Method that set the players deck into an Array List.
+     */
     private void setPlayersDecks(){
         this.playersDecks = new ArrayList<>();
         this.players.stream().forEach(player -> playersDecks.add(new PlayerDeck(player)));
@@ -107,12 +125,19 @@ public class Game {
       });
     }
 
+    /**
+     * @return The first card of a player.
+     */
     private Card getFirstCard(){
         Card card=this.deck.poll();
         System.out.println(card);
         return card;
     }
 
+    /**
+     * Check if a player is a winner, and if it's true validate de boolean parameter.
+     * If it's true, prints the winner player.
+     */
     private void checkIfWinner(){
         if(playersDecks.get(indexOfPlayerTurn).getPlayerDeck().size()==0){
             isThereAWinner=true;
