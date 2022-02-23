@@ -57,17 +57,15 @@ public class Game implements Runnable {
         Collections.shuffle(this.deck);
     }
 
-    /**
-     * Method that starts the game and verify the winner.
-     * The game is initialized by setting the deck of the players.
-     * While isn't there a winner, the game is running by verifying the player's turn and by validating the draw played.
-     * @param playersList The list of the players that is going to play the game.
-     * @throws IOException To consider the exceptions produced by failed or interrupted I/O operations.
-     */
     public void addClient(Server.ClientConnectionHandler clientConnectionHandler){
         this.players.add(clientConnectionHandler);
     }
 
+    /**
+     * Method that starts the game and verify the winner.
+     * The game is initialized by setting the deck of the players.
+     * While there isn't a winner, the game is running by verifying the player's turn and by validating the draw played.
+     */
     @Override
     public void run() {
 
