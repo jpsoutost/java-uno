@@ -1,8 +1,18 @@
 package academy.mindswap.server;
 
 public enum CardColors {
-    BLUE,
-    RED,
-    YELLOW,
-    GREEN;
+    BLUE("blue"),
+    RED("red"),
+    YELLOW("yellow"),
+    GREEN("green");
+
+    private String description;
+
+    CardColors(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }
