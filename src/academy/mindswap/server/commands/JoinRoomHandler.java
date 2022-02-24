@@ -1,6 +1,7 @@
 package academy.mindswap.server.commands;
 
 import academy.mindswap.server.Game;
+import academy.mindswap.server.ReadyChecker;
 import academy.mindswap.server.Server;
 
 import java.util.Optional;

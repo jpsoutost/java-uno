@@ -26,14 +26,15 @@ public class Server {
     public Server() {
     }
 
-    public void start(int port) throws IOException {
+    public void start(int port) throws IOException, InterruptedException {
         clients = new ArrayList<>();
         clientsOnGeneral = new ArrayList<>();
         serverSocket = new ServerSocket(port);
         service = Executors.newCachedThreadPool();
         openGames = new ArrayList<Game>();
         closedGames = new ArrayList<Game>();
-        new Thread(new ReadyChecker(openGames,closedGames,service)).start();
+
+        service.submit(new ReadyChecker(this));
 
         while (true) {
             acceptConnection();
@@ -98,6 +99,14 @@ public class Server {
 
     public List<ClientConnectionHandler> getClientsOnGeneral() {
         return clientsOnGeneral;
+    }
+
+    public ExecutorService getService() {
+        return service;
+    }
+
+    public List<Game> getClosedGames() {
+        return closedGames;
     }
 
     public class ClientConnectionHandler implements Runnable {
