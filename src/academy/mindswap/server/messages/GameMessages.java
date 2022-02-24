@@ -9,7 +9,7 @@ public class GameMessages {
     public static final String THE_WINNER = "You finished your deck and you are the winner.";
     public static final String YOU_DRAW = "You draw a ";
     public static final String PLAYER_DRAW = " draw a card.";
-    public static final String CHOOSE_COLOR = "Choose color:";
+    public static final String CHOOSE_COLOR = "Choose color: b-blue, y-yellow, r-red, g-green";
     public static final String END_TURN = "End of Turn";
 
 }

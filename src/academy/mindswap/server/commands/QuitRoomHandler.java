@@ -17,6 +17,16 @@ public class QuitRoomHandler implements CommandHandler {
         server.getClientsOnGeneral().add(clientConnectionHandler);
         server.roomBroadcast(game, clientConnectionHandler.getName(), Messages.PLAYER_QUIT_ROOM);
         server.broadcast(clientConnectionHandler.getName(), " Entered in the lobby.");
+        if (game.getPlayers().isEmpty()){
+            server.getOpenGames().remove(game);
+            return;
+        }
+
+        for (Server.ClientConnectionHandler player: game.getPlayers()) {
+            player.setReady(false);
+            player.send("Someone left the room and you became unready.");
+        }
+
     }
 
 

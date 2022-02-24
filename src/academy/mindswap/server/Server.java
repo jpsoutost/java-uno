@@ -73,6 +73,9 @@ public class Server {
     }
 
     public String listOpenRooms() {
+        if(openGames.isEmpty()){
+            return "There is no open rooms";
+        }
         StringBuffer buffer = new StringBuffer();
         openGames.forEach(game -> {
             buffer.append(game.getRoomName() + " ");
@@ -87,22 +90,12 @@ public class Server {
         clients.remove(clientConnectionHandler);
     }
 
-    public Optional<ClientConnectionHandler> getClientByName(String name) {
-        return clientsOnGeneral.stream()
-                .filter(clientConnectionHandler -> clientConnectionHandler.getName().equalsIgnoreCase(name))
-                .findFirst();
-    }
-
     public List<Game> getOpenGames() {
         return openGames;
     }
 
     public List<ClientConnectionHandler> getClientsOnGeneral() {
         return clientsOnGeneral;
-    }
-
-    public ExecutorService getService() {
-        return service;
     }
 
     public List<Game> getClosedGames() {
