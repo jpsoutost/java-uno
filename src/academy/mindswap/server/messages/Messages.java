@@ -19,5 +19,5 @@ public class Messages {
     public static final String WHISPER = "(whisper)";
     public static final String WELCOME = "Welcome to UNO!";
     public static final String PLAYER_ERROR = "Something went wrong with this player's connection. Error: ";
-    public static final String PLAYER_QUIT_ROOM = " left the room ";
+    public static final String PLAYER_QUIT_ROOM = " left the room.";
 }
