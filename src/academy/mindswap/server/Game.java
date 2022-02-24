@@ -33,6 +33,7 @@ public class Game implements Runnable {
      */
     private void createDeck(){
         this.deck = new LinkedList<>();
+        this.playedCards = new LinkedList<>();
 
         for (int i = 0; i < 10; i++) {
             deck.add(new Card(CardColors.BLUE,i));
@@ -40,7 +41,7 @@ public class Game implements Runnable {
             deck.add(new Card(CardColors.RED,i));
             deck.add(new Card(CardColors.YELLOW,i));
         }
-        for (int i=10; i < 12; i++){
+        for (int i=10; i < 13; i++){
             deck.add(new Card(CardColors.BLUE,i));
             deck.add(new Card(CardColors.BLUE,i));
             deck.add(new Card(CardColors.GREEN,i));
@@ -98,6 +99,9 @@ public class Game implements Runnable {
             }
             playerToPlay.messageChanged = false;
             String play = playerToPlay.getMessage();
+            if (play.startsWith("-") || play.startsWith("/")){
+                continue;
+            }
 
 
 
@@ -173,7 +177,7 @@ public class Game implements Runnable {
 
                 Card chosenCard = playerToPlay.getDeck().get(Integer.parseInt(play));
 
-                if (cardsToDraw != 0){
+                if (cardsToDraw != 0 && !playerPlayedAlreadyOneCard){
                     if (chosenCard.getNumber() != lastCardPlayed.getNumber()) {
                         for (int i = 0; i < cardsToDraw; i++) {
                             Card newCard = deck.poll();
@@ -183,15 +187,16 @@ public class Game implements Runnable {
                         }
                         cardsToDraw = 0;
                         canFinishTurn = false;
+                        continue;
                     }
                 }
 
                 if(chosenCard.getNumber() == 13){
-                    cardsToDraw=+4;
+                    cardsToDraw+=4;
                     playerToPlay.getDeck().remove(chosenCard);
                     playerToPlay.send(chosenCard.toString());
                     server.roomBroadcast(this,playerToPlay.getName(),chosenCard.toString());
-                    //this.playedCards.add(lastCardPlayed);
+                    this.playedCards.add(lastCardPlayed);
                     lastCardPlayed=chosenCard;
                     playerToPlay.send("Choose color:");
                     playerPlayedAlreadyOneCard = true;
@@ -206,19 +211,13 @@ public class Game implements Runnable {
                     }else if (chosenCard.getNumber()==11) {
                         cardsToDraw+=2;
                     }else if (chosenCard.getNumber()==12){
-                        int indexToReverse = players.size()-1;
-                        Server.ClientConnectionHandler[] temp = new Server.ClientConnectionHandler[players.size()];
-                        for (Server.ClientConnectionHandler p:players) {
-                            temp[indexToReverse] = p;
-                            indexToReverse--;
-                        }
-                        players = Arrays.stream(temp).collect(Collectors.toList());
+                        dealWithReverse();
                     }
 
                     playerToPlay.getDeck().remove(chosenCard);
                     playerToPlay.send(chosenCard.toString());
                     server.roomBroadcast(this,playerToPlay.getName(),chosenCard.toString());
-                   // this.playedCards.add(lastCardPlayed);
+                    this.playedCards.add(lastCardPlayed);
                     lastCardPlayed = chosenCard;
                     playerPlayedAlreadyOneCard = true;
                     canFinishTurn = true;
@@ -226,20 +225,14 @@ public class Game implements Runnable {
                     if (chosenCard.getNumber()==10){
                         playersToSkip++;
                     }else if (chosenCard.getNumber()==12){
-                        int indexToReverse = players.size()-1;
-                        Server.ClientConnectionHandler[] temp = new Server.ClientConnectionHandler[players.size()];
-                        for (Server.ClientConnectionHandler p:players) {
-                            temp[indexToReverse] = p;
-                            indexToReverse--;
-                        }
-                        players = Arrays.stream(temp).collect(Collectors.toList());
+                        dealWithReverse();
                     }else if (chosenCard.getNumber()==11) {
                         cardsToDraw+=2;
                     }
                     playerToPlay.getDeck().remove(chosenCard);
                     playerToPlay.send(chosenCard.toString());
                     server.roomBroadcast(this,playerToPlay.getName(),chosenCard.toString());
-                    //this.playedCards.add(lastCardPlayed);
+                    this.playedCards.add(lastCardPlayed);
                     lastCardPlayed = chosenCard;
                     playerPlayedAlreadyOneCard = true;
                     canPlayAgain=false;
@@ -254,6 +247,26 @@ public class Game implements Runnable {
             checkIfWinner();
         }
     }
+
+    private void dealWithReverse(){
+        Server.ClientConnectionHandler p = players.get(indexOfPlayerTurn);
+        invertPlayers();
+
+        Optional<Server.ClientConnectionHandler> playerPlaying = players.stream().filter(player -> player==p).findFirst();
+        indexOfPlayerTurn = players.indexOf(playerPlaying.get());
+    }
+
+    private void invertPlayers(){
+        int indexToReverse = players.size()-1;
+        Server.ClientConnectionHandler[] temp = new Server.ClientConnectionHandler[players.size()];
+        for (Server.ClientConnectionHandler p:players) {
+            temp[indexToReverse] = p;
+            indexToReverse--;
+        }
+        players = Arrays.stream(temp).collect(Collectors.toList());
+    }
+
+
 
     /**
      * Method that set the players deck into an Array List.
