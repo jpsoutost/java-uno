@@ -110,7 +110,7 @@ public class Server {
         private Game game;
         private List<Card> deck;
         private boolean isReady;
-        public boolean messageChanged;
+        private boolean gameCommandChanged;
 
 
         public ClientConnectionHandler(Socket clientSocket) throws IOException {
@@ -142,7 +142,6 @@ public class Server {
 
                 while (!clientSocket.isClosed()) {
                     message = in.readLine();
-                    messageChanged = true;
 
                     if (isCommand(message)) {
                         dealWithCommand(message);
@@ -160,7 +159,9 @@ public class Server {
 
                     if(this.game == null) {
                         broadcast(name, message);
+                        return;
                     }
+                    gameCommandChanged = true;
                 }
             } catch (IOException e) {
                 System.err.println(Messages.PLAYER_ERROR + e.getMessage());
@@ -246,6 +247,14 @@ public class Server {
 
         public Game getGame() {
             return game;
+        }
+
+        public boolean isGameCommandChanged() {
+            return gameCommandChanged;
+        }
+
+        public void setGameCommandChanged(boolean gameCommandChanged) {
+            this.gameCommandChanged = gameCommandChanged;
         }
     }
 

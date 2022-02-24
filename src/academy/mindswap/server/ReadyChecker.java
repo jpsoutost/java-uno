@@ -29,7 +29,6 @@ public class ReadyChecker implements Runnable{
                     if (!someoneIsNotReady) {
                         openGames.remove(game);
                         closedGames.add(game);
-                        game.getPlayers().get(0).messageChanged=false;
                         service.submit(game);
                     }
                     someoneIsNotReady = false;

@@ -92,14 +92,14 @@ public class Game implements Runnable {
 
             playerToPlay.send(playerToPlay.getName() + " - " + playerToPlay.getDeck());
 
-            while(!playerToPlay.messageChanged){
+            while(!playerToPlay.isGameCommandChanged()){
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            playerToPlay.messageChanged = false;
+            playerToPlay.setGameCommandChanged(false);
             String play = playerToPlay.getMessage();
             if (play.startsWith("-") || play.startsWith("/")){
                 continue;
