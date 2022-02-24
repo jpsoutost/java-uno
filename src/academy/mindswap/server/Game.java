@@ -1,6 +1,8 @@
 package academy.mindswap.server;
 
 
+import academy.mindswap.server.messages.GameMessages;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -103,8 +105,8 @@ public class Game implements Runnable {
 
             if (play.equals("finishTurn")) {
                 if (canFinishTurn) {
-                    playerToPlay.send("End of Turn");
-                    server.roomBroadcast(this,playerToPlay.getName(),"End of Turn");
+                    playerToPlay.send(GameMessages.END_TURN);
+                    server.roomBroadcast(this,playerToPlay.getName(),GameMessages.END_TURN);
                     indexOfPlayerTurn+=playersToSkip;
                     indexOfPlayerTurn++;
                     if (indexOfPlayerTurn > players.size() - 1) {
@@ -117,7 +119,7 @@ public class Game implements Runnable {
                     playersToSkip=0;
                     continue;
                 } else {
-                    playerToPlay.send("You have to play or draw a card first.");
+                    playerToPlay.send(GameMessages.NOT_PLAYED); // here
                     continue;
                 }
             }
@@ -126,45 +128,45 @@ public class Game implements Runnable {
                 if (!playerPlayedAlreadyOneCard) {
                     Card newCard = deck.poll();
                     playerToPlay.getDeck().add(newCard);
-                    playerToPlay.send("You draw a " + newCard);
-                    server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + " draw a card.");
+                    playerToPlay.send(GameMessages.YOU_DRAW + newCard);
+                    server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + GameMessages.PLAYER_DRAW);
 
                     canFinishTurn=true;
                     continue;
                 } else {
-                    playerToPlay.send("You can't draw more than one card each turn nor if you have already played a card.");
+                    playerToPlay.send(GameMessages.JUST_ONE_CARD); // here
                     continue;
                 }
 
             }
 
-            if(play.equals("blue") && lastCardPlayed.getNumber()==13){
+            if(play.equals(CardColors.BLUE.getDescription()) && lastCardPlayed.getNumber()==13){
                 lastCardPlayed.setColor(CardColors.BLUE);
-                playerToPlay.send("Color changed to blue.");
-                server.roomBroadcast(this,playerToPlay.getName(),"Color changed to blue.");
+                playerToPlay.send(GameMessages.COLOR_CHANGED + CardColors.BLUE.getDescription()); //HERE
+                server.roomBroadcast(this,playerToPlay.getName(),GameMessages.COLOR_CHANGED + CardColors.BLUE.getDescription()); //HERE
                 continue;
             }
-            if(play.equals("yellow") && lastCardPlayed.getNumber()==13){
+            if(play.equals(CardColors.YELLOW.getDescription()) && lastCardPlayed.getNumber()==13){
                 lastCardPlayed.setColor(CardColors.YELLOW);
-                playerToPlay.send("Color changed to yellow.");
-                server.roomBroadcast(this,playerToPlay.getName(),"Color changed to yellow.");
+                playerToPlay.send(GameMessages.COLOR_CHANGED + CardColors.YELLOW.getDescription()); //HERE
+                server.roomBroadcast(this,playerToPlay.getName(),GameMessages.COLOR_CHANGED + CardColors.YELLOW.getDescription()); //HERE
                 continue;
             }
-            if(play.equals("green") && lastCardPlayed.getNumber()==13){
+            if(play.equals(CardColors.GREEN.getDescription()) && lastCardPlayed.getNumber()==13){
                 lastCardPlayed.setColor(CardColors.GREEN);
-                playerToPlay.send("Color changed to green.");
-                server.roomBroadcast(this,playerToPlay.getName(),"Color changed to green.");
+                playerToPlay.send(GameMessages.COLOR_CHANGED + CardColors.GREEN.getDescription());//HERE
+                server.roomBroadcast(this,playerToPlay.getName(),GameMessages.COLOR_CHANGED + CardColors.GREEN.getDescription()); //HERE
                 continue;
             }
-            if(play.equals("red") && lastCardPlayed.getNumber()==13){
+            if(play.equals(CardColors.RED.getDescription()) && lastCardPlayed.getNumber()==13){
                 lastCardPlayed.setColor(CardColors.RED);
-                playerToPlay.send("Color changed to red.");
-                server.roomBroadcast(this,playerToPlay.getName(),"Color changed to red.");
+                playerToPlay.send(GameMessages.COLOR_CHANGED + CardColors.RED.getDescription()); //HERE
+                server.roomBroadcast(this,playerToPlay.getName(),GameMessages.COLOR_CHANGED + CardColors.RED.getDescription()); //HERE
                 continue;
             }
 
             if (!play.matches("[0-" + (playerToPlay.getDeck().size() - 1) + "]")) {
-                playerToPlay.send("Play not legal.");
+                playerToPlay.send(GameMessages.NOT_LEGAL); //here
                 continue;
             }
 
@@ -178,8 +180,8 @@ public class Game implements Runnable {
                         for (int i = 0; i < cardsToDraw; i++) {
                             Card newCard = deck.poll();
                             playerToPlay.getDeck().add(newCard);
-                            playerToPlay.send("You draw a " + newCard);
-                            server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + " draw a card.");
+                            playerToPlay.send(GameMessages.YOU_DRAW + newCard);
+                            server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + GameMessages.PLAYER_DRAW);
                         }
                         cardsToDraw = 0;
                         canFinishTurn = false;
@@ -193,7 +195,7 @@ public class Game implements Runnable {
                     server.roomBroadcast(this,playerToPlay.getName(),chosenCard.toString());
                     //this.playedCards.add(lastCardPlayed);
                     lastCardPlayed=chosenCard;
-                    playerToPlay.send("Choose color:");
+                    playerToPlay.send(GameMessages.CHOOSE_COLOR);
                     playerPlayedAlreadyOneCard = true;
                     canFinishTurn = true;
                     continue;
@@ -245,10 +247,10 @@ public class Game implements Runnable {
                     canPlayAgain=false;
                     canFinishTurn = true;
                 }else {
-                    playerToPlay.send("Play not allowed");
+                    playerToPlay.send(GameMessages.NOT_ALLOWED); //here
                 }
             }else{
-                playerToPlay.send("Play not allowed");
+                playerToPlay.send(GameMessages.NOT_ALLOWED); //here
             }
 
             checkIfWinner();
@@ -285,8 +287,8 @@ public class Game implements Runnable {
         Server.ClientConnectionHandler playerToPlay = players.get(indexOfPlayerTurn);
         if(playerToPlay.getDeck().size()==0){
             isThereAWinner=true;
-            playerToPlay.send("You finished your deck and you are the winner.");
-            server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + " finished his deck and is the winner.");
+            playerToPlay.send(GameMessages.THE_WINNER); //here
+            server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + GameMessages.THE_WINNER); //here
         }
     }
 

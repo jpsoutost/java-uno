@@ -1,22 +1,15 @@
 package academy.mindswap.server.messages;
 
 public class GameMessages {
-    public static final String DEFAULT_NAME = "PLAYER-";
-    public static final String PLAYER_ENTERED_LOBBY = " entered in the lobby.";
-    public static final String NO_SUCH_COMMAND = "⚠️ Invalid command!";
-    public static final String COMMANDS_LIST = """
-            List of available commands:
-            /list player -> gets you the list of connected players
-            /list server -> gets yout the list of already created servers
-            /whisper <username> <message> -> lets you whisper a message to a single connected client
-            /ready -> to start playing UNO
-            /play <card name> <card color> -> play that exact card in your hand
-            /quit -> exits the server""";
-    public static final String PLAYER_DISCONNECTED = " left the lobby.";
-    public static final String WHISPER_INSTRUCTIONS = "Invalid whisper use. Correct use: '/whisper <username> <message>";
-    public static final String PLAY_CARD_INSTRUCTIONS = "⚠️ Invalid use of play command: '/play <card name> <card color>";
-    public static final String NO_SUCH_CLIENT = "The client you want to whisper to doesn't exists.";
-    public static final String WHISPER = "(whisper)";
-    public static final String WELCOME = "Welcome to UNO!";
-    public static final String PLAYER_ERROR = "Something went wrong with this player's connection. Error: ";
+    public static final String NOT_PLAYED = "You have to play or draw a card first.";
+    public static final String JUST_ONE_CARD = "You can't draw more than one card each turn nor if you have already played a card.";
+    public static final String COLOR_CHANGED = "Color changed to:  ";
+    public static final String NOT_LEGAL = "Play not legal.";
+    public static final String NOT_ALLOWED = "Play not allowed";
+    public static final String THE_WINNER = "You finished your deck and you are the winner.";
+    public static final String YOU_DRAW = "You draw a ";
+    public static final String PLAYER_DRAW = " draw a card.";
+    public static final String CHOOSE_COLOR = "Choose color:";
+    public static final String END_TURN = "End of Turn";
+
 }
