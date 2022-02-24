@@ -13,9 +13,10 @@ public class Game implements Runnable {
     private LinkedList<Card> playedCards;
     private List <Server.ClientConnectionHandler> players;
     private boolean isThereAWinner;
-    int indexOfPlayerTurn;
+    private int indexOfPlayerTurn;
     private Card lastCardPlayed;
-    Server server;
+    private int cardsToDraw;
+    private Server server;
 
     /**
      * Game initialized by creating a new card deck.
@@ -39,7 +40,7 @@ public class Game implements Runnable {
             deck.add(new Card(CardColors.RED,i));
             deck.add(new Card(CardColors.YELLOW,i));
         }
-      /*  for (int i=10; i < 13; i++){
+        for (int i=10; i < 12; i++){
             deck.add(new Card(CardColors.BLUE,i));
             deck.add(new Card(CardColors.BLUE,i));
             deck.add(new Card(CardColors.GREEN,i));
@@ -48,7 +49,10 @@ public class Game implements Runnable {
             deck.add(new Card(CardColors.RED,i));
             deck.add(new Card(CardColors.YELLOW,i));
             deck.add(new Card(CardColors.YELLOW,i));
-        }*/
+        }
+        for (int i = 0; i < 4; i++) {
+            deck.add(new Card(CardColors.BLUE,13));
+        }
         Collections.shuffle(this.deck);
     }
 
@@ -70,7 +74,7 @@ public class Game implements Runnable {
         boolean canFinishTurn=false;
         boolean canPlayAgain = true; // This variable prevents the draw action to not work properly.
         int playersToSkip = 0; //to use increment when skip cards are played
-        int cardsToDraw = 0; //to use when plus2 cards are played;
+         //to use when plus2 cards are played;
 
 
         while (!isThereAWinner) {
@@ -97,7 +101,7 @@ public class Game implements Runnable {
 
 
 
-            if (play.equals("/finishTurn")) {
+            if (play.equals("finishTurn")) {
                 if (canFinishTurn) {
                     playerToPlay.send("End of Turn");
                     server.roomBroadcast(this,playerToPlay.getName(),"End of Turn");
@@ -118,7 +122,7 @@ public class Game implements Runnable {
                 }
             }
 
-            if (play.equals("/draw")) {
+            if (play.equals("draw")) {
                 if (!playerPlayedAlreadyOneCard) {
                     Card newCard = deck.poll();
                     playerToPlay.getDeck().add(newCard);
@@ -134,25 +138,33 @@ public class Game implements Runnable {
 
             }
 
-            if (!play.matches("[0-" + (playerToPlay.getDeck().size() - 1) + "]")) {
-                playerToPlay.send("Play not legal.");
+            if(play.equals("blue") && lastCardPlayed.getNumber()==13){
+                lastCardPlayed.setColor(CardColors.BLUE);
+                playerToPlay.send("Color changed to blue.");
+                server.roomBroadcast(this,playerToPlay.getName(),"Color changed to blue.");
+                continue;
+            }
+            if(play.equals("yellow") && lastCardPlayed.getNumber()==13){
+                lastCardPlayed.setColor(CardColors.YELLOW);
+                playerToPlay.send("Color changed to yellow.");
+                server.roomBroadcast(this,playerToPlay.getName(),"Color changed to yellow.");
+                continue;
+            }
+            if(play.equals("green") && lastCardPlayed.getNumber()==13){
+                lastCardPlayed.setColor(CardColors.GREEN);
+                playerToPlay.send("Color changed to green.");
+                server.roomBroadcast(this,playerToPlay.getName(),"Color changed to green.");
+                continue;
+            }
+            if(play.equals("red") && lastCardPlayed.getNumber()==13){
+                lastCardPlayed.setColor(CardColors.RED);
+                playerToPlay.send("Color changed to red.");
+                server.roomBroadcast(this,playerToPlay.getName(),"Color changed to red.");
                 continue;
             }
 
-            if(play.equals("/blue") && lastCardPlayed.getNumber()==13){
-                lastCardPlayed.setColor(CardColors.BLUE);
-                continue;
-            }
-            if(play.equals("/yellow") && lastCardPlayed.getNumber()==13){
-                lastCardPlayed.setColor(CardColors.YELLOW);
-                continue;
-            }
-            if(play.equals("/green") && lastCardPlayed.getNumber()==13){
-                lastCardPlayed.setColor(CardColors.GREEN);
-                continue;
-            }
-            if(play.equals("/red") && lastCardPlayed.getNumber()==13){
-                lastCardPlayed.setColor(CardColors.RED);
+            if (!play.matches("[0-" + (playerToPlay.getDeck().size() - 1) + "]")) {
+                playerToPlay.send("Play not legal.");
                 continue;
             }
 
@@ -166,10 +178,11 @@ public class Game implements Runnable {
                         for (int i = 0; i < cardsToDraw; i++) {
                             Card newCard = deck.poll();
                             playerToPlay.getDeck().add(newCard);
-                            System.out.println("You draw a " + newCard);
-                            cardsToDraw = 0;
-                            canFinishTurn = false;
+                            playerToPlay.send("You draw a " + newCard);
+                            server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + " draw a card.");
                         }
+                        cardsToDraw = 0;
+                        canFinishTurn = false;
                     }
                 }
 
@@ -178,7 +191,7 @@ public class Game implements Runnable {
                     playerToPlay.getDeck().remove(chosenCard);
                     playerToPlay.send(chosenCard.toString());
                     server.roomBroadcast(this,playerToPlay.getName(),chosenCard.toString());
-                    this.playedCards.add(lastCardPlayed);
+                    //this.playedCards.add(lastCardPlayed);
                     lastCardPlayed=chosenCard;
                     playerToPlay.send("Choose color:");
                     playerPlayedAlreadyOneCard = true;
@@ -191,8 +204,7 @@ public class Game implements Runnable {
                     if (chosenCard.getNumber()==10){
                         playersToSkip++;
                     }else if (chosenCard.getNumber()==11) {
-                        cardsToDraw++;
-                        cardsToDraw++;
+                        cardsToDraw+=2;
                     }else if (chosenCard.getNumber()==12){
                         int indexToReverse = players.size()-1;
                         Server.ClientConnectionHandler[] temp = new Server.ClientConnectionHandler[players.size()];
@@ -222,10 +234,8 @@ public class Game implements Runnable {
                         }
                         players = Arrays.stream(temp).collect(Collectors.toList());
                     }else if (chosenCard.getNumber()==11) {
-                        cardsToDraw++;
-                        cardsToDraw++;
+                        cardsToDraw+=2;
                     }
-
                     playerToPlay.getDeck().remove(chosenCard);
                     playerToPlay.send(chosenCard.toString());
                     server.roomBroadcast(this,playerToPlay.getName(),chosenCard.toString());
@@ -250,7 +260,7 @@ public class Game implements Runnable {
      */
     private void setPlayersDecks(){
         this.players.stream().map(player -> player.getDeck()).forEach(playerDeck -> {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 5; i++) {
               playerDeck.add(this.deck.poll());
           }
       });

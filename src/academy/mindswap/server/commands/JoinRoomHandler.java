@@ -10,7 +10,7 @@ public class JoinRoomHandler implements CommandHandler {
     public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
         String message = clientConnectionHandler.getMessage();
 
-        if (message.split(" ").length < 2) {
+        if (message.split(" ").length != 2) {
             clientConnectionHandler.send("Wrong way to join a Room.");
             return;
         }
@@ -27,7 +27,7 @@ public class JoinRoomHandler implements CommandHandler {
         game.get().addClient(clientConnectionHandler);
         clientConnectionHandler.setGame(game.get());
         server.getClientsOnGeneral().remove(clientConnectionHandler);
-        clientConnectionHandler.send("You joined room " + message);
-        server.roomBroadcast(game.get(),clientConnectionHandler.getName(),clientConnectionHandler.getName() + " entered the room.");
+        clientConnectionHandler.send("You joined room " + message.substring(10));
+        server.roomBroadcast(game.get(),clientConnectionHandler.getName()," entered the room.");
     }
 }

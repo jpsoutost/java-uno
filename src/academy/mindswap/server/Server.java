@@ -24,7 +24,6 @@ public class Server {
     private List<Game> closedGames;
 
     public Server() {
-
     }
 
     public void start(int port) throws IOException {
@@ -63,7 +62,7 @@ public class Server {
     public void roomBroadcast(Game game, String name, String message) {
         game.getPlayers().stream()
                 .filter(handler -> !handler.getName().equals(name))
-                .forEach(handler -> handler.send(name + ": " + message));
+                .forEach(handler -> handler.send(name + "("+game.getRoomName()+"): " + message));
     }
 
 
@@ -103,7 +102,7 @@ public class Server {
 
     public class ClientConnectionHandler implements Runnable {
 
-        private final String name;
+        private String name;
         private final Socket clientSocket;
         private BufferedWriter out;
         private BufferedReader in;
@@ -119,7 +118,6 @@ public class Server {
             this.out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
             this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             this.deck = new ArrayList<>();
-            this.name = generateName();
         }
 
         public String generateName() throws IOException {
@@ -134,6 +132,11 @@ public class Server {
 
         @Override
         public void run() {
+            try {
+                this.name = generateName();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             addClient(this);
             try {
 
@@ -144,16 +147,19 @@ public class Server {
                     if (isCommand(message)) {
                         dealWithCommand(message);
                         continue;
+                    }else if(isChat(message,game)){
+                        if (message.substring(1).equals("")) {
+                            continue;
+                        }
+                        roomBroadcast(game,name, message.substring(1));
+                        continue;
                     }
-
                     if (message.equals("")) {
                         return;
                     }
 
                     if(this.game == null) {
                         broadcast(name, message);
-                    }else{
-                        roomBroadcast(game,name, message);
                     }
                 }
             } catch (IOException e) {
@@ -165,6 +171,14 @@ public class Server {
 
         private boolean isCommand(String message) {
             return message.startsWith("/");
+        }
+
+        private boolean isChat(String message,Game game) {
+            if (game != null) {
+                return message.startsWith("-");
+            }else{
+                return false;
+            }
         }
 
         private void dealWithCommand(String message) throws IOException {
@@ -228,6 +242,10 @@ public class Server {
         public String toString() {
             return "{" + name + ", isReady=" + isReady +
                      "}";
+        }
+
+        public Game getGame() {
+            return game;
         }
     }
 

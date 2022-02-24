@@ -14,7 +14,7 @@ public class NewRoomHandler implements CommandHandler {
             String message = clientConnectionHandler.getMessage();
             this.openGames = server.getOpenGames().stream().map( game -> game.getRoomName()).collect(Collectors.toSet());
 
-            if (message.split(" ").length < 2) {
+            if (message.split(" ").length != 2) {
                 clientConnectionHandler.send("Wrong way to create a Room.");
                 return;
             }
@@ -28,7 +28,7 @@ public class NewRoomHandler implements CommandHandler {
                 game.addClient(clientConnectionHandler);
                 clientConnectionHandler.setGame(game);
                 server.getOpenGames().add(game);
-                clientConnectionHandler.send("You created room " + message);
+                clientConnectionHandler.send("You created room " + message.substring(12));
                 server.getClientsOnGeneral().remove(clientConnectionHandler);
             }
         }
