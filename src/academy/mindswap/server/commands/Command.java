@@ -10,7 +10,9 @@ public enum Command {
     MUTE("/mute", new QuitHandler()),
     NEW_ROOM("/createRoom", new NewRoomHandler()),
     JOIN_ROOM("/joinRoom", new JoinRoomHandler()),
-    READY("/ready", new ReadyHandler());
+    READY("/ready", new ReadyHandler()),
+    QUIT_ROOM("/quitRoom", new QuitRoomHandler()),
+    QUIT_HANDLER("/quit", new QuitHandler());
 
     private String description;
     private CommandHandler handler;
