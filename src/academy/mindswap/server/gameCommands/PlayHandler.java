@@ -17,7 +17,6 @@ public class PlayHandler implements GameCommandHandler{
 
             if (chosenCard.getNumber() != game.getLastCardPlayed().getNumber()) {
                 game.goFishingCards();
-                return;
             }
 
 
