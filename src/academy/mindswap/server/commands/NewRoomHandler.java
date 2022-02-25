@@ -6,9 +6,19 @@ import academy.mindswap.server.Server;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * A class that represents the command to create a new room, that implements CommandHandler.
+ */
 public class NewRoomHandler implements CommandHandler {
     Set<String> openGames;
 
+    /**
+     * An override method that executes the command new room. The room can be open by any player.
+     * The players only can open rooms with different names.
+     * The name of the room can only have one word.
+     * @param server The server.
+     * @param clientConnectionHandler The player.
+     */
         @Override
         public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
             String message = clientConnectionHandler.getMessage();
