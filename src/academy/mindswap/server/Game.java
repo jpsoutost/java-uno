@@ -99,7 +99,7 @@ public class Game implements Runnable {
                 this.playedCards.clear();
             }
 
-            playerToPlay.send(playerToPlay.getName() + " - " + playerToPlay.getDeck());
+            playerToPlay.send(playerToPlay.getName() + "\n - " + playerToPlay.getDeck());
             play = waitForPlay();
 
             if (isChat(play) || isServerCommand(play)){
