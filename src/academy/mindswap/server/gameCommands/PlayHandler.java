@@ -5,7 +5,7 @@ import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
 import academy.mindswap.server.messages.GameMessages;
 
-public class PlayHandler implements GameCommandHandler{
+public class PlayHandler implements GameCommandHandler {
     @Override
     public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) {
         String play = game.getPlay();
@@ -17,14 +17,15 @@ public class PlayHandler implements GameCommandHandler{
 
             if (chosenCard.getNumber() != game.getLastCardPlayed().getNumber()) {
                 game.goFishingCards();
+                return;
             }
 
 
-            if(chosenCard.getNumber() == 13){
-                game.setCardsToDraw(game.getCardsToDraw()+4);
+            if (chosenCard.getNumber() == 13) {
+                game.setCardsToDraw(game.getCardsToDraw() + 4);
                 game.getPlayerToPlay().getDeck().remove(chosenCard);
                 game.getPlayerToPlay().send(chosenCard.toString());
-                game.getServer().roomBroadcast(game,game.getPlayerToPlay().getName(),chosenCard.toString());
+                game.getServer().roomBroadcast(game, game.getPlayerToPlay().getName(), chosenCard.toString());
                 game.getPlayedCards().add(game.getLastCardPlayed());
                 game.setLastCardPlayed(chosenCard);
                 game.getPlayerToPlay().send(GameMessages.CHOOSE_COLOR);
@@ -36,11 +37,11 @@ public class PlayHandler implements GameCommandHandler{
 
 
             if (chosenCard.getNumber() == game.getLastCardPlayed().getNumber()) {
-                if (chosenCard.getNumber()==10){
-                    game.setPlayersToSkip(game.getPlayersToSkip()+1);
-                }else if (chosenCard.getNumber()==11) {
-                    game.setCardsToDraw(game.getCardsToDraw() +2);
-                }else if (chosenCard.getNumber()==12){
+                if (chosenCard.getNumber() == 10) {
+                    game.setPlayersToSkip(game.getPlayersToSkip() + 1);
+                } else if (chosenCard.getNumber() == 11) {
+                    game.setCardsToDraw(game.getCardsToDraw() + 2);
+                } else if (chosenCard.getNumber() == 12) {
                     game.dealWithReverse();
                 }
 
@@ -56,8 +57,8 @@ public class PlayHandler implements GameCommandHandler{
                     game.setPlayersToSkip(game.getPlayersToSkip()+1);
                 }else if (chosenCard.getNumber()==12){
                     game.dealWithReverse();
-                }else if (chosenCard.getNumber()==11) {
-                    game.setCardsToDraw(game.getCardsToDraw()+2);
+                } else if (chosenCard.getNumber() == 11) {
+                    game.setCardsToDraw(game.getCardsToDraw() + 2);
                 }
                 game.getPlayerToPlay().getDeck().remove(chosenCard);
                 game.getPlayerToPlay().send(chosenCard.toString());

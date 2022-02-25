@@ -3,15 +3,16 @@ package academy.mindswap.server.gameCommands;
 import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
 import academy.mindswap.server.commands.CommandHandler;
+import academy.mindswap.server.messages.GameMessages;
 
 public class FinishHandler implements GameCommandHandler {
 
     @Override
     public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) {
-        if(!game.getHasToChooseAColor()) {
+        if (!game.getHasToChooseAColor()) {
             if (game.isCanFinishTurn()) {
-                clientConnectionHandler.send("End of Turn");
-                game.getServer().roomBroadcast(game, clientConnectionHandler.getName(), "End of Turn");
+                clientConnectionHandler.send(GameMessages.END_TURN);
+                game.getServer().roomBroadcast(game, clientConnectionHandler.getName(), GameMessages.END_TURN);
                 game.setIndexOfPlayerTurn(game.getIndexOfPlayerTurn() + game.getPlayersToSkip());
                 game.setIndexOfPlayerTurn(game.getIndexOfPlayerTurn() + 1);
 
@@ -25,12 +26,10 @@ public class FinishHandler implements GameCommandHandler {
                 game.setPlayersToSkip(0);
 
             } else {
-                clientConnectionHandler.send("You have to play or draw a card first.");
+                clientConnectionHandler.send(GameMessages.NOT_PLAYED);
             }
-        }else{
-            clientConnectionHandler.send("You have to choose a color first. b-blue, y-yellow, g-green, r-red");
+        } else {
+            clientConnectionHandler.send(GameMessages.CHOOSE_COLOR);
         }
-
     }
-
 }

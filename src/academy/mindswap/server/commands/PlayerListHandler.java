@@ -6,6 +6,6 @@ public class PlayerListHandler implements CommandHandler {
 
     @Override
     public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
-       clientConnectionHandler.send(server.listClients());
+        clientConnectionHandler.send(server.listClients());
     }
 }

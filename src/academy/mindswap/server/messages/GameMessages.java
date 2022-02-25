@@ -11,5 +11,10 @@ public class GameMessages {
     public static final String PLAYER_DRAW = " draw a card.";
     public static final String CHOOSE_COLOR = "Choose color: b-blue, y-yellow, r-red, g-green";
     public static final String END_TURN = "End of Turn";
+    public static final String CANT_CHANGE = "You can´t change the color";
+    public static final String NO_OPEN_ROOM = "There is no open rooms";
+    public static final String CHOOSE_USERNAME = "Choose username: ";
+    public static final String USERNAME_INVALID = "Username Already in use.";
+
 
 }

@@ -1,8 +1,8 @@
 package academy.mindswap.server;
 
 
-
 import academy.mindswap.server.commands.Command;
+import academy.mindswap.server.messages.GameMessages;
 import academy.mindswap.server.messages.Messages;
 
 import java.io.*;
@@ -63,7 +63,7 @@ public class Server {
     public void roomBroadcast(Game game, String name, String message) {
         game.getPlayers().stream()
                 .filter(handler -> !handler.getName().equals(name))
-                .forEach(handler -> handler.send(name + "("+game.getRoomName()+"): " + message));
+                .forEach(handler -> handler.send(name + "(" + game.getRoomName() + "): " + message));
     }
 
 
@@ -73,8 +73,8 @@ public class Server {
     }
 
     public String listOpenRooms() {
-        if(openGames.isEmpty()){
-            return "There is no open rooms";
+        if (openGames.isEmpty()) {
+            return GameMessages.NO_OPEN_ROOM;
         }
         StringBuffer buffer = new StringBuffer();
         openGames.forEach(game -> {
@@ -123,10 +123,10 @@ public class Server {
         }
 
         public String generateName() throws IOException {
-            send("Choose username:");
+            send(GameMessages.CHOOSE_USERNAME);
             String username = in.readLine();
-            if (clients.stream().map(c -> c.name).collect(Collectors.toList()).contains(username)){
-                send("Username Already in use.");
+            if (clients.stream().map(c -> c.name).collect(Collectors.toList()).contains(username)) {
+                send(GameMessages.USERNAME_INVALID);
                 username = generateName();
             }
             return username;
@@ -148,18 +148,18 @@ public class Server {
                     if (isCommand(message)) {
                         dealWithCommand(message);
                         continue;
-                    }else if(isChat(message,game)){
+                    } else if (isChat(message, game)) {
                         if (message.substring(1).equals("")) {
                             continue;
                         }
-                        roomBroadcast(game,name, message.substring(1));
+                        roomBroadcast(game, name, message.substring(1));
                         continue;
                     }
                     if (message.equals("")) {
                         return;
                     }
 
-                    if(this.game == null) {
+                    if (this.game == null) {
                         broadcast(name, message);
                         return;
                     }
@@ -176,10 +176,10 @@ public class Server {
             return message.startsWith("/");
         }
 
-        private boolean isChat(String message,Game game) {
+        private boolean isChat(String message, Game game) {
             if (game != null) {
                 return message.startsWith("-");
-            }else{
+            } else {
                 return false;
             }
         }
@@ -244,7 +244,7 @@ public class Server {
         @Override
         public String toString() {
             return "{" + name + ", isReady=" + isReady +
-                     "}";
+                    "}";
         }
 
         public Game getGame() {
