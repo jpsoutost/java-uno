@@ -28,6 +28,7 @@ public class Game implements Runnable {
     private int playersToSkip;
     private String play;
     private Server.ClientConnectionHandler playerToPlay;
+    private Card c = new Card(ConsoleColors.BLUE,1);
 
     /**
      * Game initialized by creating a new card deck.
@@ -47,23 +48,23 @@ public class Game implements Runnable {
         this.playedCards = new LinkedList<>();
 
         for (int i = 0; i < 10; i++) {
-            deck.add(new Card(CardColors.BLUE,i));
-            deck.add(new Card(CardColors.GREEN,i));
-            deck.add(new Card(CardColors.RED,i));
-            deck.add(new Card(CardColors.YELLOW,i));
+            deck.add(new Card(Colors.BLUE,i));
+            deck.add(new Card(Colors.GREEN,i));
+            deck.add(new Card(Colors.RED,i));
+            deck.add(new Card(Colors.YELLOW,i));
         }
         for (int i=10; i < 13; i++){
-            deck.add(new Card(CardColors.BLUE,i));
-            deck.add(new Card(CardColors.BLUE,i));
-            deck.add(new Card(CardColors.GREEN,i));
-            deck.add(new Card(CardColors.GREEN,i));
-            deck.add(new Card(CardColors.RED,i));
-            deck.add(new Card(CardColors.RED,i));
-            deck.add(new Card(CardColors.YELLOW,i));
-            deck.add(new Card(CardColors.YELLOW,i));
+            deck.add(new Card(Colors.BLUE,i));
+            deck.add(new Card(Colors.BLUE,i));
+            deck.add(new Card(Colors.GREEN,i));
+            deck.add(new Card(Colors.GREEN,i));
+            deck.add(new Card(Colors.RED,i));
+            deck.add(new Card(Colors.RED,i));
+            deck.add(new Card(Colors.YELLOW,i));
+            deck.add(new Card(Colors.YELLOW,i));
         }
         for (int i = 0; i < 4; i++) {
-            deck.add(new Card(CardColors.BLUE,13));
+            deck.add(new Card(Colors.PURPLE,13));
         }
         Collections.shuffle(this.deck);
     }
@@ -93,13 +94,13 @@ public class Game implements Runnable {
         while (!isThereAWinner) {
             this.playerToPlay = players.get(indexOfPlayerTurn);
 
-            if(deck.isEmpty()){
+            if(deck.isEmpty()) {
                 Collections.shuffle(this.playedCards);
                 this.deck = this.playedCards;
                 this.playedCards.clear();
             }
 
-            playerToPlay.send(playerToPlay.getName() + " - " + playerToPlay.getDeck());
+            playerToPlay.send(playerToPlay.getName() + "\n" + playerToPlay.getDeck());
             play = waitForPlay();
 
             if (isChat(play) || isServerCommand(play)){

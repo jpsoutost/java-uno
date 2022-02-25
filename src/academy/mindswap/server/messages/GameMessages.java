@@ -1,5 +1,7 @@
 package academy.mindswap.server.messages;
 
+import academy.mindswap.server.Card;
+
 public class GameMessages {
     public static final String NOT_PLAYED = "You have to play or draw a card first.";
     public static final String JUST_ONE_CARD = "You can't draw more than one card each turn nor if you have already played a card.";
@@ -11,5 +13,15 @@ public class GameMessages {
     public static final String PLAYER_DRAW = " draw a card.";
     public static final String CHOOSE_COLOR = "Choose color: b-blue, y-yellow, r-red, g-green";
     public static final String END_TURN = "End of Turn";
+    public static final String CARD1 = """
+             _________
+            |*       *|
+            |         |
+            """;
+    public static final String CARD2 = """
+            |         |
+            |*       *|
+            ````` ´´´´´
+            """;
 
 }

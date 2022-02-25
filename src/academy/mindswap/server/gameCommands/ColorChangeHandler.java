@@ -1,6 +1,6 @@
 package academy.mindswap.server.gameCommands;
 
-import academy.mindswap.server.CardColors;
+import academy.mindswap.server.ConsoleColors;
 import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
 
@@ -12,28 +12,28 @@ public class ColorChangeHandler implements GameCommandHandler {
         if(game.getHasToChooseAColor()) {
             switch (play) {
                 case "b": {
-                    game.getLastCardPlayed().setColor(CardColors.BLUE);
+                    game.getLastCardPlayed().setColor(ConsoleColors.BLUE);
                     clientConnectionHandler.send("Color changed to blue.");
                     game.getServer().roomBroadcast(game, game.getPlayerToPlay().getName(), "Color changed to blue.");
                     game.setHasToChooseAColor(false);
                     break;
                 }
                 case "y": {
-                    game.getLastCardPlayed().setColor(CardColors.YELLOW);
+                    game.getLastCardPlayed().setColor(ConsoleColors.YELLOW);
                     clientConnectionHandler.send("Color changed to yellow.");
                     game.getServer().roomBroadcast(game, game.getPlayerToPlay().getName(), "Color changed to yellow.");
                     game.setHasToChooseAColor(false);
                     break;
                 }
                 case "g": {
-                    game.getLastCardPlayed().setColor(CardColors.GREEN);
+                    game.getLastCardPlayed().setColor(ConsoleColors.GREEN);
                     clientConnectionHandler.send("Color changed to green.");
                     game.getServer().roomBroadcast(game, game.getPlayerToPlay().getName(), "Color changed to green.");
                     game.setHasToChooseAColor(false);
                     break;
                 }
                 case "r": {
-                    game.getLastCardPlayed().setColor(CardColors.RED);
+                    game.getLastCardPlayed().setColor(ConsoleColors.RED);
                     clientConnectionHandler.send("Color changed to red.");
                     game.getServer().roomBroadcast(game, game.getPlayerToPlay().getName(), "Color changed to red.");
                     game.setHasToChooseAColor(false);

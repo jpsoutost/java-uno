@@ -1,5 +1,7 @@
 package academy.mindswap.server.messages;
 
+import academy.mindswap.server.ConsoleColors;
+
 public class Messages {
     public static final String DEFAULT_NAME = "PLAYER-";
     public static final String PLAYER_ENTERED_LOBBY = " entered in the lobby.";
@@ -17,7 +19,7 @@ public class Messages {
     public static final String PLAY_CARD_INSTRUCTIONS = "⚠️ Invalid use of play command: '/play <card name> <card color>";
     public static final String NO_SUCH_CLIENT = "The client you want to whisper to doesn't exists.";
     public static final String WHISPER = "(whisper)";
-    public static final String WELCOME = "Welcome to UNO!";
     public static final String PLAYER_ERROR = "Something went wrong with this player's connection. Error: ";
     public static final String PLAYER_QUIT_ROOM = " left the room.";
+    public static final String WELCOME = ConsoleColors.RED + "✩░▒▓▆▅▃▂▁ 𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐭𝐨 𝐔𝐍𝐎 ▁▂▃▅▆▓▒░✩";
 }
