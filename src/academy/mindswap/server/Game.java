@@ -209,6 +209,7 @@ public class Game implements Runnable {
                     playerToPlay.send(GameMessages.CHOOSE_COLOR);
                     playerPlayedAlreadyOneCard = true;
                     canFinishTurn = true;
+                    hasToChooseAColor = true;
                     continue;
                 }
 

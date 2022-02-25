@@ -27,7 +27,6 @@ public class ReadyChecker implements Runnable{
 
             if(!og.isEmpty()) {
                 for (Game game:og) {
-               // for (int i = 0; i < og.size(); i++) {
                     someoneIsNotReady = false;
                     for (Server.ClientConnectionHandler player : game.getPlayers()) {
                         if (!player.isReady()) {
