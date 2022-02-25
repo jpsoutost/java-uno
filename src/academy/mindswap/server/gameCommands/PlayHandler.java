@@ -14,23 +14,14 @@ public class PlayHandler implements GameCommandHandler{
 
             Card chosenCard = game.getPlayerToPlay().getDeck().get(Integer.parseInt(play));
 
-
-            if (chosenCard.getNumber() != game.getLastCardPlayed().getNumber()) {
+            if (game.hasCardsToDraw(chosenCard)) {
                 game.goFishingCards();
+                return;
             }
 
 
-            if(chosenCard.getNumber() == 13){
-                game.setCardsToDraw(game.getCardsToDraw()+4);
-                game.getPlayerToPlay().getDeck().remove(chosenCard);
-                game.getPlayerToPlay().send(chosenCard.toString());
-                game.getServer().roomBroadcast(game,game.getPlayerToPlay().getName(),chosenCard.toString());
-                game.getPlayedCards().add(game.getLastCardPlayed());
-                game.setLastCardPlayed(chosenCard);
-                game.getPlayerToPlay().send(GameMessages.CHOOSE_COLOR);
-                game.setPlayerPlayedAlreadyOneCard(true);
-                game.setCanFinishTurn(true);
-                game.setHasToChooseAColor(true);
+            if(game.isAPlus4Card(chosenCard)){
+                game.dealWithPlus4Cards(chosenCard);
                 return;
             }
 
@@ -44,14 +35,11 @@ public class PlayHandler implements GameCommandHandler{
                     game.dealWithReverse();
                 }
 
-                game.getPlayerToPlay().getDeck().remove(chosenCard);
-                game.getPlayerToPlay().send(chosenCard.toString());
-                game.getServer().roomBroadcast(game,game.getPlayerToPlay().getName(),chosenCard.toString());
-                game.getPlayedCards().add(game.getLastCardPlayed());
-                game.setLastCardPlayed(chosenCard);
-                game.setPlayerPlayedAlreadyOneCard(true);
-                game.setCanFinishTurn(true);
+                game.cardChangesInDecks(chosenCard);
+                game. updateBooleans();
+
             }else if (chosenCard.getColor() == game.getLastCardPlayed().getColor() && !game.isPlayerPlayedAlreadyOneCard()) {
+
                 if (chosenCard.getNumber()==10){
                     game.setPlayersToSkip(game.getPlayersToSkip()+1);
                 }else if (chosenCard.getNumber()==12){
@@ -59,14 +47,11 @@ public class PlayHandler implements GameCommandHandler{
                 }else if (chosenCard.getNumber()==11) {
                     game.setCardsToDraw(game.getCardsToDraw()+2);
                 }
-                game.getPlayerToPlay().getDeck().remove(chosenCard);
-                game.getPlayerToPlay().send(chosenCard.toString());
-                game.getServer().roomBroadcast(game,game.getPlayerToPlay().getName(),chosenCard.toString());
-                game.getPlayedCards().add(game.getLastCardPlayed());
-                game.setLastCardPlayed(chosenCard);
-                game.setPlayerPlayedAlreadyOneCard(true);
+
+                game.cardChangesInDecks(chosenCard);
+                game.updateBooleans();
                 game.setCanPlayAgain(false);
-                game.setCanFinishTurn(true);
+
             }else{
                 game.getPlayerToPlay().send(GameMessages.NOT_ALLOWED);
             }

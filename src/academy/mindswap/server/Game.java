@@ -256,6 +256,35 @@ public class Game implements Runnable {
         }
     }
 
+    public boolean hasCardsToDraw(Card card){
+        return card.getNumber() != lastCardPlayed.getNumber() && cardsToDraw!=0;
+    }
+
+    public void dealWithPlus4Cards(Card card){
+        cardsToDraw+=4;
+        cardChangesInDecks(card);
+        playerToPlay.send(GameMessages.CHOOSE_COLOR);
+        updateBooleans();
+        hasToChooseAColor = true;
+    }
+
+    public boolean isAPlus4Card(Card card){
+        return card.getNumber() == 13;
+    }
+
+    public void cardChangesInDecks(Card card){
+        playerToPlay.getDeck().remove(card);
+        playerToPlay.send(card.toString());
+        server.roomBroadcast(this,playerToPlay.getName(),card.toString());
+        this.playedCards.add(lastCardPlayed);
+        lastCardPlayed=card;
+    }
+
+    public void updateBooleans(){
+        playerPlayedAlreadyOneCard = true;
+        canFinishTurn = true;
+    }
+
 
     public void dealWithReverse(){
         Server.ClientConnectionHandler p = players.get(indexOfPlayerTurn);
