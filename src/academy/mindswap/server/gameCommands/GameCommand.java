@@ -3,10 +3,11 @@ package academy.mindswap.server.gameCommands;
 public enum GameCommand {
     FINISH_TURN("f", new FinishHandler()),
     DRAW("d", new DrawHandler()),
-    CHANGE_TO_BLUE("blue", new BlueColorHandler()),
-    CHANGE_TO_YELLOW("yellow", new YellowColorHandler()),
-    CHANGE_TO_RED("red", new RedColorHandler()),
-    CHANGE_TO_GREEN("green", new GreenColorHandler());
+    CHANGE_TO_BLUE("b", new ColorChangeHandler()),
+    CHANGE_TO_YELLOW("y", new ColorChangeHandler()),
+    CHANGE_TO_RED("r", new ColorChangeHandler()),
+    CHANGE_TO_GREEN("g", new ColorChangeHandler()),
+    NOT_LEGAL("NotLegal", new NotLegalHandler());
 
 
     private String description;

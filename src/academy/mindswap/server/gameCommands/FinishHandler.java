@@ -8,14 +8,15 @@ public class FinishHandler implements GameCommandHandler {
 
     @Override
     public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) {
-            if (game.canFinishTurn()) {
+        if(!game.getHasToChooseAColor()) {
+            if (game.isCanFinishTurn()) {
                 clientConnectionHandler.send("End of Turn");
-                game.getServer().roomBroadcast(game, clientConnectionHandler.getName(),"End of Turn");
+                game.getServer().roomBroadcast(game, clientConnectionHandler.getName(), "End of Turn");
                 game.setIndexOfPlayerTurn(game.getIndexOfPlayerTurn() + game.getPlayersToSkip());
-                game.setIndexOfPlayerTurn(game.getIndexOfPlayerTurn()+1);
+                game.setIndexOfPlayerTurn(game.getIndexOfPlayerTurn() + 1);
 
                 if (game.getIndexOfPlayerTurn() > game.getPlayers().size() - 1) {
-                    game.setIndexOfPlayerTurn(game.getIndexOfPlayerTurn()-game.getPlayers().size());
+                    game.setIndexOfPlayerTurn(game.getIndexOfPlayerTurn() - game.getPlayers().size());
                 }
 
                 game.setPlayerPlayedAlreadyOneCard(false);
@@ -26,6 +27,10 @@ public class FinishHandler implements GameCommandHandler {
             } else {
                 clientConnectionHandler.send("You have to play or draw a card first.");
             }
+        }else{
+            clientConnectionHandler.send("You have to choose a color first. b-blue, y-yellow, g-green, r-red");
+        }
+
     }
 
 }
