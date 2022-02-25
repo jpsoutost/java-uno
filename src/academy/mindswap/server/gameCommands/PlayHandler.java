@@ -28,6 +28,7 @@ public class PlayHandler implements GameCommandHandler{
                 game.getServer().roomBroadcast(game,game.getPlayerToPlay().getName(),chosenCard.toString());
                 game.getPlayedCards().add(game.getLastCardPlayed());
                 game.setLastCardPlayed(chosenCard);
+                game.getPlayerToPlay().send(GameMessages.CHOOSE_COLOR);
                 game.setPlayerPlayedAlreadyOneCard(true);
                 game.setCanFinishTurn(true);
                 game.setHasToChooseAColor(true);
@@ -47,11 +48,11 @@ public class PlayHandler implements GameCommandHandler{
                 game.getPlayerToPlay().getDeck().remove(chosenCard);
                 game.getPlayerToPlay().send(chosenCard.toString());
                 game.getServer().roomBroadcast(game,game.getPlayerToPlay().getName(),chosenCard.toString());
-               game.getPlayedCards().add(game.getLastCardPlayed());
-                game.getLastCardPlayed() = chosenCard;
+                game.getPlayedCards().add(game.getLastCardPlayed());
+                game.setLastCardPlayed(chosenCard);
                 game.setPlayerPlayedAlreadyOneCard(true);
                 game.setCanFinishTurn(true);
-            }else if (chosenCard.getColor() == game.getLastCardPlayed().getColor() && !game.setPlayerPlayedAlreadyOneCard(true);) {
+            }else if (chosenCard.getColor() == game.getLastCardPlayed().getColor() && !game.isPlayerPlayedAlreadyOneCard()) {
                 if (chosenCard.getNumber()==10){
                     game.setPlayersToSkip(game.getPlayersToSkip()+1);
                 }else if (chosenCard.getNumber()==12){
@@ -61,17 +62,17 @@ public class PlayHandler implements GameCommandHandler{
                 }
                 game.getPlayerToPlay().getDeck().remove(chosenCard);
                 game.getPlayerToPlay().send(chosenCard.toString());
-                server.roomBroadcast(this,game.getPlayerToPlay().getName(),chosenCard.toString());
-               game.getPlayedCards().add(game.getLastCardPlayed());
-                game.getLastCardPlayed() = chosenCard;
-                game.setPlayerPlayedAlreadyOneCard(true); = true;
-                canPlayAgain=false;
-                game.setCanFinishTurn(); = true;
-            }else {
-                game.getPlayerToPlay().send(GameMessages.NOT_ALLOWED); //here
+                game.getServer().roomBroadcast(game,game.getPlayerToPlay().getName(),chosenCard.toString());
+                game.getPlayedCards().add(game.getLastCardPlayed());
+                game.setLastCardPlayed(chosenCard);
+                game.setPlayerPlayedAlreadyOneCard(true);
+                game.setCanPlayAgain(false);
+                game.setCanFinishTurn(true);
+            }else{
+                game.getPlayerToPlay().send(GameMessages.NOT_ALLOWED);
             }
         }else{
-            game.getPlayerToPlay().send(GameMessages.NOT_ALLOWED); //here
+            game.getPlayerToPlay().send(GameMessages.NOT_ALLOWED);
         }
     }
 }

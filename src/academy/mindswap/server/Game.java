@@ -187,7 +187,7 @@ public class Game implements Runnable {
 
 
 
-            if (canPlayAgain && !hasToChooseAColor) {
+           /* if (canPlayAgain && !hasToChooseAColor) {
 
                 Card chosenCard = playerToPlay.getDeck().get(Integer.parseInt(play));
 
@@ -250,7 +250,7 @@ public class Game implements Runnable {
                 }
             }else{
                 playerToPlay.send(GameMessages.NOT_ALLOWED); //here
-            }
+            }*/
 
             checkIfWinner();
         }
