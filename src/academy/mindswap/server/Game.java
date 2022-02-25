@@ -19,6 +19,7 @@ public class Game implements Runnable {
     private Card lastCardPlayed;
     private int cardsToDraw;
     private Server server;
+    private Boolean hasToChooseAColor;
 
     /**
      * Game initialized by creating a new card deck.
@@ -77,7 +78,7 @@ public class Game implements Runnable {
         boolean canFinishTurn=false;
         boolean canPlayAgain = true; // This variable prevents the draw action to not work properly.
         int playersToSkip = 0; //to use increment when skip cards are played
-         //to use when plus2 cards are played;
+
 
 
         while (!isThereAWinner) {
@@ -107,7 +108,7 @@ public class Game implements Runnable {
 
 
 
-            if (play.equals("finishTurn")) {
+            if (play.equals("finishTurn") && !hasToChooseAColor) {
                 if (canFinishTurn) {
                     playerToPlay.send(GameMessages.END_TURN);
                     server.roomBroadcast(this,playerToPlay.getName(),GameMessages.END_TURN);
@@ -128,7 +129,7 @@ public class Game implements Runnable {
                 }
             }
 
-            if (play.equals("draw")) {
+            if (play.equals("draw") && !hasToChooseAColor) {
                 if (!playerPlayedAlreadyOneCard) {
                     Card newCard = deck.poll();
                     playerToPlay.getDeck().add(newCard);
@@ -147,35 +148,40 @@ public class Game implements Runnable {
             if(play.equals(CardColors.BLUE.getDescription()) && lastCardPlayed.getNumber()==13){
                 lastCardPlayed.setColor(CardColors.BLUE);
                 playerToPlay.send(GameMessages.COLOR_CHANGED + CardColors.BLUE.getDescription()); //HERE
-                server.roomBroadcast(this,playerToPlay.getName(),GameMessages.COLOR_CHANGED + CardColors.BLUE.getDescription()); //HERE
+                server.roomBroadcast(this,playerToPlay.getName(),GameMessages.COLOR_CHANGED + CardColors.BLUE.getDescription());
+                hasToChooseAColor=false;
                 continue;
             }
             if(play.equals(CardColors.YELLOW.getDescription()) && lastCardPlayed.getNumber()==13){
                 lastCardPlayed.setColor(CardColors.YELLOW);
                 playerToPlay.send(GameMessages.COLOR_CHANGED + CardColors.YELLOW.getDescription()); //HERE
-                server.roomBroadcast(this,playerToPlay.getName(),GameMessages.COLOR_CHANGED + CardColors.YELLOW.getDescription()); //HERE
+                server.roomBroadcast(this,playerToPlay.getName(),GameMessages.COLOR_CHANGED + CardColors.YELLOW.getDescription());
+                hasToChooseAColor=false;
                 continue;
             }
             if(play.equals(CardColors.GREEN.getDescription()) && lastCardPlayed.getNumber()==13){
                 lastCardPlayed.setColor(CardColors.GREEN);
                 playerToPlay.send(GameMessages.COLOR_CHANGED + CardColors.GREEN.getDescription());//HERE
-                server.roomBroadcast(this,playerToPlay.getName(),GameMessages.COLOR_CHANGED + CardColors.GREEN.getDescription()); //HERE
+                server.roomBroadcast(this,playerToPlay.getName(),GameMessages.COLOR_CHANGED + CardColors.GREEN.getDescription());
+                hasToChooseAColor=false;
                 continue;
             }
             if(play.equals(CardColors.RED.getDescription()) && lastCardPlayed.getNumber()==13){
                 lastCardPlayed.setColor(CardColors.RED);
                 playerToPlay.send(GameMessages.COLOR_CHANGED + CardColors.RED.getDescription()); //HERE
-                server.roomBroadcast(this,playerToPlay.getName(),GameMessages.COLOR_CHANGED + CardColors.RED.getDescription()); //HERE
+                server.roomBroadcast(this,playerToPlay.getName(),GameMessages.COLOR_CHANGED + CardColors.RED.getDescription());
+                hasToChooseAColor=false;
                 continue;
             }
 
             if (!play.matches("[0-" + (playerToPlay.getDeck().size() - 1) + "]")) {
-                playerToPlay.send(GameMessages.NOT_LEGAL); //here
+                playerToPlay.send(GameMessages.NOT_LEGAL);
+                hasToChooseAColor=false;
                 continue;
             }
 
 
-            if (canPlayAgain) {
+            if (canPlayAgain && !hasToChooseAColor) {
 
                 Card chosenCard = playerToPlay.getDeck().get(Integer.parseInt(play));
 
@@ -286,6 +292,10 @@ public class Game implements Runnable {
      */
     private Card getFirstCard(){
         Card card=this.deck.poll();
+        while (card.getNumber()>9){
+            this.playedCards.add(card);
+            card = deck.poll();
+        }
         Server.ClientConnectionHandler playerToPlay = players.get(0);
         playerToPlay.send(card.toString());
         server.roomBroadcast(this,playerToPlay.getName(),card.toString());
