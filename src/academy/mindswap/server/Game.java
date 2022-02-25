@@ -100,36 +100,23 @@ public class Game implements Runnable {
             }
 
             playerToPlay.send(playerToPlay.getName() + " - " + playerToPlay.getDeck());
+            play = waitForPlay();
 
-            while(!playerToPlay.isGameCommandChanged()){
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            playerToPlay.setGameCommandChanged(false);
-            this. play = playerToPlay.getMessage();
-            if (play.startsWith("-") || play.startsWith("/")){
+            if (isChat(play) || isServerCommand(play)){
                 continue;
             }
 
             GameCommand gameCommand = GameCommand.getGameCommandFromDescription(play);
 
-            if (gameCommand != null) {
-                goFishingCards();
-                gameCommand.getCommandHandler().execute(this, playerToPlay);
-                continue;
+            if (play.matches("[0-" + (playerToPlay.getDeck().size() - 1) + "]")) {
+                gameCommand = GameCommand.getGameCommandFromDescription("play");
             }
 
-            if (!play.matches("[0-" + (playerToPlay.getDeck().size() - 1) + "]")) {
+            if (gameCommand == null) {
                 gameCommand = GameCommand.getGameCommandFromDescription("NotLegal");
-                gameCommand.getCommandHandler().execute(this, playerToPlay);
-                continue;
             }
 
-            playerToPlay.send("teste");
-
+            gameCommand.getCommandHandler().execute(this, playerToPlay);
 
            /* if (play.equals("finishTurn") && !hasToChooseAColor) {
                 if (canFinishTurn) {
@@ -270,7 +257,7 @@ public class Game implements Runnable {
     }
 
 
-    private void dealWithReverse(){
+    public void dealWithReverse(){
         Server.ClientConnectionHandler p = players.get(indexOfPlayerTurn);
         invertPlayers();
 
@@ -286,6 +273,26 @@ public class Game implements Runnable {
             indexToReverse--;
         }
         players = Arrays.stream(temp).collect(Collectors.toList());
+    }
+
+    private boolean isChat(String play){
+        return play.startsWith("-");
+    }
+
+    private boolean isServerCommand(String play){
+        return play.startsWith("/");
+    }
+
+    private String waitForPlay (){
+        while(!playerToPlay.isGameCommandChanged()){
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        playerToPlay.setGameCommandChanged(false);
+        return playerToPlay.getMessage();
     }
 
 
@@ -329,7 +336,7 @@ public class Game implements Runnable {
         }
     }
 
-    private void goFishingCards(){
+    public void goFishingCards(){
         if (cardsToDraw != 0 && !playerPlayedAlreadyOneCard){
             for (int i = 0; i < cardsToDraw; i++) {
                 Card newCard = deck.poll();

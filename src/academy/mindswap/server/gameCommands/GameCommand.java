@@ -7,7 +7,8 @@ public enum GameCommand {
     CHANGE_TO_YELLOW("y", new ColorChangeHandler()),
     CHANGE_TO_RED("r", new ColorChangeHandler()),
     CHANGE_TO_GREEN("g", new ColorChangeHandler()),
-    NOT_LEGAL("NotLegal", new NotLegalHandler());
+    NOT_LEGAL("NotLegal", new NotLegalHandler()),
+    PLAY("play", new PlayHandler());
 
 
     private String description;
