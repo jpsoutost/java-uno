@@ -12,4 +12,5 @@ public class GameMessages {
     public static final String CHOOSE_COLOR = "Choose color: b-blue, y-yellow, r-red, g-green";
     public static final String END_TURN = "End of Turn";
 
+
 }

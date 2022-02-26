@@ -115,7 +115,7 @@ public class Game implements Runnable {
                 replaceDeck();
             }
 
-            playerToPlay.send(playerToPlay.getName() + " - " + playerToPlay.getDeck());
+            playerToPlay.send(playerToPlay.showDeck());
             playerToPlay.setGameCommandChanged(false);
             play = waitForPlay();
 

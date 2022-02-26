@@ -3,6 +3,7 @@ package academy.mindswap.server;
 
 
 import academy.mindswap.server.commands.Command;
+import academy.mindswap.server.messages.GameMessages;
 import academy.mindswap.server.messages.Messages;
 
 import java.io.*;
