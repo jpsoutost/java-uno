@@ -116,6 +116,7 @@ public class Game implements Runnable {
             }
 
             playerToPlay.send(playerToPlay.getName() + " - " + playerToPlay.getDeck());
+            playerToPlay.setGameCommandChanged(false);
             play = waitForPlay();
 
             if(isServerCommand(play)){
@@ -244,7 +245,6 @@ public class Game implements Runnable {
                 e.printStackTrace();
             }
         }
-        playerToPlay.setGameCommandChanged(false);
         return playerToPlay.getMessage();
     }
 
