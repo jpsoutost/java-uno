@@ -165,7 +165,7 @@ public class Game implements Runnable {
     }
 
     public void finishGame(){
-        players.stream().forEach(player -> {
+        players.forEach(player -> {
             server.getClientsOnGeneral().add(player);
             player.send(Messages.WELCOME);
         });

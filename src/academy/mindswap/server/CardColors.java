@@ -6,7 +6,7 @@ public enum CardColors {
     YELLOW("yellow"),
     GREEN("green");
 
-    private String description;
+    private final String description;
 
     CardColors(String description) {
         this.description = description;

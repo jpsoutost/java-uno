@@ -105,8 +105,8 @@ public class Server {
 
         private String name;
         private final Socket clientSocket;
-        private BufferedWriter out;
-        private BufferedReader in;
+        private final BufferedWriter out;
+        private final BufferedReader in;
         private String message;
         private Game game;
         private List<Card> deck;
