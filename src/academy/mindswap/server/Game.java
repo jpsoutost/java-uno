@@ -3,6 +3,7 @@ package academy.mindswap.server;
 
 import academy.mindswap.server.gameCommands.GameCommand;
 import academy.mindswap.server.messages.GameMessages;
+import academy.mindswap.server.messages.Messages;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,10 +17,11 @@ public class Game implements Runnable {
     private final String roomName;
     private LinkedList<Card> deck;
     private LinkedList<Card> playedCards;
-    private List <Server.ClientConnectionHandler> players;
+    private List<Server.ClientConnectionHandler> players;
     private Server server;
 
     //GAME LOGIC CONTROL BOOLEANS
+    private boolean gameIsRunning;
     private boolean isThereAWinner;
     private boolean playedAtLeastOneCard;
     private boolean canFinishTurn;
@@ -94,6 +96,7 @@ public class Game implements Runnable {
     @Override
     public void run() {
 
+        gameIsRunning=true;
         setPlayersDecks();
         lastCardPlayed = getFirstCard();
         resetBooleansAndAccumulators();
@@ -120,6 +123,9 @@ public class Game implements Runnable {
             play();
             checkIfWinner();
         }
+
+        finishGame();
+        gameIsRunning = false;
     }
 
     private void play(){
@@ -143,7 +149,7 @@ public class Game implements Runnable {
         hasToChooseAColor=false;
     }
 
-    public void replaceDeck(){
+    private void replaceDeck(){
         Collections.shuffle(this.playedCards);
         this.deck = this.playedCards;
         this.playedCards.clear();
@@ -156,6 +162,13 @@ public class Game implements Runnable {
         playersToSkip = 0;
         hasToChooseAColor = false;
         drewACard=false;
+    }
+
+    public void finishGame(){
+        players.stream().forEach(player -> {
+            server.getClientsOnGeneral().add(player);
+            player.send(Messages.WELCOME);
+        });
     }
 
     public boolean hasCardsToDraw(Card card){
@@ -188,7 +201,7 @@ public class Game implements Runnable {
     }
 
 
-    public void dealWithReverse(){
+    private void dealWithReverse(){
         Server.ClientConnectionHandler p = players.get(indexOfPlayerTurn);
         invertPlayers();
 
@@ -232,7 +245,7 @@ public class Game implements Runnable {
      * Method that set the players deck into an Array List.
      */
     private void setPlayersDecks(){
-        this.players.stream().map(player -> player.getDeck()).forEach(playerDeck -> {
+        this.players.stream().map(Server.ClientConnectionHandler::getDeck).forEach(playerDeck -> {
             for (int i = 0; i < 5; i++) {
               playerDeck.add(this.deck.poll());
           }
@@ -370,11 +383,11 @@ public class Game implements Runnable {
         return playerToPlay;
     }
 
-    //SETTERS
-
-    public void setCardsToDraw(int cardsToDraw) {
-        this.cardsToDraw = cardsToDraw;
+    public boolean gameIsRunning() {
+        return gameIsRunning;
     }
+
+    //SETTERS
 
     public void setServer(Server server) {
         this.server = server;
