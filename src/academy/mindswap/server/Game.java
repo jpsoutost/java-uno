@@ -222,7 +222,8 @@ public class Game implements Runnable {
         Server.ClientConnectionHandler p = players.get(indexOfPlayerTurn);
         invertPlayers();
 
-        Optional<Server.ClientConnectionHandler> playerPlaying = players.stream().filter(player -> player == p).findFirst();
+        Optional<Server.ClientConnectionHandler> playerPlaying = players.stream().filter(player -> player == p)
+                .findFirst();
         indexOfPlayerTurn = players.indexOf(playerPlaying.get());
     }
 
@@ -353,6 +354,8 @@ public class Game implements Runnable {
             cardsToDraw += 2;
         }
     }
+
+
 
     public boolean canDrawACard() {
         return !playedAtLeastOneCard && !drewACard;

@@ -62,4 +62,7 @@ public class GameMessages {
     public static final String CARD_ON_TABLE2 = "|         | \n" +
             "|*       *| \n" +
             " --------- ";
+
+
+//    SIMBOLOS:    🚫 - 🔁 - ➕2 - ➕4
 }
