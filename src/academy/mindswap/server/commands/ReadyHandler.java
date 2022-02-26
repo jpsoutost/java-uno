@@ -17,7 +17,7 @@ public class ReadyHandler implements CommandHandler{
             return;
         }
 
-        boolean ready = clientConnectionHandler.isReady() ? false:true;
+        boolean ready = !clientConnectionHandler.isReady();
         clientConnectionHandler.setReady(ready);
 
         if(ready) {

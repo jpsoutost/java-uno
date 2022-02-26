@@ -8,15 +8,10 @@ public class QuitRoomHandler implements CommandHandler {
 
     @Override
     public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
-        String message = clientConnectionHandler.getMessage();
-        String room = clientConnectionHandler.getGame().getRoomName();
         Game game = clientConnectionHandler.getGame();
 
-        clientConnectionHandler.setGame(null);
-        game.getPlayers().remove(clientConnectionHandler);
-        server.getClientsOnGeneral().add(clientConnectionHandler);
-        server.roomBroadcast(game, clientConnectionHandler.getName(), Messages.PLAYER_QUIT_ROOM);
-        server.broadcast(clientConnectionHandler.getName(), " Entered in the lobby.");
+        clientConnectionHandler.quitGame();
+
         if (game.getPlayers().isEmpty()){
             server.getOpenGames().remove(game);
             return;

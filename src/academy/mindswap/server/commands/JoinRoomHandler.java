@@ -25,10 +25,8 @@ public class JoinRoomHandler implements CommandHandler {
             return;
         }
 
-        game.get().addClient(clientConnectionHandler);
-        clientConnectionHandler.setGame(game.get());
-        server.getClientsOnGeneral().remove(clientConnectionHandler);
+        clientConnectionHandler.enteringRoom(game.get());
         clientConnectionHandler.send("You joined room " + message.substring(10));
-        server.roomBroadcast(game.get(),clientConnectionHandler.getName()," entered the room.");
+        server.roomBroadcast(clientConnectionHandler.getGame(),clientConnectionHandler.getName()," entered the room.");
     }
 }

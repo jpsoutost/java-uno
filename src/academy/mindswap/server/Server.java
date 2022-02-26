@@ -29,17 +29,16 @@ public class Server {
     public void start(int port) throws IOException, InterruptedException {
         clients = new ArrayList<>();
         clientsOnGeneral = new ArrayList<>();
+        openGames = new ArrayList<>();
+        closedGames = new ArrayList<>();
         serverSocket = new ServerSocket(port);
         service = Executors.newCachedThreadPool();
-        openGames = new ArrayList<Game>();
-        closedGames = new ArrayList<Game>();
 
         service.submit(new ReadyChecker(this));
 
         while (true) {
             acceptConnection();
         }
-
     }
 
     private void acceptConnection() throws IOException {
@@ -66,10 +65,10 @@ public class Server {
                 .forEach(handler -> handler.send(name + "("+game.getRoomName()+"): " + message));
     }
 
-
     public String listClients() {
-        StringBuffer buffer = new StringBuffer();
-        return clients.stream().map(c -> c.getName()).collect(Collectors.joining(" ,"));
+        return "[ " + clients.stream().map(ClientConnectionHandler::getName)
+                .collect(Collectors.joining(" ,"))
+                + " ]";
     }
 
     public String listOpenRooms() {
@@ -78,9 +77,9 @@ public class Server {
         }
         StringBuffer buffer = new StringBuffer();
         openGames.forEach(game -> {
-            buffer.append(game.getRoomName() + " ");
-            buffer.append(game.getPlayers().size() + "/" + 10 + " ");
-            buffer.append(game.getPlayers().toString() + "\n");
+            buffer.append(game.getRoomName()).append(" ");
+            buffer.append(game.getPlayers().size()).append("/").append(10).append(" ");
+            buffer.append(game.getPlayers().toString()).append("\n");
         });
 
         return buffer.toString();
@@ -125,7 +124,7 @@ public class Server {
         public String generateName() throws IOException {
             send("Choose username:");
             String username = in.readLine();
-            if (clients.stream().map(c -> c.name).collect(Collectors.toList()).contains(username)){
+            if (clients.stream().map(c -> c.name).toList().contains(username)){
                 send("Username Already in use.");
                 username = generateName();
             }
@@ -140,31 +139,35 @@ public class Server {
                 e.printStackTrace();
             }
             addClient(this);
-            try {
 
-                while (!clientSocket.isClosed()) {
+            try {
+                while (!clientSocket.isClosed()){
                     message = in.readLine();
 
                     if (isCommand(message)) {
-                        dealWithCommand(message);
+                        if (gameIsRunning()) {
+                            send("You can't use server commands while playing.");
+                        } else {
+                            dealWithCommand(message);
+                        }
                         continue;
+                    }else if (isRoomChat(message, game)) {
 
-                    }else if(isRoomChat(message,game)){
                         if (message.substring(1).equals("")) {
                             continue;
                         }
 
-                        roomBroadcast(game,name, message.substring(1));
+                        roomBroadcast(game, name, message.substring(1));
                         continue;
                     }
 
                     if (message.equals("")) {
-                        continue;
+                    continue;
                     }
 
-                    if(this.game == null) {
-                        broadcast(name, message);
-                        return;
+                    if (this.game == null) {
+                    broadcast(name, message);
+                    return;
                     }
 
                     gameCommandChanged = true;
@@ -213,6 +216,11 @@ public class Server {
             }
         }
 
+        private boolean gameIsRunning(){
+           if (game == null) return false;
+           return game.gameIsRunning();
+        }
+
         public void close() {
             try {
                 clientSocket.close();
@@ -220,6 +228,33 @@ public class Server {
                 e.printStackTrace();
             }
         }
+
+        @Override
+        public String toString() {
+            return "{" + name + ", isReady=" + isReady +
+                    "}";
+        }
+
+        public void enteringRoom(Game game){
+            this.game = game;
+            game.addClient(this);
+            clientsOnGeneral.remove(this);
+        }
+
+        public void createRoom(String roomName){
+            Game game = new Game(roomName, Server.this);
+            enteringRoom(game);
+            openGames.add(game);
+        }
+
+        public void quitGame(){
+            game.getPlayers().remove(this);
+            clientsOnGeneral.add(this);
+            roomBroadcast(game, name, Messages.PLAYER_QUIT_ROOM);
+            this.game = null;
+        }
+
+        //GETTERS
 
         public String getName() {
             return name;
@@ -229,26 +264,12 @@ public class Server {
             return message;
         }
 
-        public void setGame(Game game) {
-            this.game = game;
-        }
-
         public boolean isReady() {
             return isReady;
         }
 
-        public void setReady(boolean ready) {
-            isReady = ready;
-        }
-
         public List<Card> getDeck() {
             return deck;
-        }
-
-        @Override
-        public String toString() {
-            return "{" + name + ", isReady=" + isReady +
-                     "}";
         }
 
         public Game getGame() {
@@ -257,6 +278,16 @@ public class Server {
 
         public boolean isGameCommandChanged() {
             return gameCommandChanged;
+        }
+
+        //SETTERS
+
+        public void setGame(Game game) {
+            this.game = game;
+        }
+
+        public void setReady(boolean ready) {
+            isReady = ready;
         }
 
         public void setGameCommandChanged(boolean gameCommandChanged) {

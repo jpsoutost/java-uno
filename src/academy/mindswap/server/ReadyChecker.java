@@ -7,7 +7,6 @@ import java.util.concurrent.Executors;
 
 public class ReadyChecker implements Runnable{
     private List<Game> og;
-    private List<Game> cg;
     private Server server;
     boolean someoneIsNotReady;
     private ExecutorService service;
@@ -23,7 +22,6 @@ public class ReadyChecker implements Runnable{
         while(true) {
 
             this.og= new ArrayList<>(server.getOpenGames());
-            this.cg= new ArrayList<>(server.getClosedGames());
 
             if(!og.isEmpty()) {
                 for (Game game:og) {
@@ -34,7 +32,7 @@ public class ReadyChecker implements Runnable{
                             break;
                         }
                     }
-                    if (!someoneIsNotReady) {
+                    if (!someoneIsNotReady && game.getPlayers().size()>1) {
                         server.getClosedGames().add(game);
                         server.getOpenGames().remove(game);
                         service.submit(game);
