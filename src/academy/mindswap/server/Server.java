@@ -89,17 +89,6 @@ public class Server {
         clients.remove(clientConnectionHandler);
     }
 
-    public List<Game> getOpenGames() {
-        return openGames;
-    }
-
-    public List<ClientConnectionHandler> getClientsOnGeneral() {
-        return clientsOnGeneral;
-    }
-
-    public List<Game> getClosedGames() {
-        return closedGames;
-    }
 
     public class ClientConnectionHandler implements Runnable {
 
@@ -254,7 +243,28 @@ public class Server {
             this.game = null;
         }
 
+        public boolean isReady() {
+            return isReady;
+        }
+
+        public boolean isGameCommandChanged() {
+            return gameCommandChanged;
+        }
+
         //GETTERS
+
+        public List<Game> getOpenGames() {
+            return openGames;
+        }
+
+        public List<ClientConnectionHandler> getClientsOnGeneral() {
+            return clientsOnGeneral;
+        }
+
+        public List<Game> getClosedGames() {
+            return closedGames;
+        }
+
 
         public String getName() {
             return name;
@@ -264,9 +274,6 @@ public class Server {
             return message;
         }
 
-        public boolean isReady() {
-            return isReady;
-        }
 
         public List<Card> getDeck() {
             return deck;
@@ -276,9 +283,6 @@ public class Server {
             return game;
         }
 
-        public boolean isGameCommandChanged() {
-            return gameCommandChanged;
-        }
 
         //SETTERS
 

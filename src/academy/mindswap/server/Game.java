@@ -367,6 +367,9 @@ public class Game implements Runnable {
     public boolean canPlayAPlus4Card() {
         return lastCardPlayed.getNumber() == 13 || isFirstCardOfTurn();
     }
+    public boolean gameIsRunning() {
+        return gameIsRunning;
+    }
 
     //GETTERS
 
@@ -406,9 +409,7 @@ public class Game implements Runnable {
         return playerToPlay;
     }
 
-    public boolean gameIsRunning() {
-        return gameIsRunning;
-    }
+
 
     //SETTERS
 

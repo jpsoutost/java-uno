@@ -5,6 +5,9 @@ import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
 import academy.mindswap.server.messages.GameMessages;
 
+/**
+ * A class that represents the game commands to execute when the player plays.
+ */
 public class PlayHandler implements GameCommandHandler{
     @Override
     public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) {
