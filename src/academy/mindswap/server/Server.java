@@ -228,6 +228,43 @@ public class Server {
             }
         }
 
+        private String deck1(){
+            String deckGraphicConstructor="";
+            for (Card card:deck) {
+                deckGraphicConstructor += card.getColor().getConsoleColors() + GameMessages.CARD1 + "  ";
+            }
+            return deckGraphicConstructor;
+        }
+
+        private String deck2(){
+            String deckGraphicConstructor="";
+            for (Card card:deck) {
+                deckGraphicConstructor += card.getColor().getConsoleColors() + GameMessages.CARD2 + "  ";
+            }
+            return deckGraphicConstructor;
+        }
+
+        private String deck3(){
+            String deckGraphicConstructor="";
+            for (Card card:deck) {
+                deckGraphicConstructor += card.getColor().getConsoleColors() + "|  " + card.getNumber() + "  |  ";
+            }
+            return deckGraphicConstructor;
+        }
+
+        private String deck4(){
+            String deckGraphicConstructor="";
+            for (Card card:deck) {
+                deckGraphicConstructor += card.getColor().getConsoleColors() + GameMessages.CARD3 + "  ";
+            }
+            return deckGraphicConstructor;
+        }
+
+        public String showDeck(){
+            return  "\n" + deck1() + "\n" + deck2() + "\n" + deck3()
+                    + "\n" + deck2() + "\n" + deck4() + "\n";
+        }
+
         @Override
         public String toString() {
             return "{" + name + ", isReady=" + isReady +

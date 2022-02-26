@@ -8,7 +8,6 @@ public class Messages {
             List of available commands:
             /list player -> gets you the list of connected players
             /list server -> gets yout the list of already created servers
-            /whisper <username> <message> -> lets you whisper a message to a single connected client
             /ready -> to start playing UNO
             /play <card name> <card color> -> play that exact card in your hand
             /quit -> exits the server""";

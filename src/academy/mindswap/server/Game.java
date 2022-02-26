@@ -116,7 +116,7 @@ public class Game implements Runnable {
                 replaceDeck();
             }
 
-            playerToPlay.send(playerToPlay.getDeck().toString());
+            playerToPlay.send(playerToPlay.showDeck());
             playerToPlay.setGameCommandChanged(false);
             play = waitForPlay();
 
@@ -262,7 +262,7 @@ public class Game implements Runnable {
      */
     private void setPlayersDecks(){
         this.players.stream().map(Server.ClientConnectionHandler::getDeck).forEach(playerDeck -> {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 7; i++) {
               playerDeck.add(this.deck.poll());
           }
       });

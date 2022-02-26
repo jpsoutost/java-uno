@@ -1,5 +1,7 @@
 package academy.mindswap.server.messages;
 
+import academy.mindswap.server.ConsoleColors;
+
 public class GameMessages {
     public static final String NOT_PLAYED = "You have to play or draw a card first.";
     public static final String JUST_ONE_CARD = "You can't draw more than one card each turn nor if you have already played a card.";
@@ -15,7 +17,7 @@ public class GameMessages {
     public static final String NO_OPEN_ROOM = "There is no open rooms";
     public static final String CHOOSE_USERNAME = "Choose username: ";
     public static final String USERNAME_INVALID = "Username Already in use.";
-    public static final String UNO =
+    public static final String UNO = ConsoleColors.PURPLE +
 
             "\n" +
                     "░██╗░░░██╗███╗░░██╗░█████╗░██╗░\n" +
@@ -25,6 +27,14 @@ public class GameMessages {
                     "░██████╔╝██║░╚███║╚█████╔╝░██╗░\n" +
                     "░╚═════╝░╚═╝░░╚══╝░╚════╝░░╚═╝░";
 
+    public static final String CARD1 = " _____ ";
+    public static final String CARD2 = "|*   *|";
+    public static final String CARD3 = " ----- ";
 
-
+    public static final String CARD_ON_TABLE1 = "\n _________ \n" +
+            "|*       *| \n" +
+            "|         |";
+    public static final String CARD_ON_TABLE2 = "|         | \n" +
+            "|*       *| \n" +
+            " --------- ";
 }

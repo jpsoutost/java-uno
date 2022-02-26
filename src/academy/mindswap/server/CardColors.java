@@ -1,10 +1,10 @@
 package academy.mindswap.server;
 
 public enum CardColors {
-    BLUE("blue", Colors.BLUE),
-    RED("red", Colors.RED),
-    YELLOW("yellow", Colors.YELLOW),
-    GREEN("green", Colors.GREEN);
+    BLUE("blue", ConsoleColors.BLUE),
+    RED("red", ConsoleColors.RED),
+    YELLOW("yellow", ConsoleColors.YELLOW),
+    GREEN("green", ConsoleColors.GREEN);
 
     private String description;
     private String consoleColors;
@@ -18,7 +18,7 @@ public enum CardColors {
         return description;
     }
 
-    public String getConsoleColers() {
+    public String getConsoleColors() {
         return consoleColors;
     }
 }
