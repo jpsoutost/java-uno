@@ -19,8 +19,9 @@ public enum Command {
 
     /**
      * Method that initializes the ENUM with two parameters.
+     *
      * @param description The name of the command.
-     * @param handler The class executed by the respective command.
+     * @param handler     The class executed by the respective command.
      */
     Command(String description, CommandHandler handler) {
         this.description = description;
@@ -29,6 +30,7 @@ public enum Command {
 
     /**
      * Method that get command from description.
+     *
      * @param description The name of the command.
      * @return Respective command.
      */

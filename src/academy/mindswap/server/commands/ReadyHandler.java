@@ -2,30 +2,31 @@ package academy.mindswap.server.commands;
 
 import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
+import academy.mindswap.server.messages.CommandsMessages;
 
-public class ReadyHandler implements CommandHandler{
+public class ReadyHandler implements CommandHandler {
     @Override
     public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
         Game game = clientConnectionHandler.getGame();
 
-        if (game == null){
-            clientConnectionHandler.send("You can't be ready if you are not in a room.");
+        if (game == null) {
+            clientConnectionHandler.send(CommandsMessages.PLAYER_OUT);
             return;
         }
-        if (game.getPlayers().size()==1){
-            clientConnectionHandler.send("You can't play alone.");
+        if (game.getPlayers().size() == 1) {
+            clientConnectionHandler.send(CommandsMessages.PLAYER_ALONE);
             return;
         }
 
         boolean ready = !clientConnectionHandler.isReady();
         clientConnectionHandler.setReady(ready);
 
-        if(ready) {
-            clientConnectionHandler.send("You are ready.");
-            server.roomBroadcast(game, clientConnectionHandler.getName(), "I am ready.");
-        }else{
-            clientConnectionHandler.send("You are not ready.");
-            server.roomBroadcast(game, clientConnectionHandler.getName(),  "I am not ready.");
+        if (ready) {
+            clientConnectionHandler.send(CommandsMessages.READY);
+            server.roomBroadcast(game, clientConnectionHandler.getName(), CommandsMessages.DO_IT);
+        } else {
+            clientConnectionHandler.send(CommandsMessages.NOTREADY);
+            server.roomBroadcast(game, clientConnectionHandler.getName(), CommandsMessages.UNREADY);
         }
     }
 }
