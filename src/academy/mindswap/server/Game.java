@@ -128,6 +128,9 @@ public class Game implements Runnable {
         gameIsRunning = false;
     }
 
+    /**
+     * Method that verify the player's play and executes the GameCommand Class.
+     */
     private void play(){
         GameCommand gameCommand = GameCommand.getGameCommandFromDescription(play);
 
@@ -142,6 +145,10 @@ public class Game implements Runnable {
         gameCommand.getCommandHandler().execute(this, playerToPlay);
     }
 
+    /**
+     * Method that change the card color. This can occur when a player plays a special card.
+     * @param cardColors The color of the last card played.
+     */
     public void changeColor(CardColors cardColors){
         lastCardPlayed.setColor(cardColors);
         playerToPlay.send("Color changed to " + cardColors.getDescription());
@@ -149,12 +156,19 @@ public class Game implements Runnable {
         hasToChooseAColor=false;
     }
 
+    /**
+     * Method that renews the deck of cards in the game, using all the cards that were played before.
+     * After creating a new deck, the list of cards that have been played is cleared.
+     */
     private void replaceDeck(){
         Collections.shuffle(this.playedCards);
         this.deck = this.playedCards;
         this.playedCards.clear();
     }
 
+    /**
+     * Method that resets, whenever necessary, booleans and accumulators that are used during the game.
+     */
     public void resetBooleansAndAccumulators(){
         playedAtLeastOneCard = false;
         canFinishTurn=false;
@@ -164,6 +178,9 @@ public class Game implements Runnable {
         drewACard=false;
     }
 
+    /**
+     * Method that add the player(s) to the list of the players in the lobby and send message, when the game finish.
+     */
     public void finishGame(){
         players.stream().forEach(player -> {
             server.getClientsOnGeneral().add(player);
@@ -171,10 +188,19 @@ public class Game implements Runnable {
         });
     }
 
+    /** FALTA - TEM ERROS
+     * Boolean method that validates if the player have cards to draw.
+     * @param card The card in the table.
+     * @return True if is the first card to play in that turn and the list of cards to draw isn't empty and
+     */
     public boolean hasCardsToDraw(Card card){
-        return card.getNumber() != lastCardPlayed.getNumber() && cardsToDraw!=0 && isFirstCardOfTurn() ;
+        return card.getNumber() != lastCardPlayed.getNumber() && cardsToDraw!=0 && isFirstCardOfTurn();
     }
 
+    /**
+     * Boolean method that validates if the player can draw a card.
+     * @return True if the counter of cardsToDraw is superior to zero and if it's the first card of turn to this player.
+     */
     public boolean hasCardsToDraw(){
         return cardsToDraw!=0 && isFirstCardOfTurn();
     }
@@ -199,7 +225,6 @@ public class Game implements Runnable {
         playedAtLeastOneCard = true;
         canFinishTurn = true;
     }
-
 
     private void dealWithReverse(){
         Server.ClientConnectionHandler p = players.get(indexOfPlayerTurn);
@@ -238,8 +263,6 @@ public class Game implements Runnable {
         playerToPlay.setGameCommandChanged(false);
         return playerToPlay.getMessage();
     }
-
-
 
     /**
      * Method that set the players deck into an Array List.

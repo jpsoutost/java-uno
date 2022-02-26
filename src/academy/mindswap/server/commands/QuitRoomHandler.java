@@ -11,8 +11,8 @@ public class QuitRoomHandler implements CommandHandler {
 
     /**
      * An override method that executes the command to a player leave/quit the room.
-     * @param server
-     * @param clientConnectionHandler
+     * @param server The server.
+     * @param clientConnectionHandler The player.
      */
     @Override
     public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {

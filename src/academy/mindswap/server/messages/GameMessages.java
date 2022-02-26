@@ -1,5 +1,8 @@
 package academy.mindswap.server.messages;
 
+/**
+ * A class that represents the game messages to print.
+ */
 public class GameMessages {
     public static final String NOT_PLAYED = "You have to play or draw a card first.";
     public static final String JUST_ONE_CARD = "You can't draw more than one card each turn nor if you have already played a card.";

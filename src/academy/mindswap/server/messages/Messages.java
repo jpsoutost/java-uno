@@ -1,5 +1,8 @@
 package academy.mindswap.server.messages;
 
+/**
+ * A class that represents the messages to print.
+ */
 public class Messages {
     public static final String DEFAULT_NAME = "PLAYER-";
     public static final String PLAYER_ENTERED_LOBBY = " entered in the lobby.";
