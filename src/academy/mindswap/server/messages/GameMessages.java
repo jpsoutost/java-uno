@@ -15,6 +15,15 @@ public class GameMessages {
     public static final String NO_OPEN_ROOM = "There is no open rooms";
     public static final String CHOOSE_USERNAME = "Choose username: ";
     public static final String USERNAME_INVALID = "Username Already in use.";
+    public static final String UNO =
+
+            "\n" +
+                    "░██╗░░░██╗███╗░░██╗░█████╗░██╗░\n" +
+                    "░██║░░░██║████╗░██║██╔══██╗██║░\n" +
+                    "░██║░░░██║██╔██╗██║██║░░██║██║░\n" +
+                    "░██║░░░██║██║╚████║██║░░██║╚═╝░\n" +
+                    "░██████╔╝██║░╚███║╚█████╔╝░██╗░\n" +
+                    "░╚═════╝░╚═╝░░╚══╝░╚════╝░░╚═╝░";
 
 
 

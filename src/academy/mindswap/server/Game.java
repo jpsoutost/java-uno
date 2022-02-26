@@ -97,6 +97,7 @@ public class Game implements Runnable {
     public void run() {
 
         gameIsRunning=true;
+        welcomeGuests();
         setPlayersDecks();
         lastCardPlayed = getFirstCard();
         resetBooleansAndAccumulators();
@@ -115,7 +116,7 @@ public class Game implements Runnable {
                 replaceDeck();
             }
 
-            playerToPlay.send(playerToPlay.showDeck());
+            playerToPlay.send(playerToPlay.getDeck().toString());
             playerToPlay.setGameCommandChanged(false);
             play = waitForPlay();
 
@@ -133,6 +134,12 @@ public class Game implements Runnable {
 
         finishGame();
         gameIsRunning = false;
+    }
+
+    private void welcomeGuests(){
+        Server.ClientConnectionHandler player = players.get(0);
+        player.send(GameMessages.UNO);
+        server.roomBroadcast(this, player.getName(), GameMessages.UNO);
     }
 
     private void play(){

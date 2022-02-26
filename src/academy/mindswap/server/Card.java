@@ -36,14 +36,6 @@ public class Card {
     }
 
     @Override
-//    public String toString() {
-//        return "Card { " +
-//                "color = " + color +
-//                ", number = " + number +
-//                '}';
-//    }
-
-
     public String toString() {
         return "Card: " + number + " And "+ color + ":  \n" +
                         "  __________ \n" +
