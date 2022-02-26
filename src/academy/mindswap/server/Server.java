@@ -148,21 +148,25 @@ public class Server {
                     if (isCommand(message)) {
                         dealWithCommand(message);
                         continue;
-                    }else if(isChat(message,game)){
+
+                    }else if(isRoomChat(message,game)){
                         if (message.substring(1).equals("")) {
                             continue;
                         }
+
                         roomBroadcast(game,name, message.substring(1));
                         continue;
                     }
+
                     if (message.equals("")) {
-                        return;
+                        continue;
                     }
 
                     if(this.game == null) {
                         broadcast(name, message);
                         return;
                     }
+
                     gameCommandChanged = true;
                 }
             } catch (IOException e) {
@@ -176,7 +180,7 @@ public class Server {
             return message.startsWith("/");
         }
 
-        private boolean isChat(String message,Game game) {
+        private boolean isRoomChat(String message,Game game) {
             if (game != null) {
                 return message.startsWith("-");
             }else{

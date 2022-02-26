@@ -11,8 +11,8 @@ public enum GameCommand {
     PLAY("play", new PlayHandler());
 
 
-    private String description;
-    private GameCommandHandler gameHandler;
+    private final String description;
+    private final GameCommandHandler gameHandler;
 
     GameCommand(String description, GameCommandHandler gameHandler) {
         this.description = description;
