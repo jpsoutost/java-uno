@@ -20,16 +20,16 @@ public class PlayHandler implements GameCommandHandler{
                 return;
             }
 
-            if(game.isAPlus4Card(chosenCard)){
+            if(game.isAPlus4Card(chosenCard) && game.canPlayAPlus4Card()){
                 game.dealWithPlus4Cards(chosenCard);
                 return;
             }
-
 
             if (chosenCard.getColor() == game.getLastCardPlayed().getColor() && game.isFirstCardOfTurn()) {
                 game.setCanPlayAgain(false);
                 valid = true;
             }
+
             if(chosenCard.getNumber() == game.getLastCardPlayed().getNumber()){
                 game.setCanPlayAgain(true);
                 valid = true;

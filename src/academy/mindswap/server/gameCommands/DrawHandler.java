@@ -12,8 +12,9 @@ public class DrawHandler implements GameCommandHandler {
             return;
         }
 
-        if (game.isFirstCardOfTurn()) {
+        if (game.canDrawACard()) {
             game.drawCard();
+            game.setCanFinishTurn(true);
         } else if (game.getHasToChooseAColor()) {
             clientConnectionHandler.send("You have to choose a color. b-blue, y-yellow, g-green, r-red");
         }else{

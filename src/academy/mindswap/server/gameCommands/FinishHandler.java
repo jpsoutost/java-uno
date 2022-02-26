@@ -12,20 +12,12 @@ public class FinishHandler implements GameCommandHandler {
             return;
         }
 
-
-
-
         if (game.canFinishTurn()) {
             clientConnectionHandler.send("End of Turn");
-            game.getServer().roomBroadcast(game, clientConnectionHandler.getName(), "End of Turn");
 
             game.setNextPlayerToPlay();
             game.resetBooleansAndAccumulators();
 
-            game.setPlayedAtLeastOneCard(false);
-            game.setCanPlayAgain(true);
-            game.setCanFinishTurn(false);
-            game.setPlayersToSkip(0);
 
         } else {
             clientConnectionHandler.send("You have to play or draw a card first.");
