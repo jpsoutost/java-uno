@@ -7,8 +7,8 @@ import academy.mindswap.server.messages.GameMessages;
  */
 public class Card {
     private CardColors color;
-    private int number;//10-skip Cards, 11-plus2Cards, 12-invertCards
-    private Game n;
+    private final int number;
+    private final String symbol;
 
     /**
      * Method that create a card.
@@ -18,6 +18,17 @@ public class Card {
     public Card(CardColors color, int number) {
         this.color = color;
         this.number = number;
+        if(number == 10){
+            this.symbol = "S ";
+        }else if(number == 11){
+            this.symbol = "+2";
+        }else if(number == 12){
+            this.symbol = "R ";
+        }else if(number == 13){
+            this.symbol = "+4";
+        }else{
+            this.symbol= number + " ";
+        }
     }
 
     /**
@@ -38,8 +49,21 @@ public class Card {
         this.color = color;
     }
 
+    public String getSymbol() {
+        return symbol;
+    }
+
     @Override
     public String toString() {
-        return color.getConsoleColors() + GameMessages.CARD_ON_TABLE1 + "\n|    " + number + "    |\n" + GameMessages.CARD_ON_TABLE2;
+        String cardColor = color.getConsoleColors();
+        String card = GameMessages.CARD_ON_TABLE1
+                + "\n|    " + symbol + "   |\n"
+                + GameMessages.CARD_ON_TABLE2;
+
+        if (number ==13){
+            cardColor = ConsoleColors.PURPLE;
+        }
+
+        return cardColor + card;
     }
 }

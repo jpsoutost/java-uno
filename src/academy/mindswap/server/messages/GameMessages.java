@@ -27,9 +27,9 @@ public class GameMessages {
                     "░██████╔╝██║░╚███║╚█████╔╝░██╗░\n" +
                     "░╚═════╝░╚═╝░░╚══╝░╚════╝░░╚═╝░";
 
-    public static final String CARD1 = " _____ ";
-    public static final String CARD2 = "|*   *|";
-    public static final String CARD3 = " ----- ";
+    public static final String CARD1 = " _______ ";
+    public static final String CARD2 = "|*     *|";
+    public static final String CARD3 = " ------- ";
 
     public static final String CARD_ON_TABLE1 = "\n _________ \n" +
             "|*       *| \n" +

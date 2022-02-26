@@ -6,8 +6,8 @@ public enum CardColors {
     YELLOW("yellow", ConsoleColors.YELLOW),
     GREEN("green", ConsoleColors.GREEN);
 
-    private String description;
-    private String consoleColors;
+    private final String description;
+    private final String consoleColors;
 
     CardColors(String description, String consoleColors) {
         this.description = description;

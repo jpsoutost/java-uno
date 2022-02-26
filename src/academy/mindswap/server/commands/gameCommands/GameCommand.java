@@ -1,4 +1,4 @@
-package academy.mindswap.server.gameCommands;
+package academy.mindswap.server.commands.gameCommands;
 
 public enum GameCommand {
     FINISH_TURN("f", new FinishHandler()),

@@ -1,7 +1,7 @@
 package academy.mindswap.server;
 
 
-import academy.mindswap.server.gameCommands.GameCommand;
+import academy.mindswap.server.commands.gameCommands.GameCommand;
 import academy.mindswap.server.messages.GameMessages;
 import academy.mindswap.server.messages.Messages;
 

@@ -1,4 +1,4 @@
-package academy.mindswap.server.gameCommands;
+package academy.mindswap.server.commands.gameCommands;
 
 import academy.mindswap.server.CardColors;
 import academy.mindswap.server.Game;

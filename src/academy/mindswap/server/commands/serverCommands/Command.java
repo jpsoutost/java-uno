@@ -1,4 +1,4 @@
-package academy.mindswap.server.commands;
+package academy.mindswap.server.commands.serverCommands;
 
 /**
  * A ENUM that sets the game commands.
@@ -14,8 +14,8 @@ public enum Command {
     QUIT_ROOM("/quitRoom", new QuitRoomHandler()),
     QUIT_HANDLER("/quit", new QuitHandler());
 
-    private String description;
-    private CommandHandler handler;
+    private final String description;
+    private final CommandHandler handler;
 
     /**
      * Method that initializes the ENUM with two parameters.

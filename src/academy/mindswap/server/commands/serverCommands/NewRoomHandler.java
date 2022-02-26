@@ -1,4 +1,4 @@
-package academy.mindswap.server.commands;
+package academy.mindswap.server.commands.serverCommands;
 
 import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
@@ -12,7 +12,7 @@ public class NewRoomHandler implements CommandHandler {
         @Override
         public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
             String message = clientConnectionHandler.getMessage();
-            this.openGames = server.getOpenGames().stream().map( game -> game.getRoomName()).collect(Collectors.toSet());
+            this.openGames = server.getOpenGames().stream().map(Game::getRoomName).collect(Collectors.toSet());
 
             if (message.split(" ").length != 2) {
                 clientConnectionHandler.send("Wrong way to create a Room.");

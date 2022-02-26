@@ -2,7 +2,7 @@ package academy.mindswap.server;
 
 
 
-import academy.mindswap.server.commands.Command;
+import academy.mindswap.server.commands.serverCommands.Command;
 import academy.mindswap.server.messages.GameMessages;
 import academy.mindswap.server.messages.Messages;
 
@@ -231,7 +231,12 @@ public class Server {
         private String deck1(){
             String deckGraphicConstructor="";
             for (Card card:deck) {
-                deckGraphicConstructor += card.getColor().getConsoleColors() + GameMessages.CARD1 + "  ";
+                if (card.getNumber()==13){
+                    deckGraphicConstructor += ConsoleColors.PURPLE + GameMessages.CARD1;
+                }else{
+                    deckGraphicConstructor += card.getColor().getConsoleColors()
+                            + GameMessages.CARD1;
+                }
             }
             return deckGraphicConstructor;
         }
@@ -239,7 +244,11 @@ public class Server {
         private String deck2(){
             String deckGraphicConstructor="";
             for (Card card:deck) {
-                deckGraphicConstructor += card.getColor().getConsoleColors() + GameMessages.CARD2 + "  ";
+                if (card.getNumber()==13){
+                    deckGraphicConstructor += ConsoleColors.PURPLE + GameMessages.CARD2;
+                }else{
+                    deckGraphicConstructor += card.getColor().getConsoleColors() + GameMessages.CARD2;
+                }
             }
             return deckGraphicConstructor;
         }
@@ -247,7 +256,11 @@ public class Server {
         private String deck3(){
             String deckGraphicConstructor="";
             for (Card card:deck) {
-                deckGraphicConstructor += card.getColor().getConsoleColors() + "|  " + card.getNumber() + "  |  ";
+                if (card.getNumber()==13){
+                    deckGraphicConstructor += ConsoleColors.PURPLE + "|   " + card.getSymbol() + "  |";
+                }else{
+                    deckGraphicConstructor += card.getColor().getConsoleColors() + "|   " + card.getSymbol() + "  |";
+                }
             }
             return deckGraphicConstructor;
         }
@@ -255,14 +268,18 @@ public class Server {
         private String deck4(){
             String deckGraphicConstructor="";
             for (Card card:deck) {
-                deckGraphicConstructor += card.getColor().getConsoleColors() + GameMessages.CARD3 + "  ";
+                if (card.getNumber()==13){
+                    deckGraphicConstructor += ConsoleColors.PURPLE + GameMessages.CARD3;
+                }else{
+                    deckGraphicConstructor += card.getColor().getConsoleColors() + GameMessages.CARD3;
+                }
             }
             return deckGraphicConstructor;
         }
 
         public String showDeck(){
-            return  "\n" + deck1() + "\n" + deck2() + "\n" + deck3()
-                    + "\n" + deck2() + "\n" + deck4() + "\n";
+            return  deck1() + "\n" + deck2() + "\n" + deck3()
+                    + "\n" + deck2() + "\n" + deck4();
         }
 
         @Override

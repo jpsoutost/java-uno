@@ -1,11 +1,12 @@
-package academy.mindswap.server.gameCommands;
+package academy.mindswap.server.commands.gameCommands;
 
 import academy.mindswap.server.Card;
 import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
+import academy.mindswap.server.commands.gameCommands.GameCommandHandler;
 import academy.mindswap.server.messages.GameMessages;
 
-public class PlayHandler implements GameCommandHandler{
+public class PlayHandler implements GameCommandHandler {
     @Override
     public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) {
         String play = game.getPlay();

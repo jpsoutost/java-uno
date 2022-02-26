@@ -1,4 +1,4 @@
-package academy.mindswap.server.commands;
+package academy.mindswap.server.commands.serverCommands;
 
 import academy.mindswap.server.Server;
 import academy.mindswap.server.messages.Messages;
