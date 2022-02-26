@@ -1,10 +1,9 @@
 package academy.mindswap.server;
 
 
-
 import academy.mindswap.server.commands.Command;
 import academy.mindswap.server.messages.GameMessages;
-import academy.mindswap.server.messages.Messages;
+import academy.mindswap.server.messages.CommandsMessages;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -50,8 +49,8 @@ public class Server {
     private void addClient(ClientConnectionHandler clientConnectionHandler) {
         clients.add(clientConnectionHandler);
         clientsOnGeneral.add(clientConnectionHandler);
-        clientConnectionHandler.send(Messages.WELCOME);
-        broadcast(clientConnectionHandler.getName(), Messages.PLAYER_ENTERED_LOBBY);
+        clientConnectionHandler.send(GameMessages.WELCOME);
+        broadcast(clientConnectionHandler.getName(), GameMessages.PLAYER_ENTERED_LOBBY);
     }
 
     public void broadcast(String name, String message) {
@@ -63,7 +62,7 @@ public class Server {
     public void roomBroadcast(Game game, String name, String message) {
         game.getPlayers().stream()
                 .filter(handler -> !handler.getName().equals(name))
-                .forEach(handler -> handler.send(name + "("+game.getRoomName()+"): " + message));
+                .forEach(handler -> handler.send(name + "(" + game.getRoomName() + "): " + message));
     }
 
     public String listClients() {
@@ -73,8 +72,8 @@ public class Server {
     }
 
     public String listOpenRooms() {
-        if(openGames.isEmpty()){
-            return "There is no open rooms";
+        if (openGames.isEmpty()) {
+            return CommandsMessages.NO_OPEN_ROOM;
         }
         StringBuffer buffer = new StringBuffer();
         openGames.forEach(game -> {
@@ -123,10 +122,10 @@ public class Server {
         }
 
         public String generateName() throws IOException {
-            send("Choose username:");
+            send(GameMessages.CHOOSE_USERNAME);
             String username = in.readLine();
-            if (clients.stream().map(c -> c.name).toList().contains(username)){
-                send("Username Already in use.");
+            if (clients.stream().map(c -> c.name).toList().contains(username)) {
+                send(GameMessages.USERNAME_INVALID);
                 username = generateName();
             }
             return username;
@@ -142,17 +141,17 @@ public class Server {
             addClient(this);
 
             try {
-                while (!clientSocket.isClosed()){
+                while (!clientSocket.isClosed()) {
                     message = in.readLine();
 
                     if (isCommand(message)) {
                         if (gameIsRunning()) {
-                            send("You can't use server commands while playing.");
+                            send(CommandsMessages.INVALID_COMMAND);
                         } else {
                             dealWithCommand(message);
                         }
                         continue;
-                    }else if (isRoomChat(message, game)) {
+                    } else if (isRoomChat(message, game)) {
 
                         if (message.substring(1).equals("")) {
                             continue;
@@ -160,19 +159,19 @@ public class Server {
 
                         roomBroadcast(game, name, message.substring(1));
                         continue;
-                    }else if (message.equals("")) {
+                    } else if (message.equals("")) {
                         continue;
                     }
 
                     if (this.game == null) {
-                    broadcast(name, message);
-                    continue;
+                        broadcast(name, message);
+                        continue;
                     }
 
                     gameCommandChanged = true;
                 }
             } catch (IOException e) {
-                System.err.println(Messages.PLAYER_ERROR + e.getMessage());
+                System.err.println(CommandsMessages.PLAYER_ERROR + e.getMessage());
             } finally {
                 removeClient(this);
             }
@@ -182,10 +181,10 @@ public class Server {
             return message.startsWith("/");
         }
 
-        private boolean isRoomChat(String message,Game game) {
+        private boolean isRoomChat(String message, Game game) {
             if (game != null) {
                 return message.startsWith("-");
-            }else{
+            } else {
                 return false;
             }
         }
@@ -195,7 +194,7 @@ public class Server {
             Command command = Command.getCommandFromDescription(description);
 
             if (command == null) {
-                out.write(Messages.NO_SUCH_COMMAND);
+                out.write(GameMessages.NO_SUCH_COMMAND);
                 out.newLine();
                 out.flush();
                 return;
@@ -215,9 +214,9 @@ public class Server {
             }
         }
 
-        private boolean gameIsRunning(){
-           if (game == null) return false;
-           return game.gameIsRunning();
+        private boolean gameIsRunning() {
+            if (game == null) return false;
+            return game.gameIsRunning();
         }
 
         public void close() {
@@ -228,40 +227,40 @@ public class Server {
             }
         }
 
-        private String deck1(){
-            String deckGraphicConstructor="";
-            for (Card card:deck) {
+        private String deck1() {
+            String deckGraphicConstructor = "";
+            for (Card card : deck) {
                 deckGraphicConstructor += card.getColor().getConsoleColors() + GameMessages.CARD1 + "  ";
             }
             return deckGraphicConstructor;
         }
 
-        private String deck2(){
-            String deckGraphicConstructor="";
-            for (Card card:deck) {
+        private String deck2() {
+            String deckGraphicConstructor = "";
+            for (Card card : deck) {
                 deckGraphicConstructor += card.getColor().getConsoleColors() + GameMessages.CARD2 + "  ";
             }
             return deckGraphicConstructor;
         }
 
-        private String deck3(){
-            String deckGraphicConstructor="";
-            for (Card card:deck) {
+        private String deck3() {
+            String deckGraphicConstructor = "";
+            for (Card card : deck) {
                 deckGraphicConstructor += card.getColor().getConsoleColors() + "|  " + card.getNumber() + "  |  ";
             }
             return deckGraphicConstructor;
         }
 
-        private String deck4(){
-            String deckGraphicConstructor="";
-            for (Card card:deck) {
+        private String deck4() {
+            String deckGraphicConstructor = "";
+            for (Card card : deck) {
                 deckGraphicConstructor += card.getColor().getConsoleColors() + GameMessages.CARD3 + "  ";
             }
             return deckGraphicConstructor;
         }
 
-        public String showDeck(){
-            return  "\n" + deck1() + "\n" + deck2() + "\n" + deck3()
+        public String showDeck() {
+            return "\n" + deck1() + "\n" + deck2() + "\n" + deck3()
                     + "\n" + deck2() + "\n" + deck4() + "\n";
         }
 
@@ -271,22 +270,22 @@ public class Server {
                     "}";
         }
 
-        public void enteringRoom(Game game){
+        public void enteringRoom(Game game) {
             this.game = game;
             game.addClient(this);
             clientsOnGeneral.remove(this);
         }
 
-        public void createRoom(String roomName){
+        public void createRoom(String roomName) {
             Game game = new Game(roomName, Server.this);
             enteringRoom(game);
             openGames.add(game);
         }
 
-        public void quitGame(){
+        public void quitGame() {
             game.getPlayers().remove(this);
             clientsOnGeneral.add(this);
-            roomBroadcast(game, name, Messages.PLAYER_QUIT_ROOM);
+            roomBroadcast(game, name, GameMessages.PLAYER_QUIT_ROOM);
             this.game = null;
         }
 
@@ -331,5 +330,4 @@ public class Server {
         }
 
     }
-
 }

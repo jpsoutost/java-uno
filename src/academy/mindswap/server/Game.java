@@ -2,8 +2,8 @@ package academy.mindswap.server;
 
 
 import academy.mindswap.server.gameCommands.GameCommand;
+import academy.mindswap.server.messages.CommandsMessages;
 import academy.mindswap.server.messages.GameMessages;
-import academy.mindswap.server.messages.Messages;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -54,37 +54,37 @@ public class Game implements Runnable {
     /**
      * Method that create a deck of cards into a linked list.
      */
-    private void createDeck(){
+    private void createDeck() {
         this.deck = new LinkedList<>();
         this.playedCards = new LinkedList<>();
 
         for (int i = 0; i < 10; i++) {
-            deck.add(new Card(CardColors.BLUE,i));
-            deck.add(new Card(CardColors.BLUE,i));
-            deck.add(new Card(CardColors.GREEN,i));
-            deck.add(new Card(CardColors.GREEN,i));
-            deck.add(new Card(CardColors.RED,i));
-            deck.add(new Card(CardColors.RED,i));
-            deck.add(new Card(CardColors.YELLOW,i));
-            deck.add(new Card(CardColors.YELLOW,i));
+            deck.add(new Card(CardColors.BLUE, i));
+            deck.add(new Card(CardColors.BLUE, i));
+            deck.add(new Card(CardColors.GREEN, i));
+            deck.add(new Card(CardColors.GREEN, i));
+            deck.add(new Card(CardColors.RED, i));
+            deck.add(new Card(CardColors.RED, i));
+            deck.add(new Card(CardColors.YELLOW, i));
+            deck.add(new Card(CardColors.YELLOW, i));
         }
-        for (int i=10; i < 13; i++){
-            deck.add(new Card(CardColors.BLUE,i));
-            deck.add(new Card(CardColors.BLUE,i));
-            deck.add(new Card(CardColors.GREEN,i));
-            deck.add(new Card(CardColors.GREEN,i));
-            deck.add(new Card(CardColors.RED,i));
-            deck.add(new Card(CardColors.RED,i));
-            deck.add(new Card(CardColors.YELLOW,i));
-            deck.add(new Card(CardColors.YELLOW,i));
+        for (int i = 10; i < 13; i++) {
+            deck.add(new Card(CardColors.BLUE, i));
+            deck.add(new Card(CardColors.BLUE, i));
+            deck.add(new Card(CardColors.GREEN, i));
+            deck.add(new Card(CardColors.GREEN, i));
+            deck.add(new Card(CardColors.RED, i));
+            deck.add(new Card(CardColors.RED, i));
+            deck.add(new Card(CardColors.YELLOW, i));
+            deck.add(new Card(CardColors.YELLOW, i));
         }
         for (int i = 0; i < 4; i++) {
-            deck.add(new Card(CardColors.BLUE,13));
+            deck.add(new Card(CardColors.BLUE, 13));
         }
         Collections.shuffle(this.deck);
     }
 
-    public void addClient(Server.ClientConnectionHandler clientConnectionHandler){
+    public void addClient(Server.ClientConnectionHandler clientConnectionHandler) {
         this.players.add(clientConnectionHandler);
     }
 
@@ -96,7 +96,7 @@ public class Game implements Runnable {
     @Override
     public void run() {
 
-        gameIsRunning=true;
+        gameIsRunning = true;
         welcomeGuests();
         setPlayersDecks();
         lastCardPlayed = getFirstCard();
@@ -107,12 +107,12 @@ public class Game implements Runnable {
             this.playerToPlay = players.get(indexOfPlayerTurn);
 
 
-            if(players.size()<=1){
-                playerToPlay.send("You can't play alone.");
+            if (players.size() <= 1) {
+                playerToPlay.send(CommandsMessages.PLAYER_ALONE);
                 break;
             }
 
-            if(deck.isEmpty()){
+            if (deck.isEmpty()) {
                 replaceDeck();
             }
 
@@ -120,11 +120,11 @@ public class Game implements Runnable {
             playerToPlay.setGameCommandChanged(false);
             play = waitForPlay();
 
-            if(isServerCommand(play)){
-                playerToPlay.send("You can't use a server command inside a game.");
+            if (isServerCommand(play)) {
+                playerToPlay.send(CommandsMessages.INVALID_COMMAND);
             }
 
-            if (isChat(play)){
+            if (isChat(play)) {
                 continue;
             }
 
@@ -136,116 +136,116 @@ public class Game implements Runnable {
         gameIsRunning = false;
     }
 
-    private void welcomeGuests(){
+    private void welcomeGuests() {
         Server.ClientConnectionHandler player = players.get(0);
         player.send(GameMessages.UNO);
         server.roomBroadcast(this, player.getName(), GameMessages.UNO);
     }
 
-    private void play(){
+    private void play() {
         GameCommand gameCommand = GameCommand.getGameCommandFromDescription(play);
 
         if (play.matches("[0-" + (playerToPlay.getDeck().size() - 1) + "]")) {
-            gameCommand = GameCommand.getGameCommandFromDescription("play");
+            gameCommand = GameCommand.getGameCommandFromDescription(GameMessages.PLAY);
         }
 
         if (gameCommand == null) {
-            gameCommand = GameCommand.getGameCommandFromDescription("NotLegal");
+            gameCommand = GameCommand.getGameCommandFromDescription(GameMessages.NOT_LEGAL);
         }
 
         gameCommand.getCommandHandler().execute(this, playerToPlay);
     }
 
-    public void changeColor(CardColors cardColors){
+    public void changeColor(CardColors cardColors) {
         lastCardPlayed.setColor(cardColors);
-        playerToPlay.send("Color changed to " + cardColors.getDescription());
-        server.roomBroadcast(this, playerToPlay.getName(), "Color changed to " + cardColors.getDescription());
-        hasToChooseAColor=false;
+        playerToPlay.send(GameMessages.COLOR_CHANGED + cardColors.getDescription());
+        server.roomBroadcast(this, playerToPlay.getName(), GameMessages.COLOR_CHANGED + cardColors
+                .getDescription());
+        hasToChooseAColor = false;
     }
 
-    private void replaceDeck(){
+    private void replaceDeck() {
         Collections.shuffle(this.playedCards);
         this.deck = this.playedCards;
         this.playedCards.clear();
     }
 
-    public void resetBooleansAndAccumulators(){
+    public void resetBooleansAndAccumulators() {
         playedAtLeastOneCard = false;
-        canFinishTurn=false;
+        canFinishTurn = false;
         canPlayAgain = true;
         playersToSkip = 0;
         hasToChooseAColor = false;
-        drewACard=false;
+        drewACard = false;
     }
 
-    public void finishGame(){
+    public void finishGame() {
         players.forEach(player -> {
             server.getClientsOnGeneral().add(player);
             player.setGame(null);
             player.setReady(false);
             player.getDeck().clear();
-            player.send(Messages.WELCOME);
+            player.send(GameMessages.WELCOME);
         });
     }
 
-    public boolean hasCardsToDraw(Card card){
-        return card.getNumber() != lastCardPlayed.getNumber() && cardsToDraw!=0 && isFirstCardOfTurn() ;
+    public boolean hasCardsToDraw(Card card) {
+        return card.getNumber() != lastCardPlayed.getNumber() && cardsToDraw != 0 && isFirstCardOfTurn();
     }
 
-    public boolean hasCardsToDraw(){
-        return cardsToDraw!=0 && isFirstCardOfTurn();
+    public boolean hasCardsToDraw() {
+        return cardsToDraw != 0 && isFirstCardOfTurn();
     }
 
-    public void dealWithPlus4Cards(Card card){
-        cardsToDraw+=4;
+    public void dealWithPlus4Cards(Card card) {
+        cardsToDraw += 4;
         cardChangesInDecks(card);
         playerToPlay.send(GameMessages.CHOOSE_COLOR);
         updateBooleans();
         hasToChooseAColor = true;
     }
 
-    public void cardChangesInDecks(Card card){
+    public void cardChangesInDecks(Card card) {
         playerToPlay.getDeck().remove(card);
         playerToPlay.send(card.toString());
-        server.roomBroadcast(this,playerToPlay.getName(),card.toString());
+        server.roomBroadcast(this, playerToPlay.getName(), card.toString());
         this.playedCards.add(lastCardPlayed);
-        lastCardPlayed=card;
+        lastCardPlayed = card;
     }
 
-    public void updateBooleans(){
+    public void updateBooleans() {
         playedAtLeastOneCard = true;
         canFinishTurn = true;
     }
 
-
-    private void dealWithReverse(){
+    private void dealWithReverse() {
         Server.ClientConnectionHandler p = players.get(indexOfPlayerTurn);
         invertPlayers();
 
-        Optional<Server.ClientConnectionHandler> playerPlaying = players.stream().filter(player -> player==p).findFirst();
+        Optional<Server.ClientConnectionHandler> playerPlaying = players.stream().filter(player -> player == p).findFirst();
         indexOfPlayerTurn = players.indexOf(playerPlaying.get());
     }
 
-    private void invertPlayers(){
-        int indexToReverse = players.size()-1;
+    private void invertPlayers() {
+        int indexToReverse = players.size() - 1;
         Server.ClientConnectionHandler[] temp = new Server.ClientConnectionHandler[players.size()];
-        for (Server.ClientConnectionHandler p:players) {
+        for (Server.ClientConnectionHandler p : players) {
             temp[indexToReverse] = p;
             indexToReverse--;
         }
         players = Arrays.stream(temp).collect(Collectors.toList());
     }
 
-    private boolean isChat(String play){
+    private boolean isChat(String play) {
         return play.startsWith("-");
     }
 
-    private boolean isServerCommand(String play){
+    private boolean isServerCommand(String play) {
         return play.startsWith("/");
     }
 
-    private String waitForPlay (){
-        while(!playerToPlay.isGameCommandChanged()){
+    private String waitForPlay() {
+        while (!playerToPlay.isGameCommandChanged()) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -256,30 +256,29 @@ public class Game implements Runnable {
     }
 
 
-
     /**
      * Method that set the players deck into an Array List.
      */
-    private void setPlayersDecks(){
+    private void setPlayersDecks() {
         this.players.stream().map(Server.ClientConnectionHandler::getDeck).forEach(playerDeck -> {
             for (int i = 0; i < 7; i++) {
-              playerDeck.add(this.deck.poll());
-          }
-      });
+                playerDeck.add(this.deck.poll());
+            }
+        });
     }
 
     /**
      * @return The first card of a player.
      */
-    private Card getFirstCard(){
-        Card card=this.deck.poll();
-        while (card.getNumber()>9){
+    private Card getFirstCard() {
+        Card card = this.deck.poll();
+        while (card.getNumber() > 9) {
             this.playedCards.add(card);
             card = deck.poll();
         }
         Server.ClientConnectionHandler playerToPlay = players.get(0);
         playerToPlay.send(card.toString());
-        server.roomBroadcast(this,playerToPlay.getName(),card.toString());
+        server.roomBroadcast(this, playerToPlay.getName(), card.toString());
         return card;
     }
 
@@ -287,73 +286,75 @@ public class Game implements Runnable {
      * Check if a player is a winner, and if it's true validate de boolean parameter.
      * If it's true, prints the winner player.
      */
-    private void checkIfWinner(){
+    private void checkIfWinner() {
         Server.ClientConnectionHandler playerToPlay = players.get(indexOfPlayerTurn);
-        if(playerToPlay.getDeck().size()==0){
-            isThereAWinner=true;
+        if (playerToPlay.getDeck().size() == 0) {
+            isThereAWinner = true;
             playerToPlay.send(GameMessages.THE_WINNER);
-            server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + GameMessages.THE_WINNER); //here
+            server.roomBroadcast(this, playerToPlay.getName(), playerToPlay.getName() +
+                    GameMessages.THE_WINNER); //here
         }
     }
 
-    public void goFishingCards(){
-        if (cardsToDraw != 0 && !playedAtLeastOneCard){
+    public void goFishingCards() {
+        if (cardsToDraw != 0 && !playedAtLeastOneCard) {
             for (int i = 0; i < cardsToDraw; i++) {
                 drawCard();
-                drewACard=false;
+                drewACard = false;
             }
             cardsToDraw = 0;
             canFinishTurn = false;
         }
     }
 
-    public void drawCard(){
+    public void drawCard() {
         Card newCard = deck.poll();
         playerToPlay.getDeck().add(newCard);
         playerToPlay.send(GameMessages.YOU_DRAW + newCard);
-        server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + GameMessages.PLAYER_DRAW);
-        drewACard=true;
+        server.roomBroadcast(this, playerToPlay.getName(), playerToPlay.getName() +
+                GameMessages.PLAYER_DRAW);
+        drewACard = true;
     }
 
-    public void setNextPlayerToPlay(){
-        indexOfPlayerTurn+=playersToSkip;
+    public void setNextPlayerToPlay() {
+        indexOfPlayerTurn += playersToSkip;
         indexOfPlayerTurn++;
-        if(indexOfPlayerTurn > players.size()-1){
-            indexOfPlayerTurn-=players.size();
+        if (indexOfPlayerTurn > players.size() - 1) {
+            indexOfPlayerTurn -= players.size();
         }
     }
 
-    public boolean canPlayACard(){
+    public boolean canPlayACard() {
         return canPlayAgain && !hasToChooseAColor;
     }
 
-    public boolean isASkipCard(Card card){
+    public boolean isASkipCard(Card card) {
         return card.getNumber() == 10;
     }
 
-    public boolean isAPlus2Card(Card card){
+    public boolean isAPlus2Card(Card card) {
         return card.getNumber() == 11;
     }
 
-    public boolean isAReverseCard(Card card){
+    public boolean isAReverseCard(Card card) {
         return card.getNumber() == 12;
     }
 
-    public boolean isAPlus4Card(Card card){
+    public boolean isAPlus4Card(Card card) {
         return card.getNumber() == 13;
     }
 
-    public void dealWithSpecialCards(Card card){
-        if (isASkipCard(card)){
+    public void dealWithSpecialCards(Card card) {
+        if (isASkipCard(card)) {
             playersToSkip++;
-        }else if (isAReverseCard(card)){
+        } else if (isAReverseCard(card)) {
             dealWithReverse();
-        }else if (isAPlus2Card(card)) {
-            cardsToDraw+=2;
+        } else if (isAPlus2Card(card)) {
+            cardsToDraw += 2;
         }
     }
 
-    public boolean canDrawACard(){
+    public boolean canDrawACard() {
         return !playedAtLeastOneCard && !drewACard;
     }
 
@@ -361,12 +362,12 @@ public class Game implements Runnable {
         return lastCardPlayed.getNumber() == 13 || isFirstCardOfTurn();
     }
 
-    public boolean isLastPlayer(){
-        return (players.indexOf(playerToPlay)) == players.size()-1;
+    public boolean isLastPlayer() {
+        return (players.indexOf(playerToPlay)) == players.size() - 1;
     }
 
-    public void changeLastPlayer(){
-        indexOfPlayerTurn=0;
+    public void changeLastPlayer() {
+        indexOfPlayerTurn = 0;
     }
 
     //GETTERS

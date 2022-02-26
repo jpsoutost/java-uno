@@ -2,6 +2,7 @@ package academy.mindswap.server.gameCommands;
 
 import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
+import academy.mindswap.server.messages.GameMessages;
 
 public class DrawHandler implements GameCommandHandler {
     @Override
@@ -16,9 +17,9 @@ public class DrawHandler implements GameCommandHandler {
             game.drawCard();
             game.setCanFinishTurn(true);
         } else if (game.getHasToChooseAColor()) {
-            clientConnectionHandler.send("You have to choose a color. b-blue, y-yellow, g-green, r-red");
-        }else{
-            clientConnectionHandler.send("You can't draw more than one card each turn nor if you have already played a card.");
+            clientConnectionHandler.send(GameMessages.CHOOSE_COLOR);
+        } else {
+            clientConnectionHandler.send(GameMessages.JUST_ONE_CARD);
         }
     }
 }

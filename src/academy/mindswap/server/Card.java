@@ -12,7 +12,8 @@ public class Card {
 
     /**
      * Method that create a card.
-     * @param color Define the card color.
+     *
+     * @param color  Define the card color.
      * @param number Define the card number.
      */
     public Card(CardColors color, int number) {
@@ -40,6 +41,7 @@ public class Card {
 
     @Override
     public String toString() {
-        return color.getConsoleColors() + GameMessages.CARD_ON_TABLE1 + "\n|    " + number + "    |\n" + GameMessages.CARD_ON_TABLE2;
+        return color.getConsoleColors() + GameMessages.CARD_ON_TABLE1 + "\n|    " + number + "    |\n" +
+                GameMessages.CARD_ON_TABLE2;
     }
 }
