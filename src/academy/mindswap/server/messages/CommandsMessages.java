@@ -1,6 +1,9 @@
 package academy.mindswap.server.messages;
 
 public class CommandsMessages {
+    public static final String ROOM_FULL = "Room is full.";
+    public static final String NO_OPEN_ROOM = "There is no open rooms";
+    public static final String INVALID_COMMAND = "You can't use a server command inside a game.";
     public static final String JOIN_WRONG = "Wrong way to join a Room.";
     public static final String SUCH_ROOM = "No such room.";
     public static final String JOINED_ROOM = "You joined room ";
@@ -15,9 +18,7 @@ public class CommandsMessages {
     public static final String DO_IT = "I am ready.";
     public static final String UNREADY = "I am not ready.";
     public static final String PLAYER_ERROR = "Something went wrong with this player's connection. Error: ";
-    public static final String ROOM_FULL = "Room is full.";
-    public static final String NO_OPEN_ROOM = "There is no open rooms";
-    public static final String INVALID_COMMAND = "You can't use a server command inside a game.";
+
 
 
 }
