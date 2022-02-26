@@ -1,5 +1,7 @@
 package academy.mindswap.server.messages;
 
+import academy.mindswap.server.ConsoleColors;
+
 /**
  * A class that represents the game messages to print.
  */
@@ -14,5 +16,28 @@ public class GameMessages {
     public static final String PLAYER_DRAW = " draw a card.";
     public static final String CHOOSE_COLOR = "Choose color: b-blue, y-yellow, r-red, g-green";
     public static final String END_TURN = "End of Turn";
+    public static final String CANT_CHANGE = "You can´t change the color";
+    public static final String NO_OPEN_ROOM = "There is no open rooms";
+    public static final String CHOOSE_USERNAME = "Choose username: ";
+    public static final String USERNAME_INVALID = "Username Already in use.";
+    public static final String UNO = ConsoleColors.PURPLE +
 
+            "\n" +
+                    "░██╗░░░██╗███╗░░██╗░█████╗░██╗░\n" +
+                    "░██║░░░██║████╗░██║██╔══██╗██║░\n" +
+                    "░██║░░░██║██╔██╗██║██║░░██║██║░\n" +
+                    "░██║░░░██║██║╚████║██║░░██║╚═╝░\n" +
+                    "░██████╔╝██║░╚███║╚█████╔╝░██╗░\n" +
+                    "░╚═════╝░╚═╝░░╚══╝░╚════╝░░╚═╝░";
+
+    public static final String CARD1 = " _____ ";
+    public static final String CARD2 = "|*   *|";
+    public static final String CARD3 = " ----- ";
+
+    public static final String CARD_ON_TABLE1 = "\n _________ \n" +
+            "|*       *| \n" +
+            "|         |";
+    public static final String CARD_ON_TABLE2 = "|         | \n" +
+            "|*       *| \n" +
+            " --------- ";
 }

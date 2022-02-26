@@ -97,6 +97,7 @@ public class Game implements Runnable {
     public void run() {
 
         gameIsRunning=true;
+        welcomeGuests();
         setPlayersDecks();
         lastCardPlayed = getFirstCard();
         resetBooleansAndAccumulators();
@@ -105,11 +106,18 @@ public class Game implements Runnable {
         while (!isThereAWinner) {
             this.playerToPlay = players.get(indexOfPlayerTurn);
 
+
+            if(players.size()<=1){
+                playerToPlay.send("You can't play alone.");
+                break;
+            }
+
             if(deck.isEmpty()){
                 replaceDeck();
             }
 
-            playerToPlay.send(playerToPlay.getName() + " - " + playerToPlay.getDeck());
+            playerToPlay.send(playerToPlay.showDeck());
+            playerToPlay.setGameCommandChanged(false);
             play = waitForPlay();
 
             if(isServerCommand(play)){
@@ -126,6 +134,12 @@ public class Game implements Runnable {
 
         finishGame();
         gameIsRunning = false;
+    }
+
+    private void welcomeGuests(){
+        Server.ClientConnectionHandler player = players.get(0);
+        player.send(GameMessages.UNO);
+        server.roomBroadcast(this, player.getName(), GameMessages.UNO);
     }
 
     /**
@@ -182,8 +196,11 @@ public class Game implements Runnable {
      * Method that add the player(s) to the list of the players in the lobby and send message, when the game finish.
      */
     public void finishGame(){
-        players.stream().forEach(player -> {
+        players.forEach(player -> {
             server.getClientsOnGeneral().add(player);
+            player.setGame(null);
+            player.setReady(false);
+            player.getDeck().clear();
             player.send(Messages.WELCOME);
         });
     }
@@ -194,7 +211,7 @@ public class Game implements Runnable {
      * @return True if is the first card to play in that turn and the list of cards to draw isn't empty and
      */
     public boolean hasCardsToDraw(Card card){
-        return card.getNumber() != lastCardPlayed.getNumber() && cardsToDraw!=0 && isFirstCardOfTurn();
+        return card.getNumber() != lastCardPlayed.getNumber() && cardsToDraw!=0 && isFirstCardOfTurn() ;
     }
 
     /**
@@ -225,6 +242,7 @@ public class Game implements Runnable {
         playedAtLeastOneCard = true;
         canFinishTurn = true;
     }
+
 
     private void dealWithReverse(){
         Server.ClientConnectionHandler p = players.get(indexOfPlayerTurn);
@@ -260,7 +278,6 @@ public class Game implements Runnable {
                 e.printStackTrace();
             }
         }
-        playerToPlay.setGameCommandChanged(false);
         return playerToPlay.getMessage();
     }
 
@@ -298,7 +315,7 @@ public class Game implements Runnable {
         Server.ClientConnectionHandler playerToPlay = players.get(indexOfPlayerTurn);
         if(playerToPlay.getDeck().size()==0){
             isThereAWinner=true;
-            playerToPlay.send(GameMessages.THE_WINNER); //here
+            playerToPlay.send(GameMessages.THE_WINNER);
             server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + GameMessages.THE_WINNER); //here
         }
     }
@@ -367,8 +384,13 @@ public class Game implements Runnable {
     public boolean canPlayAPlus4Card() {
         return lastCardPlayed.getNumber() == 13 || isFirstCardOfTurn();
     }
-    public boolean gameIsRunning() {
-        return gameIsRunning;
+
+    public boolean isLastPlayer(){
+        return (players.indexOf(playerToPlay)) == players.size()-1;
+    }
+
+    public void changeLastPlayer(){
+        indexOfPlayerTurn=0;
     }
 
     //GETTERS
@@ -409,7 +431,9 @@ public class Game implements Runnable {
         return playerToPlay;
     }
 
-
+    public boolean gameIsRunning() {
+        return gameIsRunning;
+    }
 
     //SETTERS
 

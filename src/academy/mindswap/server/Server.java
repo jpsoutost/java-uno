@@ -3,6 +3,7 @@ package academy.mindswap.server;
 
 
 import academy.mindswap.server.commands.Command;
+import academy.mindswap.server.messages.GameMessages;
 import academy.mindswap.server.messages.Messages;
 
 import java.io.*;
@@ -94,8 +95,8 @@ public class Server {
 
         private String name;
         private final Socket clientSocket;
-        private BufferedWriter out;
-        private BufferedReader in;
+        private final BufferedWriter out;
+        private final BufferedReader in;
         private String message;
         private Game game;
         private List<Card> deck;
@@ -148,15 +149,13 @@ public class Server {
 
                         roomBroadcast(game, name, message.substring(1));
                         continue;
-                    }
-
-                    if (message.equals("")) {
-                    continue;
+                    }else if (message.equals("")) {
+                        continue;
                     }
 
                     if (this.game == null) {
                     broadcast(name, message);
-                    return;
+                    continue;
                     }
 
                     gameCommandChanged = true;
@@ -216,6 +215,43 @@ public class Server {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        private String deck1(){
+            String deckGraphicConstructor="";
+            for (Card card:deck) {
+                deckGraphicConstructor += card.getColor().getConsoleColors() + GameMessages.CARD1 + "  ";
+            }
+            return deckGraphicConstructor;
+        }
+
+        private String deck2(){
+            String deckGraphicConstructor="";
+            for (Card card:deck) {
+                deckGraphicConstructor += card.getColor().getConsoleColors() + GameMessages.CARD2 + "  ";
+            }
+            return deckGraphicConstructor;
+        }
+
+        private String deck3(){
+            String deckGraphicConstructor="";
+            for (Card card:deck) {
+                deckGraphicConstructor += card.getColor().getConsoleColors() + "|  " + card.getNumber() + "  |  ";
+            }
+            return deckGraphicConstructor;
+        }
+
+        private String deck4(){
+            String deckGraphicConstructor="";
+            for (Card card:deck) {
+                deckGraphicConstructor += card.getColor().getConsoleColors() + GameMessages.CARD3 + "  ";
+            }
+            return deckGraphicConstructor;
+        }
+
+        public String showDeck(){
+            return  "\n" + deck1() + "\n" + deck2() + "\n" + deck3()
+                    + "\n" + deck2() + "\n" + deck4() + "\n";
         }
 
         @Override
@@ -297,6 +333,7 @@ public class Server {
         public void setGameCommandChanged(boolean gameCommandChanged) {
             this.gameCommandChanged = gameCommandChanged;
         }
+
     }
 
 }

@@ -1,5 +1,7 @@
 package academy.mindswap.server;
 
+import academy.mindswap.server.messages.GameMessages;
+
 /**
  * A class that represents the cards of the game.
  * There is normal cards and special cards.
@@ -8,7 +10,8 @@ package academy.mindswap.server;
  */
 public class Card {
     private CardColors color;
-    private int number;
+    private int number;//10-skip Cards, 11-plus2Cards, 12-invertCards
+    private Game n;
 
     /**
      * Method that create a card.
@@ -27,6 +30,9 @@ public class Card {
         return color;
     }
 
+    /**
+     * @return The number of the card.
+     */
     public int getNumber() {
         return number;
     }
@@ -35,18 +41,12 @@ public class Card {
         this.color = color;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
 
     //OVERRIDE METHODS
 
     @Override
     public String toString() {
-        return "Card{" +
-                "color=" + color +
-                ", number=" + number +
-                '}';
+        return color.getConsoleColors() + GameMessages.CARD_ON_TABLE1 + "\n|    " + number + "    |\n" + GameMessages.CARD_ON_TABLE2;
     }
 
 

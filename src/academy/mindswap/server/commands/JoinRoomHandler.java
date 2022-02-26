@@ -35,6 +35,10 @@ public class JoinRoomHandler implements CommandHandler {
             return;
         }
 
+        if (game.get().getPlayers().size() >= 10 ){
+            clientConnectionHandler.send("Room is full.");
+        }
+
         clientConnectionHandler.enteringRoom(game.get());
         clientConnectionHandler.send("You joined room " + message.substring(10));
         server.roomBroadcast(clientConnectionHandler.getGame(),clientConnectionHandler.getName()," entered the room.");
