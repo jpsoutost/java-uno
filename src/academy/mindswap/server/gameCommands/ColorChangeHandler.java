@@ -11,34 +11,10 @@ public class ColorChangeHandler implements GameCommandHandler {
 
         if(game.getHasToChooseAColor()) {
             switch (play) {
-                case "b": {
-                    game.getLastCardPlayed().setColor(CardColors.BLUE);
-                    clientConnectionHandler.send("Color changed to blue.");
-                    game.getServer().roomBroadcast(game, game.getPlayerToPlay().getName(), "Color changed to blue.");
-                    game.setHasToChooseAColor(false);
-                    break;
-                }
-                case "y": {
-                    game.getLastCardPlayed().setColor(CardColors.YELLOW);
-                    clientConnectionHandler.send("Color changed to yellow.");
-                    game.getServer().roomBroadcast(game, game.getPlayerToPlay().getName(), "Color changed to yellow.");
-                    game.setHasToChooseAColor(false);
-                    break;
-                }
-                case "g": {
-                    game.getLastCardPlayed().setColor(CardColors.GREEN);
-                    clientConnectionHandler.send("Color changed to green.");
-                    game.getServer().roomBroadcast(game, game.getPlayerToPlay().getName(), "Color changed to green.");
-                    game.setHasToChooseAColor(false);
-                    break;
-                }
-                case "r": {
-                    game.getLastCardPlayed().setColor(CardColors.RED);
-                    clientConnectionHandler.send("Color changed to red.");
-                    game.getServer().roomBroadcast(game, game.getPlayerToPlay().getName(), "Color changed to red.");
-                    game.setHasToChooseAColor(false);
-                    break;
-                }
+                case "b" -> game.changeColor(CardColors.BLUE);
+                case "y" -> game.changeColor(CardColors.YELLOW);
+                case "g" -> game.changeColor(CardColors.GREEN);
+                case "r" -> game.changeColor(CardColors.RED);
             }
         }else{
             clientConnectionHandler.send("You can't change the color.");

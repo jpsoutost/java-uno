@@ -29,9 +29,9 @@ public class Client {
     }
 
     private class KeyboardHandler implements Runnable {
-        private BufferedWriter out;
-        private Socket socket;
-        private BufferedReader in;
+        private final BufferedWriter out;
+        private final Socket socket;
+        private final BufferedReader in;
 
         public KeyboardHandler(BufferedWriter out, Socket socket) {
             this.out = out;
