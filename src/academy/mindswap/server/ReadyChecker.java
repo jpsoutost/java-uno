@@ -37,6 +37,12 @@ public class ReadyChecker implements Runnable{
                         service.submit(game);
                         someoneIsNotReady = true;
                     }
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

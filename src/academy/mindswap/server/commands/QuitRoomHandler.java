@@ -11,6 +11,7 @@ public class QuitRoomHandler implements CommandHandler {
         Game game = clientConnectionHandler.getGame();
 
         clientConnectionHandler.quitGame();
+        clientConnectionHandler.send(Messages.WELCOME);
 
         if (game.getPlayers().isEmpty()){
             server.getOpenGames().remove(game);
@@ -19,7 +20,6 @@ public class QuitRoomHandler implements CommandHandler {
 
         for (Server.ClientConnectionHandler player: game.getPlayers()) {
             player.setReady(false);
-            player.send("Someone left the room and you became unready.");
         }
 
     }

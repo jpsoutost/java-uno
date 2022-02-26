@@ -105,6 +105,12 @@ public class Game implements Runnable {
         while (!isThereAWinner) {
             this.playerToPlay = players.get(indexOfPlayerTurn);
 
+
+            if(players.size()<=1){
+                playerToPlay.send("You can't play alone.");
+                break;
+            }
+
             if(deck.isEmpty()){
                 replaceDeck();
             }
@@ -167,6 +173,9 @@ public class Game implements Runnable {
     public void finishGame(){
         players.forEach(player -> {
             server.getClientsOnGeneral().add(player);
+            player.setGame(null);
+            player.setReady(false);
+            player.getDeck().clear();
             player.send(Messages.WELCOME);
         });
     }
@@ -275,7 +284,7 @@ public class Game implements Runnable {
         Server.ClientConnectionHandler playerToPlay = players.get(indexOfPlayerTurn);
         if(playerToPlay.getDeck().size()==0){
             isThereAWinner=true;
-            playerToPlay.send(GameMessages.THE_WINNER); //here
+            playerToPlay.send(GameMessages.THE_WINNER);
             server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + GameMessages.THE_WINNER); //here
         }
     }
@@ -343,6 +352,14 @@ public class Game implements Runnable {
 
     public boolean canPlayAPlus4Card() {
         return lastCardPlayed.getNumber() == 13 || isFirstCardOfTurn();
+    }
+
+    public boolean isLastPlayer(){
+        return (players.indexOf(playerToPlay)) == players.size()-1;
+    }
+
+    public void changeLastPlayer(){
+        indexOfPlayerTurn=0;
     }
 
     //GETTERS

@@ -8,7 +8,10 @@ public enum GameCommand {
     CHANGE_TO_RED("r", new ColorChangeHandler()),
     CHANGE_TO_GREEN("g", new ColorChangeHandler()),
     NOT_LEGAL("NotLegal", new NotLegalHandler()),
-    PLAY("play", new PlayHandler());
+    PLAY("play", new PlayHandler()),
+    SEE_PLAYER_DECK("h", new SeeHandHandler()),
+    SEE_CARD_ON_THE_TABLE("c", new CardOnTheTableHandler()),
+    QUIT("q", new QuitGameHandler());
 
 
     private final String description;

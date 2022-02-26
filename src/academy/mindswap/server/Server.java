@@ -159,15 +159,13 @@ public class Server {
 
                         roomBroadcast(game, name, message.substring(1));
                         continue;
-                    }
-
-                    if (message.equals("")) {
-                    continue;
+                    }else if (message.equals("")) {
+                        continue;
                     }
 
                     if (this.game == null) {
                     broadcast(name, message);
-                    return;
+                    continue;
                     }
 
                     gameCommandChanged = true;
@@ -293,6 +291,7 @@ public class Server {
         public void setGameCommandChanged(boolean gameCommandChanged) {
             this.gameCommandChanged = gameCommandChanged;
         }
+
     }
 
 }
