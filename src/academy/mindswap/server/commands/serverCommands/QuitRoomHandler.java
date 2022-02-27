@@ -2,7 +2,7 @@ package academy.mindswap.server.commands.serverCommands;
 
 import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
-import academy.mindswap.server.messages.GameMessages;
+import academy.mindswap.server.messages.ServerMessages;
 
 public class QuitRoomHandler implements CommandHandler {
 
@@ -10,8 +10,13 @@ public class QuitRoomHandler implements CommandHandler {
     public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
         Game game = clientConnectionHandler.getGame();
 
+        if (game == null){
+            clientConnectionHandler.send(ServerMessages.PLAYER_NOT_IN_ROOM);
+            return;
+        }
+
         clientConnectionHandler.quitGame();
-        clientConnectionHandler.send(GameMessages.WELCOME);
+        clientConnectionHandler.send(ServerMessages.REDIRECTED_LOBBY);
 
         if (game.getPlayers().isEmpty()) {
             server.getOpenGames().remove(game);

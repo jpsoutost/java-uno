@@ -1,8 +1,8 @@
-package academy.mindswap.server.commands;
+package academy.mindswap.server.commands.serverCommands;
 
 import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
-import academy.mindswap.server.messages.CommandsMessages;
+import academy.mindswap.server.messages.ServerMessages;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,17 +16,17 @@ public class NewRoomHandler implements CommandHandler {
             this.openGames = server.getOpenGames().stream().map(Game::getRoomName).collect(Collectors.toSet());
 
         if (message.split(" ").length != 2) {
-            clientConnectionHandler.send(CommandsMessages.JOIN_WRONG);
+            clientConnectionHandler.send(ServerMessages.JOIN_WRONG);
             return;
         }
 
         String roomName = message.split(" ")[1];
 
         if (openGames.contains(roomName)) {
-            clientConnectionHandler.send(CommandsMessages.ALREADY_CREATED);
+            clientConnectionHandler.send(ServerMessages.ALREADY_CREATED_ROOM);
         } else {
             clientConnectionHandler.createRoom(roomName);
-            clientConnectionHandler.send(CommandsMessages.ROOM_CREATED + message.substring(12));
+            clientConnectionHandler.send(ServerMessages.ROOM_CREATED + message.substring(12));
         }
     }
 }

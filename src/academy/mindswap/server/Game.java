@@ -1,9 +1,11 @@
 package academy.mindswap.server;
 
 
-import academy.mindswap.server.gameCommands.GameCommand;
+
+import academy.mindswap.server.commands.gameCommands.GameCommand;
 import academy.mindswap.server.messages.GameMessages;
-import academy.mindswap.server.messages.Messages;
+import academy.mindswap.server.messages.ServerMessages;
+
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -108,7 +110,7 @@ public class Game implements Runnable {
 
 
             if(players.size()<=1){
-                playerToPlay.send("You can't play alone.");
+                playerToPlay.send(ServerMessages.PLAYER_ALONE);
                 break;
             }
 
@@ -121,7 +123,7 @@ public class Game implements Runnable {
             play = waitForPlay();
 
             if(isServerCommand(play)){
-                playerToPlay.send("You can't use a server command inside a game.");
+                playerToPlay.send(ServerMessages.WHILE_PLAYING_COMMAND);
             }
 
             if (isChat(play)){
@@ -146,11 +148,11 @@ public class Game implements Runnable {
         GameCommand gameCommand = GameCommand.getGameCommandFromDescription(play);
 
         if (play.matches("[0-" + (playerToPlay.getDeck().size() - 1) + "]")) {
-            gameCommand = GameCommand.getGameCommandFromDescription("play");
+            gameCommand = GameCommand.getGameCommandFromDescription(GameMessages.PLAY);
         }
 
         if (gameCommand == null) {
-            gameCommand = GameCommand.getGameCommandFromDescription("NotLegal");
+            gameCommand = GameCommand.getGameCommandFromDescription(GameMessages.NOTLEGAL);
         }
 
         gameCommand.getCommandHandler().execute(this, playerToPlay);
@@ -158,9 +160,9 @@ public class Game implements Runnable {
 
     public void changeColor(CardColors cardColors){
         lastCardPlayed.setColor(cardColors);
-        playerToPlay.send(GameMessages.COLOR_CHANGED + cardColors.getDescription());
-        server.roomBroadcast(this, playerToPlay.getName(), GameMessages.COLOR_CHANGED + cardColors
-                .getDescription());
+        playerToPlay.send(cardColors.getConsoleColors() + GameMessages.COLOR_CHANGED + cardColors.getDescription());
+        server.roomBroadcast(this, playerToPlay.getName(), cardColors.getConsoleColors() +
+                GameMessages.COLOR_CHANGED + cardColors.getDescription());
         hasToChooseAColor = false;
     }
 
@@ -185,7 +187,8 @@ public class Game implements Runnable {
             player.setGame(null);
             player.setReady(false);
             player.getDeck().clear();
-            player.send(Messages.WELCOME);
+            player.send(GameMessages.END_OF_GAME);
+            player.send(ServerMessages.REDIRECTED_LOBBY);
         });
     }
 
@@ -292,8 +295,8 @@ public class Game implements Runnable {
         Server.ClientConnectionHandler playerToPlay = players.get(indexOfPlayerTurn);
         if(playerToPlay.getDeck().size()==0){
             isThereAWinner=true;
-            playerToPlay.send(GameMessages.THE_WINNER);
-            server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + GameMessages.THE_WINNER); //here
+            playerToPlay.send(GameMessages.YOU_THE_WINNER);
+            server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + GameMessages.PLAYER_THE_WINNER);
         }
     }
 

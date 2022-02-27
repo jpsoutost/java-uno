@@ -1,10 +1,8 @@
 package academy.mindswap.server;
 
-
-
-import academy.mindswap.server.commands.Command;
+import academy.mindswap.server.commands.serverCommands.Command;
 import academy.mindswap.server.messages.GameMessages;
-import academy.mindswap.server.messages.Messages;
+import academy.mindswap.server.messages.ServerMessages;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -50,8 +48,8 @@ public class Server {
     private void addClient(ClientConnectionHandler clientConnectionHandler) {
         clients.add(clientConnectionHandler);
         clientsOnGeneral.add(clientConnectionHandler);
-        clientConnectionHandler.send(GameMessages.WELCOME);
-        broadcast(clientConnectionHandler.getName(), GameMessages.PLAYER_ENTERED_LOBBY);
+        clientConnectionHandler.send(ServerMessages.WELCOME);
+        broadcast(clientConnectionHandler.getName(), ServerMessages.PLAYER_ENTERED_LOBBY);
     }
 
     public void broadcast(String name, String message) {
@@ -74,7 +72,7 @@ public class Server {
 
     public String listOpenRooms() {
         if (openGames.isEmpty()) {
-            return CommandsMessages.NO_OPEN_ROOM;
+            return ServerMessages.NO_OPEN_ROOMS;
         }
         StringBuffer buffer = new StringBuffer();
         openGames.forEach(game -> {
@@ -123,10 +121,10 @@ public class Server {
         }
 
         public String generateName() throws IOException {
-            send(GameMessages.CHOOSE_USERNAME);
+            send(ServerMessages.CHOOSE_USERNAME);
             String username = in.readLine();
             if (clients.stream().map(c -> c.name).toList().contains(username)) {
-                send(GameMessages.USERNAME_INVALID);
+                send(ServerMessages.USERNAME_INVALID);
                 username = generateName();
             }
             return username;
@@ -146,8 +144,14 @@ public class Server {
                     message = in.readLine();
 
                     if (isCommand(message)) {
+                        if (isQuitCommand(message)) {
+                            this.quitGame();
+                            dealWithCommand(message);
+                            continue;
+                        }
+
                         if (gameIsRunning()) {
-                            send("You can't use server commands while playing.");
+                            send(ServerMessages.WHILE_PLAYING_COMMAND);
                         } else {
                             dealWithCommand(message);
                         }
@@ -172,7 +176,7 @@ public class Server {
                     gameCommandChanged = true;
                 }
             } catch (IOException e) {
-                System.err.println(CommandsMessages.PLAYER_ERROR + e.getMessage());
+                System.err.println(ServerMessages.PLAYER_ERROR + e.getMessage());
             } finally {
                 removeClient(this);
             }
@@ -180,6 +184,9 @@ public class Server {
 
         private boolean isCommand(String message) {
             return message.startsWith("/");
+        }
+        private boolean isQuitCommand(String message){
+            return message.equals("/quit");
         }
 
         private boolean isRoomChat(String message, Game game) {
@@ -195,7 +202,7 @@ public class Server {
             Command command = Command.getCommandFromDescription(description);
 
             if (command == null) {
-                out.write(GameMessages.NO_SUCH_COMMAND);
+                out.write(ServerMessages.NO_SUCH_COMMAND);
                 out.newLine();
                 out.flush();
                 return;

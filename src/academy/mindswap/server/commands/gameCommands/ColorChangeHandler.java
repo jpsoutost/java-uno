@@ -18,7 +18,7 @@ public class ColorChangeHandler implements GameCommandHandler {
                 case "r" -> game.changeColor(CardColors.RED);
             }
         } else {
-            clientConnectionHandler.send(GameMessages.CANT_CHANGE);
+            clientConnectionHandler.send(GameMessages.CANT_CHANGE_COLOR);
         }
     }
 }

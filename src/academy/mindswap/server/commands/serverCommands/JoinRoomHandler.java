@@ -2,7 +2,7 @@ package academy.mindswap.server.commands.serverCommands;
 
 import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
-import academy.mindswap.server.messages.CommandsMessages;
+import academy.mindswap.server.messages.ServerMessages;
 
 import java.util.Optional;
 
@@ -12,7 +12,7 @@ public class JoinRoomHandler implements CommandHandler {
         String message = clientConnectionHandler.getMessage();
 
         if (message.split(" ").length != 2) {
-            clientConnectionHandler.send(CommandsMessages.JOIN_WRONG);
+            clientConnectionHandler.send(ServerMessages.JOIN_WRONG);
             return;
         }
 
@@ -22,17 +22,17 @@ public class JoinRoomHandler implements CommandHandler {
                 .findFirst();
 
         if (game.isEmpty()) {
-            clientConnectionHandler.send(CommandsMessages.SUCH_ROOM);
+            clientConnectionHandler.send(ServerMessages.NO_SUCH_ROOM);
             return;
         }
 
         if (game.get().getPlayers().size() >= 10) {
-            clientConnectionHandler.send(CommandsMessages.ROOM_FULL);
+            clientConnectionHandler.send(ServerMessages.ROOM_FULL);
         }
 
         clientConnectionHandler.enteringRoom(game.get());
-        clientConnectionHandler.send(CommandsMessages.JOINED_ROOM + message.substring(10));
+        clientConnectionHandler.send(ServerMessages.JOINED_ROOM + message.substring(10));
         server.roomBroadcast(clientConnectionHandler.getGame(), clientConnectionHandler.getName(),
-                CommandsMessages.ENTERED);
+                ServerMessages.PLAYER_ENTERED_ROOM);
     }
 }

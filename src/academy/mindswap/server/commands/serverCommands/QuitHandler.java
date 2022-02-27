@@ -3,7 +3,8 @@ package academy.mindswap.server.commands.serverCommands;
 import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
 import academy.mindswap.server.commands.gameCommands.GameCommand;
-import academy.mindswap.server.messages.Messages;
+import academy.mindswap.server.messages.GameMessages;
+
 
 public class QuitHandler implements CommandHandler {
 
@@ -17,7 +18,8 @@ public class QuitHandler implements CommandHandler {
         }
 
         server.removeClient(clientConnectionHandler);
-        server.broadcast(clientConnectionHandler.getName(), clientConnectionHandler.getName() + Messages.PLAYER_DISCONNECTED);
+        server.broadcast(clientConnectionHandler.getName(), clientConnectionHandler.getName() +
+                GameMessages.PLAYER_DISCONNECTED);
         clientConnectionHandler.close();
     }
 }

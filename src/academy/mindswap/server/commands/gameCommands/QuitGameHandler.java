@@ -2,8 +2,7 @@ package academy.mindswap.server.commands.gameCommands;
 
 import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
-import academy.mindswap.server.commands.gameCommands.GameCommandHandler;
-import academy.mindswap.server.messages.Messages;
+import academy.mindswap.server.messages.ServerMessages;
 
 public class QuitGameHandler implements GameCommandHandler {
     @Override
@@ -14,7 +13,7 @@ public class QuitGameHandler implements GameCommandHandler {
         }
 
         clientConnectionHandler.quitGame();
-        clientConnectionHandler.send(Messages.WELCOME);
+        clientConnectionHandler.send(ServerMessages.REDIRECTED_LOBBY);
 
 
     }

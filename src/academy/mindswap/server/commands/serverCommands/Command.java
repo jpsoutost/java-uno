@@ -7,7 +7,6 @@ public enum Command {
     LIST_PLAYERS("/players", new PlayerListHandler()),
     LIST_ROOMS("/openRooms", new RoomListHandler()),
     HELP("/help", new HelpHandler()),
-    MUTE("/mute", new QuitHandler()),
     NEW_ROOM("/createRoom", new NewRoomHandler()),
     JOIN_ROOM("/joinRoom", new JoinRoomHandler()),
     READY("/ready", new ReadyHandler()),
