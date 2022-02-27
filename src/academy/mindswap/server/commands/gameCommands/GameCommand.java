@@ -17,7 +17,8 @@ public enum GameCommand {
     SEE_PLAYER_DECK("h", new SeeHandHandler()),
     SEE_CARD_ON_THE_TABLE("c", new CardOnTheTableHandler()),
     QUIT("q", new QuitGameHandler()),
-    HELP("help", new HelpGameHandler());
+    HELP("help", new HelpGameHandler()),
+    UNO("uno", new UnoCommandHandler());
 
     private final String description;
     private final GameCommandHandler gameHandler;
@@ -26,8 +27,6 @@ public enum GameCommand {
         this.description = description;
         this.gameHandler = gameHandler;
     }
-
-    //GETTERS
 
     public static GameCommand getGameCommandFromDescription(String description) {
         for (GameCommand command : values()) {

@@ -1,5 +1,6 @@
 package academy.mindswap.server;
 
+
 import academy.mindswap.server.commands.gameCommands.GameCommand;
 import academy.mindswap.server.messages.GameMessages;
 import academy.mindswap.server.messages.ServerMessages;
@@ -28,6 +29,7 @@ public class Game implements Runnable {
     private boolean canPlayAgain;
     private boolean hasToChooseAColor;
     private boolean drewACard;
+    private boolean canPlayLastCard = false;
 
     //STORAGE OF ROUND DATA
     private int indexOfPlayerTurn;
@@ -577,6 +579,9 @@ public class Game implements Runnable {
         return gameIsRunning;
     }
 
+    public boolean getCanPlayLastCard() {
+        return canPlayLastCard;
+    }
 
     //SETTERS
 
@@ -592,4 +597,7 @@ public class Game implements Runnable {
         this.canPlayAgain = canPlayAgain;
     }
 
+    public void setCanPlayLastCard(boolean canPlayLastCard) {
+        this.canPlayLastCard = canPlayLastCard;
+    }
 }
