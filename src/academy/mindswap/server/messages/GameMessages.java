@@ -26,6 +26,11 @@ public class GameMessages {
     public static final String NOTLEGAL = "NotLegal";
     public static final String ISPLAYING = ConsoleColors.PURPLE +  "is playing...";
     public static final String TIME_TO_PLAY = ConsoleColors.PURPLE +  "IT'S TIME TO PLAY.";
+    public static final String UNO_MISSED = ConsoleColors.PURPLE +  "You forgot to say UNO!";
+    public static final String UNO_MISSED_ROOM = ConsoleColors.PURPLE +  " forgot to say UNO!";
+    public static final String UNO_UNO = ConsoleColors.PURPLE +  "UNO! UNO!";
+
+
     public static final String HELP = ConsoleColors.PURPLE + """
             List of available commands:
             f -> to finish the turn;

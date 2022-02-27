@@ -15,10 +15,12 @@ public class FinishHandler implements GameCommandHandler {
             throw new Exception(GameMessages.CHOOSE_COLOR);
         }
 
-        if (clientConnectionHandler.getDeck().size() == 1 && !game.getCanPlayLastCard()) {
-            game.setCardsToDraw(2);
-            game.getPlayerToPlay().send("You did not say UNO!");
-            return;
+        if (clientConnectionHandler.getDeck().size() == 1 && !game.getSaidUNO()) {
+            game.getPlayerToPlay().send(GameMessages.UNO_MISSED);
+            game.getServer().roomBroadcast(game, clientConnectionHandler.getName(),
+                    GameMessages.UNO_MISSED_ROOM);
+            game.drawCard();
+            game.drawCard();
         }
 
         if (game.canFinishTurn()) {

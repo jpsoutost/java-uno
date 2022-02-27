@@ -29,7 +29,7 @@ public class Game implements Runnable {
     private boolean canPlayAgain;
     private boolean hasToChooseAColor;
     private boolean drewACard;
-    private boolean canPlayLastCard = false;
+    private boolean saidUNO;
 
     //STORAGE OF ROUND DATA
     private int indexOfPlayerTurn;
@@ -247,7 +247,7 @@ public class Game implements Runnable {
 
     /**
      * Method that remove the card on table after a turn, and add to the list of played cards.
-     * The last card played bemoes the playing card.
+     * The last card played becomes the playing card.
      * @param card The card on table.
      */
     public void cardChangesInDecks(Card card){
@@ -462,7 +462,7 @@ public class Game implements Runnable {
 
     /**
      * Boolean method that validates if a player can play a card.
-     * @return True if the player can play again and if don't have to choose a color.
+     * @return True if the player can play again and if he doesn't have to choose a color.
      */
     public boolean canPlayACard(){
         return canPlayAgain && !hasToChooseAColor;
@@ -514,7 +514,7 @@ public class Game implements Runnable {
 
     /**
      * Boolean method that validates if a player can play a Plus 4 card.
-     * @return True if the card played number is 13 and it's your first card to play in that turn.
+     * @return True if the card played number is 13, and it's your first card to play in that turn.
      */
     public boolean canPlayAPlus4Card() {
         return lastCardPlayed.getNumber() == 13 || isFirstCardOfTurn();
@@ -579,8 +579,8 @@ public class Game implements Runnable {
         return gameIsRunning;
     }
 
-    public boolean getCanPlayLastCard() {
-        return canPlayLastCard;
+    public boolean getSaidUNO() {
+        return saidUNO;
     }
 
     //SETTERS
@@ -597,7 +597,7 @@ public class Game implements Runnable {
         this.canPlayAgain = canPlayAgain;
     }
 
-    public void setCanPlayLastCard(boolean canPlayLastCard) {
-        this.canPlayLastCard = canPlayLastCard;
+    public void saidUNO(boolean saidUno) {
+        this.saidUNO = saidUno;
     }
 }

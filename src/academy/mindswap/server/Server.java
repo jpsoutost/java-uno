@@ -253,7 +253,6 @@ public class Server {
          * Method that verify if the message is a command game.
          * If message is not null, the command is executed.
          * @param message The message.
-         * @throws IOException Throws IOException.
          */
         private void dealWithCommand(String message) {
             String description = message.split(" ")[0];
