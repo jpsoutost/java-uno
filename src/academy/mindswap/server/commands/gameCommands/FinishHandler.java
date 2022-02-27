@@ -13,7 +13,7 @@ public class FinishHandler implements GameCommandHandler {
             return;
         }
         if (game.getPlayerToPlay().getDeck().size() == 1 && !game.getCanPlayLastCard()) {
-            game.setCardsToDraw(3);
+            game.setCardsToDraw(2);
             game.getPlayerToPlay().send("You did not say UNO!");
             return;
         }

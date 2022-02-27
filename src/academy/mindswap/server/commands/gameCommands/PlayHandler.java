@@ -15,7 +15,7 @@ public class PlayHandler implements GameCommandHandler {
         if (game.canPlayACard()) {
             Card chosenCard = game.getPlayerToPlay().getDeck().get(Integer.parseInt(play));
             if (game.getPlayerToPlay().getDeck().size() == 1 && !game.getCanPlayLastCard()) {
-                game.setCardsToDraw(3);
+                game.setCardsToDraw(2);
                 game.getPlayerToPlay().send("You did not say UNO!");
             }
             if (game.hasCardsToDraw(chosenCard)) {
