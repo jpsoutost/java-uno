@@ -11,7 +11,8 @@ public enum GameCommand {
     PLAY("play", new PlayHandler()),
     SEE_PLAYER_DECK("h", new SeeHandHandler()),
     SEE_CARD_ON_THE_TABLE("c", new CardOnTheTableHandler()),
-    QUIT("q", new QuitGameHandler());
+    QUIT("q", new QuitGameHandler()),
+    UNO("uno", new UnoCommandHandler());
 
 
     private final String description;

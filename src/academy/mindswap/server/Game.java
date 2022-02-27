@@ -28,6 +28,7 @@ public class Game implements Runnable {
     private boolean canPlayAgain;
     private boolean hasToChooseAColor;
     private boolean drewACard;
+    private boolean canPlayLastCard = false;
 
     //STORAGE OF ROUND DATA
     private int indexOfPlayerTurn;
@@ -171,11 +172,11 @@ public class Game implements Runnable {
 
     public void resetBooleansAndAccumulators(){
         playedAtLeastOneCard = false;
-        canFinishTurn=false;
+        canFinishTurn = false;
         canPlayAgain = true;
         playersToSkip = 0;
         hasToChooseAColor = false;
-        drewACard=false;
+        drewACard = false;
     }
 
     public void finishGame(){
@@ -262,7 +263,7 @@ public class Game implements Runnable {
      */
     private void setPlayersDecks(){
         this.players.stream().map(Server.ClientConnectionHandler::getDeck).forEach(playerDeck -> {
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 1; i++) {
               playerDeck.add(this.deck.poll());
           }
       });
@@ -292,7 +293,7 @@ public class Game implements Runnable {
         if(playerToPlay.getDeck().size()==0){
             isThereAWinner=true;
             playerToPlay.send(GameMessages.THE_WINNER);
-            server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + GameMessages.THE_WINNER); //here
+            server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + " is the WINNER!"); //here
         }
     }
 
@@ -411,6 +412,10 @@ public class Game implements Runnable {
         return gameIsRunning;
     }
 
+    public boolean getCanPlayLastCard() {
+        return canPlayLastCard;
+    }
+
     //SETTERS
 
     public void setServer(Server server) {
@@ -425,4 +430,11 @@ public class Game implements Runnable {
         this.canPlayAgain = canPlayAgain;
     }
 
+    public void setCanPlayLastCard(boolean canPlayLastCard) {
+        this.canPlayLastCard = canPlayLastCard;
+    }
+
+    public void setCardsToDraw(int cardsToDraw) {
+        this.cardsToDraw += cardsToDraw;
+    }
 }

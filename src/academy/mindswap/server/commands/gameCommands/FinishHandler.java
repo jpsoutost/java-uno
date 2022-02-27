@@ -7,8 +7,14 @@ public class FinishHandler implements GameCommandHandler {
 
     @Override
     public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) {
+
         if(game.getHasToChooseAColor()) {
             clientConnectionHandler.send("You have to choose a color first. b-blue, y-yellow, g-green, r-red");
+            return;
+        }
+        if (game.getPlayerToPlay().getDeck().size() == 1 && !game.getCanPlayLastCard()) {
+            game.setCardsToDraw(3);
+            game.getPlayerToPlay().send("You did not say UNO!");
             return;
         }
 
