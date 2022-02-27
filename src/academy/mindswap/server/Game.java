@@ -1,7 +1,7 @@
 package academy.mindswap.server;
 
 
-import academy.mindswap.server.commands.gameCommands.GameCommand;
+import academy.mindswap.server.gameCommands.GameCommand;
 import academy.mindswap.server.messages.GameMessages;
 import academy.mindswap.server.messages.Messages;
 
@@ -158,9 +158,10 @@ public class Game implements Runnable {
 
     public void changeColor(CardColors cardColors){
         lastCardPlayed.setColor(cardColors);
-        playerToPlay.send("Color changed to " + cardColors.getDescription());
-        server.roomBroadcast(this, playerToPlay.getName(), "Color changed to " + cardColors.getDescription());
-        hasToChooseAColor=false;
+        playerToPlay.send(GameMessages.COLOR_CHANGED + cardColors.getDescription());
+        server.roomBroadcast(this, playerToPlay.getName(), GameMessages.COLOR_CHANGED + cardColors
+                .getDescription());
+        hasToChooseAColor = false;
     }
 
     private void replaceDeck(){

@@ -10,7 +10,7 @@ public class PlayHandler implements GameCommandHandler {
     @Override
     public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) {
         String play = game.getPlay();
-        boolean valid=false;
+        boolean valid = false;
 
         if (game.canPlayACard()) {
 
@@ -21,7 +21,7 @@ public class PlayHandler implements GameCommandHandler {
                 return;
             }
 
-            if(game.isAPlus4Card(chosenCard) && game.canPlayAPlus4Card()){
+            if (game.isAPlus4Card(chosenCard) && game.canPlayAPlus4Card()) {
                 game.dealWithPlus4Cards(chosenCard);
                 return;
             }
@@ -31,7 +31,7 @@ public class PlayHandler implements GameCommandHandler {
                 valid = true;
             }
 
-            if(chosenCard.getNumber() == game.getLastCardPlayed().getNumber()){
+            if (chosenCard.getNumber() == game.getLastCardPlayed().getNumber()) {
                 game.setCanPlayAgain(true);
                 valid = true;
             }
@@ -40,11 +40,11 @@ public class PlayHandler implements GameCommandHandler {
                 game.dealWithSpecialCards(chosenCard);
                 game.cardChangesInDecks(chosenCard);
                 game.updateBooleans();
-            }else{
+            } else {
                 game.getPlayerToPlay().send(GameMessages.NOT_ALLOWED);
             }
 
-        }else{
+        } else {
             game.getPlayerToPlay().send(GameMessages.NOT_ALLOWED);
         }
     }

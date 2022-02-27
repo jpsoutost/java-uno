@@ -1,12 +1,12 @@
 package academy.mindswap.server.commands.serverCommands;
 
 import academy.mindswap.server.Server;
-import academy.mindswap.server.messages.Messages;
+import academy.mindswap.server.messages.GameMessages;
 
 public class HelpHandler implements CommandHandler {
 
     @Override
     public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
-        clientConnectionHandler.send(Messages.COMMANDS_LIST);
+        clientConnectionHandler.send(GameMessages.COMMANDS_LIST);
     }
 }

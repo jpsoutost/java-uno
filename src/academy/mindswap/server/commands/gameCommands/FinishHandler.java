@@ -2,28 +2,25 @@ package academy.mindswap.server.commands.gameCommands;
 
 import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
+import academy.mindswap.server.messages.GameMessages;
 
 public class FinishHandler implements GameCommandHandler {
 
     @Override
     public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) {
-        if(game.getHasToChooseAColor()) {
-            clientConnectionHandler.send("You have to choose a color first. b-blue, y-yellow, g-green, r-red");
+        if (game.getHasToChooseAColor()) {
+            clientConnectionHandler.send(GameMessages.CHOOSE_COLOR);
             return;
         }
 
         if (game.canFinishTurn()) {
-            clientConnectionHandler.send("End of Turn");
+            clientConnectionHandler.send(GameMessages.END_TURN);
 
             game.setNextPlayerToPlay();
             game.resetBooleansAndAccumulators();
 
-
         } else {
-            clientConnectionHandler.send("You have to play or draw a card first.");
+            clientConnectionHandler.send(GameMessages.NOT_PLAYED);
         }
     }
-
-
-
 }
