@@ -2,6 +2,9 @@ package academy.mindswap.server.messages;
 
 import academy.mindswap.server.ConsoleColors;
 
+/**
+ * A class that represents the game messages to send to the client.
+ */
 public class GameMessages {
 
     public static final String END_TURN = ConsoleColors.PURPLE + "End of Turn";
@@ -21,6 +24,8 @@ public class GameMessages {
     public static final String PLAYER_DISCONNECTED = ConsoleColors.PURPLE + " left the lobby.";
     public static final String PLAY = "play";
     public static final String NOTLEGAL = "NotLegal";
+    public static final String ISPLAYING = ConsoleColors.PURPLE +  "is playing...";
+    public static final String TIME_TO_PLAY = ConsoleColors.PURPLE +  "IT'S TIME TO PLAY.";
 
     public static final String UNO = ConsoleColors.PURPLE +
 

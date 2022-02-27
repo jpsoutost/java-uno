@@ -4,6 +4,9 @@ import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
 import academy.mindswap.server.messages.GameMessages;
 
+/**
+ * A class that represents the finish handler.
+ */
 public class FinishHandler implements GameCommandHandler {
 
     @Override

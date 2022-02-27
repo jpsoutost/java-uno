@@ -13,6 +13,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+/**
+ * A class that represents the Server.
+ */
 public class Server {
 
     private ServerSocket serverSocket;
@@ -22,9 +25,15 @@ public class Server {
     private List<Game> openGames;
     private List<Game> closedGames;
 
+    /**
+     * A constructor method that creates the server.
+     */
     public Server() {
     }
 
+    /**
+     * A method that initializes the server.
+     */
     public void start(int port) throws IOException, InterruptedException {
         clients = new ArrayList<>();
         clientsOnGeneral = new ArrayList<>();
@@ -40,11 +49,21 @@ public class Server {
         }
     }
 
+    /**
+     * Method that accepts connection to a client.
+     * @throws IOException Throws IO Exception.
+     */
     private void acceptConnection() throws IOException {
         ClientConnectionHandler clientConnectionHandler = new ClientConnectionHandler(serverSocket.accept());
         service.submit(clientConnectionHandler);
     }
 
+    /**
+     * Method that add a player.
+     * The client is added into two Array lists (server and lobby).
+     * A message is send to the client when he enters in lobby.
+     * @param clientConnectionHandler The client.
+     */
     private void addClient(ClientConnectionHandler clientConnectionHandler) {
         clients.add(clientConnectionHandler);
         clientsOnGeneral.add(clientConnectionHandler);
@@ -52,24 +71,44 @@ public class Server {
         broadcast(clientConnectionHandler.getName(), ServerMessages.PLAYER_ENTERED_LOBBY);
     }
 
+    /**
+     * Method that sends a message to all clients in the lobby.
+     * @param name Name of the player.
+     * @param message Message.
+     */
     public void broadcast(String name, String message) {
         clientsOnGeneral.stream()
                 .filter(handler -> !handler.getName().equals(name))
-                .forEach(handler -> handler.send(name + ": " + message));
+                .forEach(handler -> handler.send(ConsoleColors.WHITE + name + ": " + message));
     }
 
+    /**
+     * Method that send a message to all clients in the room of the sender.
+     * @param game The game.
+     * @param name Name of the client.
+     * @param message Message.
+     */
     public void roomBroadcast(Game game, String name, String message) {
         game.getPlayers().stream()
                 .filter(handler -> !handler.getName().equals(name))
-                .forEach(handler -> handler.send(name + "(" + game.getRoomName() + "): " + message));
+                .forEach(handler -> handler.send( ConsoleColors.WHITE + name + "(" +
+                        game.getRoomName() + "): " + message));
     }
 
+    /**
+     * Method that list the name of all the clients connected to the server.
+     * @return The list of clients.
+     */
     public String listClients() {
         return "[ " + clients.stream().map(ClientConnectionHandler::getName)
                 .collect(Collectors.joining(" ,"))
                 + " ]";
     }
 
+    /**
+     * Method that list all the open rooms in the server.
+     * @return The list of open rooms.
+     */
     public String listOpenRooms() {
         if (openGames.isEmpty()) {
             return ServerMessages.NO_OPEN_ROOMS;
@@ -84,6 +123,10 @@ public class Server {
         return buffer.toString();
     }
 
+    /**
+     * Method that removes a client.
+     * @param clientConnectionHandler The client to remove.
+     */
     public void removeClient(ClientConnectionHandler clientConnectionHandler) {
         clients.remove(clientConnectionHandler);
     }
@@ -100,6 +143,9 @@ public class Server {
         return closedGames;
     }
 
+    /**
+     * A class that represents the client in the server that implements Runnable.
+     */
     public class ClientConnectionHandler implements Runnable {
 
         private String name;
@@ -120,6 +166,11 @@ public class Server {
             this.deck = new ArrayList<>();
         }
 
+        /**
+         * Method that generate the name of the player.
+         * @return The username of the player.
+         * @throws IOException Throws IOException.
+         */
         public String generateName() throws IOException {
             send(ServerMessages.CHOOSE_USERNAME);
             String username = in.readLine();
@@ -130,6 +181,9 @@ public class Server {
             return username;
         }
 
+        /**
+         * Method that overrides run that reads client input and sends server output to client.
+         */
         @Override
         public void run() {
             try {
@@ -145,7 +199,6 @@ public class Server {
 
                     if (isCommand(message)) {
                         if (isQuitCommand(message)) {
-                            this.quitGame();
                             dealWithCommand(message);
                             continue;
                         }
@@ -162,14 +215,14 @@ public class Server {
                             continue;
                         }
 
-                        roomBroadcast(game, name, message.substring(1));
+                        roomBroadcast(game, name, ConsoleColors.CYAN + message.substring(1));
                         continue;
                     } else if (message.equals("")) {
                         continue;
                     }
 
                     if (this.game == null) {
-                        broadcast(name, message);
+                        broadcast(name,ConsoleColors.CYAN + message);
                         continue;
                     }
 
@@ -197,6 +250,12 @@ public class Server {
             }
         }
 
+        /**
+         * Method that verify if the message is a command game.
+         * If message is not null, the command is executed.
+         * @param message The message.
+         * @throws IOException Throws IOException.
+         */
         private void dealWithCommand(String message) throws IOException {
             String description = message.split(" ")[0];
             Command command = Command.getCommandFromDescription(description);
@@ -211,6 +270,10 @@ public class Server {
             command.getHandler().execute(Server.this, this);
         }
 
+        /**
+         * Method to send messages to the client.
+         * @param message The message.
+         */
         public void send(String message) {
             try {
                 out.write(message);
@@ -295,21 +358,38 @@ public class Server {
                     "}";
         }
 
+        /**
+         * Method to entering room.
+         * Defines the game, adds player to the game and removes the player of the general list.
+         * @param game The game.
+         */
         public void enteringRoom(Game game) {
             this.game = game;
             game.addClient(this);
             clientsOnGeneral.remove(this);
         }
 
+        /**
+         * Method that create a room.
+         * When the player create a room, he enters that room, and the list of open games is actualized.
+         * @param roomName The room name.
+         */
         public void createRoom(String roomName) {
             Game game = new Game(roomName, Server.this);
             enteringRoom(game);
             openGames.add(game);
         }
 
-        public void quitGame() {
+        /**
+         * Method to quit game.
+         * Removes the player of the game list and adds to the general list.
+         * Send an informative message.
+         */
+        public void quitGame(){
             game.getPlayers().remove(this);
             clientsOnGeneral.add(this);
+            isReady = false;
+            deck.clear();
             roomBroadcast(game, name, GameMessages.PLAYER_QUIT_ROOM);
             this.game = null;
         }

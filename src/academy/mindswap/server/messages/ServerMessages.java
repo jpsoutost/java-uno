@@ -2,6 +2,9 @@ package academy.mindswap.server.messages;
 
 import academy.mindswap.server.ConsoleColors;
 
+/**
+ * A class that represents the server messages to send to the client.
+ */
 public class ServerMessages {
     public static final String ROOM_FULL = ConsoleColors.WHITE + "Room is full.";
     public static final String NO_OPEN_ROOMS = ConsoleColors.WHITE + "There is no open rooms";

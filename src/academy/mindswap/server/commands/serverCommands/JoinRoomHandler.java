@@ -6,7 +6,17 @@ import academy.mindswap.server.messages.ServerMessages;
 
 import java.util.Optional;
 
+/**
+ * A class that represents the command to join room, that implements CommandHandler.
+ */
 public class JoinRoomHandler implements CommandHandler {
+
+    /**
+     * An override method that executes the command to join into the room.
+     * The player only can join an existing room.
+     * @param server The server.
+     * @param clientConnectionHandler The player.
+     */
     @Override
     public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
         String message = clientConnectionHandler.getMessage();

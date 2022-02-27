@@ -1,5 +1,8 @@
 package academy.mindswap.server.commands.gameCommands;
 
+/**
+ * A ENUM class that represents the commands of the game.
+ */
 public enum GameCommand {
     FINISH_TURN("f", new FinishHandler()),
     DRAW("d", new DrawHandler()),
@@ -21,6 +24,8 @@ public enum GameCommand {
         this.description = description;
         this.gameHandler = gameHandler;
     }
+
+    //GETTERS
 
     public static GameCommand getGameCommandFromDescription(String description) {
         for (GameCommand command : values()) {
