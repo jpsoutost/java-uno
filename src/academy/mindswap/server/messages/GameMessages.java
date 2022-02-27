@@ -26,6 +26,18 @@ public class GameMessages {
     public static final String NOTLEGAL = "NotLegal";
     public static final String ISPLAYING = ConsoleColors.PURPLE +  "is playing...";
     public static final String TIME_TO_PLAY = ConsoleColors.PURPLE +  "IT'S TIME TO PLAY.";
+    public static final String HELP = ConsoleColors.PURPLE + """
+            List of available commands:
+            f -> to finish the turn;
+            d -> to draw a card from the deck on the table;
+            b -> to choose blue color to the card;
+            y -> to choose yellow color to the card;
+            r -> to choose red color to the card;
+            g -> to choose green color to the card;
+            h -> to see the player deck;
+            c -> to see the card on table;
+            q -> to quit the game;
+            help -> to see the game commends""";
 
     public static final String UNO = ConsoleColors.PURPLE +
 
