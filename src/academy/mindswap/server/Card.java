@@ -6,11 +6,13 @@ import academy.mindswap.server.messages.GameMessages;
  * A class that represents the cards of the game.
  * There is normal cards and special cards.
  * A normal card has a number from 1 to 9 and a color (blue, red, green or yellow).
- * The special cards are: 10 - skip cards; 11- plus2cards; 12 - invert card; 13 - plus4card.
+ * The special cards are: 10 - skip cards; 11- plus2cards; 12 - reverse card; 13 - plus4card.
  */
 public class Card {
+
+    //CARD ATTRIBUTES
     private CardColors color;
-    private int number;//10-skip Cards, 11-plus2Cards, 12-invertCards
+    private int number;
     private Game n;
 
     /**
@@ -30,9 +32,6 @@ public class Card {
         return color;
     }
 
-    /**
-     * @return The number of the card.
-     */
     public int getNumber() {
         return number;
     }

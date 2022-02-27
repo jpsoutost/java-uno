@@ -3,6 +3,9 @@ package academy.mindswap.server.gameCommands;
 import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
 
+/**
+ * A class that represents the draw handler in the game.
+ */
 public class DrawHandler implements GameCommandHandler {
     @Override
     public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) {

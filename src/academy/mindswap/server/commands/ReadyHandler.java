@@ -8,12 +8,12 @@ import academy.mindswap.server.messages.CommandsMessages;
  * A class that represents the command to turn a player ready to the game, that implements CommandHandler.
  */
 public class ReadyHandler implements CommandHandler{
-    /**
-     * An override method that executes the command to a player .
-     * @param server
-     * @param clientConnectionHandler
-     */
 
+    /**
+     * An override method that executes the command to a player.
+     * @param server The server.
+     * @param clientConnectionHandler The player.
+     */
     @Override
     public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
         Game game = clientConnectionHandler.getGame();

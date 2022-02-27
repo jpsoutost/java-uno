@@ -1,5 +1,8 @@
 package academy.mindswap.server.messages;
 
+/**
+ * A class that represents the server messages to print.
+ */
 public class CommandsMessages {
     public static final String JOIN_WRONG = "Wrong way to join a Room.";
     public static final String SUCH_ROOM = "No such room.";

@@ -4,6 +4,9 @@ import academy.mindswap.server.CardColors;
 import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
 
+/**
+ * A class that represents the commands to change the color.
+ */
 public class ColorChangeHandler implements GameCommandHandler {
     @Override
     public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) {

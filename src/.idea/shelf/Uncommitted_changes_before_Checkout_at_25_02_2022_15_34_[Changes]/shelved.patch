@@ -1,0 +1,117 @@
+Index: academy/mindswap/server/ReadyChecker.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package academy.mindswap.server;\r\n\r\nimport java.util.List;\r\nimport java.util.concurrent.ExecutorService;\r\n\r\npublic class ReadyChecker implements Runnable{\r\n    private List<Game> openGames;\r\n    private List<Game> closedGames;\r\n    private ExecutorService service;\r\n\r\n    public ReadyChecker(List<Game> openGames, List<Game> closedGames, ExecutorService service) {\r\n        this.openGames = openGames;\r\n        this.closedGames = closedGames;\r\n        this.service = service;\r\n    }\r\n\r\n    @Override\r\n    public void run() {\r\n        while(true) {\r\n            boolean someoneIsNotReady = false;\r\n            synchronized (this) {\r\n                for (Game game : openGames) {\r\n                    for (Server.ClientConnectionHandler player : game.getPlayers()) {\r\n                        if (!player.isReady()) {\r\n                            someoneIsNotReady = true;\r\n                            break;\r\n                        }\r\n                    }\r\n                    if (!someoneIsNotReady) {\r\n                        openGames.remove(game);\r\n                        closedGames.add(game);\r\n                        game.getPlayers().get(0).messageChanged=false;\r\n                        service.submit(game);\r\n                    }\r\n                    someoneIsNotReady = false;\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/academy/mindswap/server/ReadyChecker.java b/academy/mindswap/server/ReadyChecker.java
+--- a/academy/mindswap/server/ReadyChecker.java	(revision 9524b566c217890f7d583ebc3e6b79a617d5beaf)
++++ b/academy/mindswap/server/ReadyChecker.java	(date 1645803194020)
+@@ -3,11 +3,15 @@
+ import java.util.List;
+ import java.util.concurrent.ExecutorService;
+ 
++/**
++ * A class that checks if the game can initialized.
++ */
+ public class ReadyChecker implements Runnable{
+     private List<Game> openGames;
+     private List<Game> closedGames;
+     private ExecutorService service;
+ 
++
+     public ReadyChecker(List<Game> openGames, List<Game> closedGames, ExecutorService service) {
+         this.openGames = openGames;
+         this.closedGames = closedGames;
+Index: academy/mindswap/server/Plus4Card.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package academy.mindswap.server;\r\n\r\npublic class Plus4Card extends Card {\r\n    public Plus4Card(CardColors color, int number) {\r\n        super(CardColors.BLUE, 0);\r\n    }\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/academy/mindswap/server/Plus4Card.java b/academy/mindswap/server/Plus4Card.java
+--- a/academy/mindswap/server/Plus4Card.java	(revision 9524b566c217890f7d583ebc3e6b79a617d5beaf)
++++ b/academy/mindswap/server/Plus4Card.java	(date 1645803194033)
+@@ -1,5 +1,8 @@
+ package academy.mindswap.server;
+ 
++/**
++ * A class that creates a
++ */
+ public class Plus4Card extends Card {
+     public Plus4Card(CardColors color, int number) {
+         super(CardColors.BLUE, 0);
+Index: academy/mindswap/server/Game.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package academy.mindswap.server;\r\n\r\n\r\nimport java.util.*;\r\nimport java.util.stream.Collectors;\r\n\r\n/**\r\n * A class that represents the game.\r\n */\r\npublic class Game implements Runnable {\r\n    private final String roomName;\r\n    private LinkedList<Card> deck;\r\n    private LinkedList<Card> playedCards;\r\n    private List <Server.ClientConnectionHandler> players;\r\n    private boolean isThereAWinner;\r\n    private int indexOfPlayerTurn;\r\n    private Card lastCardPlayed;\r\n    private int cardsToDraw;\r\n    private Server server;\r\n\r\n    /**\r\n     * Game initialized by creating a new card deck.\r\n     */\r\n    public Game(String roomName, Server server) {\r\n        this.roomName = roomName;\r\n        this.server = server;\r\n        createDeck();\r\n        this.players = new ArrayList<>();\r\n    }\r\n\r\n    /**\r\n     * Method that create a deck of cards into a linked list.\r\n     */\r\n    private void createDeck(){\r\n        this.deck = new LinkedList<>();\r\n        this.playedCards = new LinkedList<>();\r\n\r\n        for (int i = 0; i < 10; i++) {\r\n            deck.add(new Card(CardColors.BLUE,i));\r\n            deck.add(new Card(CardColors.GREEN,i));\r\n            deck.add(new Card(CardColors.RED,i));\r\n            deck.add(new Card(CardColors.YELLOW,i));\r\n        }\r\n        for (int i=10; i < 13; i++){\r\n            deck.add(new Card(CardColors.BLUE,i));\r\n            deck.add(new Card(CardColors.BLUE,i));\r\n            deck.add(new Card(CardColors.GREEN,i));\r\n            deck.add(new Card(CardColors.GREEN,i));\r\n            deck.add(new Card(CardColors.RED,i));\r\n            deck.add(new Card(CardColors.RED,i));\r\n            deck.add(new Card(CardColors.YELLOW,i));\r\n            deck.add(new Card(CardColors.YELLOW,i));\r\n        }\r\n        for (int i = 0; i < 4; i++) {\r\n            deck.add(new Card(CardColors.BLUE,13));\r\n        }\r\n        Collections.shuffle(this.deck);\r\n    }\r\n\r\n    public void addClient(Server.ClientConnectionHandler clientConnectionHandler){\r\n        this.players.add(clientConnectionHandler);\r\n    }\r\n\r\n    /**\r\n     * Method that starts the game and verify the winner.\r\n     * The game is initialized by setting the deck of the players.\r\n     * While there isn't a winner, the game is running by verifying the player's turn and by validating the draw played.\r\n     */\r\n    @Override\r\n    public void run() {\r\n\r\n        setPlayersDecks();\r\n        this.lastCardPlayed = getFirstCard();\r\n        boolean playerPlayedAlreadyOneCard = false;\r\n        boolean canFinishTurn=false;\r\n        boolean canPlayAgain = true; // This variable prevents the draw action to not work properly.\r\n        int playersToSkip = 0; //to use increment when skip cards are played\r\n         //to use when plus2 cards are played;\r\n\r\n\r\n        while (!isThereAWinner) {\r\n            Server.ClientConnectionHandler playerToPlay = players.get(indexOfPlayerTurn);\r\n\r\n            if(deck.isEmpty()){\r\n                Collections.shuffle(this.playedCards);\r\n                this.deck = this.playedCards;\r\n                this.playedCards.clear();\r\n            }\r\n\r\n\r\n            playerToPlay.send(playerToPlay.getName() + \" - \" + playerToPlay.getDeck());\r\n\r\n            while(!playerToPlay.messageChanged){\r\n                try {\r\n                    Thread.sleep(500);\r\n                } catch (InterruptedException e) {\r\n                    e.printStackTrace();\r\n                }\r\n            }\r\n            playerToPlay.messageChanged = false;\r\n            String play = playerToPlay.getMessage();\r\n            if (play.startsWith(\"-\") || play.startsWith(\"/\")){\r\n                continue;\r\n            }\r\n\r\n\r\n\r\n            if (play.equals(\"finishTurn\")) {\r\n                if (canFinishTurn) {\r\n                    playerToPlay.send(\"End of Turn\");\r\n                    server.roomBroadcast(this,playerToPlay.getName(),\"End of Turn\");\r\n                    indexOfPlayerTurn+=playersToSkip;\r\n                    indexOfPlayerTurn++;\r\n                    if (indexOfPlayerTurn > players.size() - 1) {\r\n                        indexOfPlayerTurn -= players.size();\r\n                    }\r\n\r\n                    playerPlayedAlreadyOneCard = false;\r\n                    canPlayAgain = true;\r\n                    canFinishTurn=false;\r\n                    playersToSkip=0;\r\n                    continue;\r\n                } else {\r\n                    playerToPlay.send(\"You have to play or draw a card first.\");\r\n                    continue;\r\n                }\r\n            }\r\n\r\n            if (play.equals(\"draw\")) {\r\n                if (!playerPlayedAlreadyOneCard) {\r\n                    Card newCard = deck.poll();\r\n                    playerToPlay.getDeck().add(newCard);\r\n                    playerToPlay.send(\"You draw a \" + newCard);\r\n                    server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + \" draw a card.\");\r\n\r\n                    canFinishTurn=true;\r\n                    continue;\r\n                } else {\r\n                    playerToPlay.send(\"You can't draw more than one card each turn nor if you have already played a card.\");\r\n                    continue;\r\n                }\r\n\r\n            }\r\n\r\n            if(play.equals(\"blue\") && lastCardPlayed.getNumber()==13){\r\n                lastCardPlayed.setColor(CardColors.BLUE);\r\n                playerToPlay.send(\"Color changed to blue.\");\r\n                server.roomBroadcast(this,playerToPlay.getName(),\"Color changed to blue.\");\r\n                continue;\r\n            }\r\n            if(play.equals(\"yellow\") && lastCardPlayed.getNumber()==13){\r\n                lastCardPlayed.setColor(CardColors.YELLOW);\r\n                playerToPlay.send(\"Color changed to yellow.\");\r\n                server.roomBroadcast(this,playerToPlay.getName(),\"Color changed to yellow.\");\r\n                continue;\r\n            }\r\n            if(play.equals(\"green\") && lastCardPlayed.getNumber()==13){\r\n                lastCardPlayed.setColor(CardColors.GREEN);\r\n                playerToPlay.send(\"Color changed to green.\");\r\n                server.roomBroadcast(this,playerToPlay.getName(),\"Color changed to green.\");\r\n                continue;\r\n            }\r\n            if(play.equals(\"red\") && lastCardPlayed.getNumber()==13){\r\n                lastCardPlayed.setColor(CardColors.RED);\r\n                playerToPlay.send(\"Color changed to red.\");\r\n                server.roomBroadcast(this,playerToPlay.getName(),\"Color changed to red.\");\r\n                continue;\r\n            }\r\n\r\n            if (!play.matches(\"[0-\" + (playerToPlay.getDeck().size() - 1) + \"]\")) {\r\n                playerToPlay.send(\"Play not legal.\");\r\n                continue;\r\n            }\r\n\r\n\r\n            if (canPlayAgain) {\r\n\r\n                Card chosenCard = playerToPlay.getDeck().get(Integer.parseInt(play));\r\n\r\n                if (cardsToDraw != 0 && !playerPlayedAlreadyOneCard){\r\n                    if (chosenCard.getNumber() != lastCardPlayed.getNumber()) {\r\n                        for (int i = 0; i < cardsToDraw; i++) {\r\n                            Card newCard = deck.poll();\r\n                            playerToPlay.getDeck().add(newCard);\r\n                            playerToPlay.send(\"You draw a \" + newCard);\r\n                            server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + \" draw a card.\");\r\n                        }\r\n                        cardsToDraw = 0;\r\n                        canFinishTurn = false;\r\n                        continue;\r\n                    }\r\n                }\r\n\r\n                if(chosenCard.getNumber() == 13){\r\n                    cardsToDraw+=4;\r\n                    playerToPlay.getDeck().remove(chosenCard);\r\n                    playerToPlay.send(chosenCard.toString());\r\n                    server.roomBroadcast(this,playerToPlay.getName(),chosenCard.toString());\r\n                    this.playedCards.add(lastCardPlayed);\r\n                    lastCardPlayed=chosenCard;\r\n                    playerToPlay.send(\"Choose color:\");\r\n                    playerPlayedAlreadyOneCard = true;\r\n                    canFinishTurn = true;\r\n                    continue;\r\n                }\r\n\r\n\r\n                if (chosenCard.getNumber() == lastCardPlayed.getNumber()) {\r\n                    if (chosenCard.getNumber()==10){\r\n                        playersToSkip++;\r\n                    }else if (chosenCard.getNumber()==11) {\r\n                        cardsToDraw+=2;\r\n                    }else if (chosenCard.getNumber()==12){\r\n                        dealWithReverse();\r\n                    }\r\n\r\n                    playerToPlay.getDeck().remove(chosenCard);\r\n                    playerToPlay.send(chosenCard.toString());\r\n                    server.roomBroadcast(this,playerToPlay.getName(),chosenCard.toString());\r\n                    this.playedCards.add(lastCardPlayed);\r\n                    lastCardPlayed = chosenCard;\r\n                    playerPlayedAlreadyOneCard = true;\r\n                    canFinishTurn = true;\r\n                }else if (chosenCard.getColor() == lastCardPlayed.getColor() && !playerPlayedAlreadyOneCard) {\r\n                    if (chosenCard.getNumber()==10){\r\n                        playersToSkip++;\r\n                    }else if (chosenCard.getNumber()==12){\r\n                        dealWithReverse();\r\n                    }else if (chosenCard.getNumber()==11) {\r\n                        cardsToDraw+=2;\r\n                    }\r\n                    playerToPlay.getDeck().remove(chosenCard);\r\n                    playerToPlay.send(chosenCard.toString());\r\n                    server.roomBroadcast(this,playerToPlay.getName(),chosenCard.toString());\r\n                    this.playedCards.add(lastCardPlayed);\r\n                    lastCardPlayed = chosenCard;\r\n                    playerPlayedAlreadyOneCard = true;\r\n                    canPlayAgain=false;\r\n                    canFinishTurn = true;\r\n                }else {\r\n                    playerToPlay.send(\"Play not allowed\");\r\n                }\r\n            }else{\r\n                playerToPlay.send(\"Play not allowed\");\r\n            }\r\n\r\n            checkIfWinner();\r\n        }\r\n    }\r\n\r\n    private void dealWithReverse(){\r\n        Server.ClientConnectionHandler p = players.get(indexOfPlayerTurn);\r\n        invertPlayers();\r\n\r\n        Optional<Server.ClientConnectionHandler> playerPlaying = players.stream().filter(player -> player==p).findFirst();\r\n        indexOfPlayerTurn = players.indexOf(playerPlaying.get());\r\n    }\r\n\r\n    private void invertPlayers(){\r\n        int indexToReverse = players.size()-1;\r\n        Server.ClientConnectionHandler[] temp = new Server.ClientConnectionHandler[players.size()];\r\n        for (Server.ClientConnectionHandler p:players) {\r\n            temp[indexToReverse] = p;\r\n            indexToReverse--;\r\n        }\r\n        players = Arrays.stream(temp).collect(Collectors.toList());\r\n    }\r\n\r\n\r\n\r\n    /**\r\n     * Method that set the players deck into an Array List.\r\n     */\r\n    private void setPlayersDecks(){\r\n        this.players.stream().map(player -> player.getDeck()).forEach(playerDeck -> {\r\n            for (int i = 0; i < 5; i++) {\r\n              playerDeck.add(this.deck.poll());\r\n          }\r\n      });\r\n    }\r\n\r\n    /**\r\n     * @return The first card of a player.\r\n     */\r\n    private Card getFirstCard(){\r\n        Card card=this.deck.poll();\r\n        Server.ClientConnectionHandler playerToPlay = players.get(0);\r\n        playerToPlay.send(card.toString());\r\n        server.roomBroadcast(this,playerToPlay.getName(),card.toString());\r\n        return card;\r\n    }\r\n\r\n    /**\r\n     * Check if a player is a winner, and if it's true validate de boolean parameter.\r\n     * If it's true, prints the winner player.\r\n     */\r\n    private void checkIfWinner(){\r\n        Server.ClientConnectionHandler playerToPlay = players.get(indexOfPlayerTurn);\r\n        if(playerToPlay.getDeck().size()==0){\r\n            isThereAWinner=true;\r\n            playerToPlay.send(\"You finished your deck and you are the winner.\");\r\n            server.roomBroadcast(this,playerToPlay.getName(),playerToPlay.getName() + \" finished his deck and is the winner.\");\r\n        }\r\n    }\r\n\r\n    public String getRoomName() {\r\n        return roomName;\r\n    }\r\n\r\n    public List<Server.ClientConnectionHandler> getPlayers() {\r\n        return players;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/academy/mindswap/server/Game.java b/academy/mindswap/server/Game.java
+--- a/academy/mindswap/server/Game.java	(revision 9524b566c217890f7d583ebc3e6b79a617d5beaf)
++++ b/academy/mindswap/server/Game.java	(date 1645803193918)
+@@ -20,6 +20,8 @@
+ 
+     /**
+      * Game initialized by creating a new card deck.
++     * @param roomName Room where the game takes place.
++     * @param server Server that connects with the game and players.
+      */
+     public Game(String roomName, Server server) {
+         this.roomName = roomName;
+@@ -29,7 +31,7 @@
+     }
+ 
+     /**
+-     * Method that create a deck of cards into a linked list.
++     * Method that creates a deck of cards for a player, into a linked list.
+      */
+     private void createDeck(){
+         this.deck = new LinkedList<>();
+@@ -62,10 +64,11 @@
+     }
+ 
+     /**
+-     * Method that starts the game and verify the winner.
+-     * The game is initialized by setting the deck of the players.
++     * Method that starts the game, runs the game, and checks if there is a winner.
++     * The game is initialized by setting the deck of cards of the players.
+      * While there isn't a winner, the game is running by verifying the player's turn and by validating the draw played.
+      */
++
+     @Override
+     public void run() {
+ 
+@@ -280,7 +283,7 @@
+     }
+ 
+     /**
+-     * @return The first card of a player.
++     * @return The first card in the table to play.
+      */
+     private Card getFirstCard(){
+         Card card=this.deck.poll();
+Index: academy/mindswap/server/Card.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package academy.mindswap.server;\r\n\r\n/**\r\n * A class that represents the cards of the game.\r\n */\r\npublic class Card {\r\n    private CardColors color;\r\n    private int number;//10-skip Cards, 11-plus2Cards, 12-invertCards\r\n\r\n    /**\r\n     * Method that create a card.\r\n     * @param color Define the card color.\r\n     * @param number Define the card number.\r\n     */\r\n    public Card(CardColors color, int number) {\r\n        this.color = color;\r\n        this.number = number;\r\n    }\r\n\r\n    /**\r\n     * @return the color of the card, by a ENUM class.\r\n     */\r\n    public CardColors getColor() {\r\n        return color;\r\n    }\r\n\r\n    /**\r\n     * @return The number of the card.\r\n     */\r\n    public int getNumber() {\r\n        return number;\r\n    }\r\n\r\n    public void setColor(CardColors color) {\r\n        this.color = color;\r\n    }\r\n\r\n    public void setNumber(int number) {\r\n        this.number = number;\r\n    }\r\n\r\n    @Override\r\n    public String toString() {\r\n        return \"Card{\" +\r\n                \"color=\" + color +\r\n                \", number=\" + number +\r\n                '}';\r\n    }\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/academy/mindswap/server/Card.java b/academy/mindswap/server/Card.java
+--- a/academy/mindswap/server/Card.java	(revision 9524b566c217890f7d583ebc3e6b79a617d5beaf)
++++ b/academy/mindswap/server/Card.java	(date 1645803193933)
+@@ -31,6 +31,10 @@
+         return number;
+     }
+ 
++    /**
++     * Sets the color.
++     * @param color The card color.
++     */
+     public void setColor(CardColors color) {
+         this.color = color;
+     }

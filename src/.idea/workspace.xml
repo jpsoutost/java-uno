@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="0df4f779-9a18-415c-a2c1-d9976244aeb4" name="Changes" comment="Commit with merge.">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academy/mindswap/client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/academy/mindswap/client/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academy/mindswap/server/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/academy/mindswap/server/Card.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academy/mindswap/server/CardColors.java" beforeDir="false" afterPath="$PROJECT_DIR$/academy/mindswap/server/CardColors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academy/mindswap/server/Colors.java" beforeDir="false" afterPath="$PROJECT_DIR$/academy/mindswap/server/Colors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academy/mindswap/server/ConsoleColors.java" beforeDir="false" afterPath="$PROJECT_DIR$/academy/mindswap/server/ConsoleColors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academy/mindswap/server/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/academy/mindswap/server/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academy/mindswap/server/commands/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/academy/mindswap/server/commands/Command.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academy/mindswap/server/messages/CommandsMessages.java" beforeDir="false" afterPath="$PROJECT_DIR$/academy/mindswap/server/messages/CommandsMessages.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academy/mindswap/server/messages/Messages.java" beforeDir="false" afterPath="$PROJECT_DIR$/academy/mindswap/server/messages/Messages.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="branch_mj_documentation" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="sortByName" value="true" />
+  </component>
+  <component name="ProjectId" id="25bgjEIrwIe0f9ORDJYVPOyWKsj" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="flattenPackages" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showVisibilityIcons" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0df4f779-9a18-415c-a2c1-d9976244aeb4" name="Changes" comment="" />
+      <created>1645801341450</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1645801341450</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Add documentation">
+      <created>1645811281300</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1645811281300</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Add NEW documentation.">
+      <created>1645884981941</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1645884981941</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Add NEW documentation.">
+      <created>1645887678946</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1645887678946</updated>
+    </task>
+    <task id="LOCAL-00004" summary="More documentation.">
+      <created>1645907985159</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1645907985159</updated>
+    </task>
+    <task id="LOCAL-00005" summary="More documentation.">
+      <created>1645908761288</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1645908761288</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/ascii_art" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="COLUMN_ID_WIDTH">
+                <map>
+                  <entry key="Table.Default.Author.ColumnIdWidth" value="117" />
+                  <entry key="Table.Default.Date.ColumnIdWidth" value="98" />
+                  <entry key="Table.Space.CommitStatus.ColumnIdWidth" value="83" />
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Add documentation" />
+    <MESSAGE value="Add NEW documentation." />
+    <MESSAGE value="More documentation." />
+    <option name="LAST_COMMIT_MESSAGE" value="More documentation." />
+  </component>
+</project>

@@ -1,7 +1,7 @@
 package academy.mindswap.server.messages;
 
 /**
- * A class that represents the messages to print.
+ * A class that represents the server messages to print.
  */
 public class Messages {
     public static final String DEFAULT_NAME = "PLAYER-";

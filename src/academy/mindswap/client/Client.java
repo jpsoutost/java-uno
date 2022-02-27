@@ -3,6 +3,9 @@ package academy.mindswap.client;
 import java.io.*;
 import java.net.Socket;
 
+/**
+ * A class that represents the player.
+ */
 public class Client {
 
     public static void main(String[] args) {
@@ -15,6 +18,12 @@ public class Client {
 
     }
 
+    /**
+     * Method that start the connection.
+     * @param host Host.
+     * @param port Port.
+     * @throws IOException
+     */
     private void start(String host, int port) throws IOException {
         Socket socket = new Socket(host, port);
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -28,6 +37,9 @@ public class Client {
         socket.close();
     }
 
+    /**
+     * A class that represents the key bord handler.
+     */
     private class KeyboardHandler implements Runnable {
         private final BufferedWriter out;
         private final Socket socket;
