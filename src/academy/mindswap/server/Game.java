@@ -159,7 +159,7 @@ public class Game implements Runnable {
     private void play(){
         GameCommand gameCommand = GameCommand.getGameCommandFromDescription(play);
 
-        if (play.matches("[0-" + (playerToPlay.getDeck().size() - 1) + "]")) {
+        if (playIsACardFromDeck(play)) {
             gameCommand = GameCommand.getGameCommandFromDescription(GameMessages.PLAY);
         }
 
@@ -203,6 +203,15 @@ public class Game implements Runnable {
         playersToSkip = 0;
         hasToChooseAColor = false;
         drewACard=false;
+    }
+
+    public boolean playIsACardFromDeck(String play) {
+        try {
+            int card = Integer.parseInt(play);
+            return card>=0 && card < playerToPlay.getDeck().size();
+        } catch(NumberFormatException e){
+            return false;
+        }
     }
 
     /**
