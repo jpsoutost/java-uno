@@ -18,12 +18,11 @@ public class JoinRoomHandler implements CommandHandler {
      * @param clientConnectionHandler The player.
      */
     @Override
-    public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
+    public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) throws Exception {
         String message = clientConnectionHandler.getMessage();
 
         if (message.split(" ").length != 2) {
-            clientConnectionHandler.send(ServerMessages.JOIN_WRONG);
-            return;
+            throw new Exception(ServerMessages.JOIN_WRONG);
         }
 
         String roomName = message.split(" ")[1];
@@ -32,12 +31,11 @@ public class JoinRoomHandler implements CommandHandler {
                 .findFirst();
 
         if (game.isEmpty()) {
-            clientConnectionHandler.send(ServerMessages.NO_SUCH_ROOM);
-            return;
+            throw new Exception(ServerMessages.NO_SUCH_ROOM);
         }
 
         if (game.get().getPlayers().size() >= 10) {
-            clientConnectionHandler.send(ServerMessages.ROOM_FULL);
+            throw new Exception(ServerMessages.ROOM_FULL);
         }
 
         clientConnectionHandler.enteringRoom(game.get());

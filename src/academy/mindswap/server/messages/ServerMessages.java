@@ -11,6 +11,7 @@ public class ServerMessages {
     public static final String WHILE_PLAYING_COMMAND = ConsoleColors.WHITE + "You can't use a server command " +
             "inside a game.";
     public static final String JOIN_WRONG = ConsoleColors.WHITE + "Wrong way to join a Room.";
+    public static final String CREATE_WRONG = ConsoleColors.WHITE + "Wrong way to create a Room.";
     public static final String NO_SUCH_ROOM = ConsoleColors.WHITE + "No such room.";
     public static final String JOINED_ROOM = ConsoleColors.WHITE + "You joined room ";
     public static final String PLAYER_ENTERED_ROOM = ConsoleColors.WHITE + " entered the room.";

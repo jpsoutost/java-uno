@@ -11,7 +11,7 @@ import academy.mindswap.server.messages.GameMessages;
  */
 public class PlayHandler implements GameCommandHandler{
     @Override
-    public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) {
+    public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) throws Exception {
         String play = game.getPlay();
         boolean valid = false;
 
@@ -44,11 +44,11 @@ public class PlayHandler implements GameCommandHandler{
                 game.cardChangesInDecks(chosenCard);
                 game.updateBooleans();
             } else {
-                game.getPlayerToPlay().send(GameMessages.NOT_ALLOWED);
+                throw new Exception(GameMessages.NOT_ALLOWED);
             }
 
         } else {
-            game.getPlayerToPlay().send(GameMessages.NOT_ALLOWED);
+            throw new Exception(GameMessages.NOT_ALLOWED);
         }
     }
 }

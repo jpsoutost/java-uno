@@ -22,19 +22,18 @@ public class NewRoomHandler implements CommandHandler {
      * @param clientConnectionHandler The player.
      */
     @Override
-    public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
+    public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) throws Exception {
         String message = clientConnectionHandler.getMessage();
         this.openGames = server.getOpenGames().stream().map(Game::getRoomName).collect(Collectors.toSet());
 
         if (message.split(" ").length != 2) {
-            clientConnectionHandler.send(ServerMessages.JOIN_WRONG);
-            return;
+            throw new Exception(ServerMessages.CREATE_WRONG);
         }
 
         String roomName = message.split(" ")[1];
 
         if (openGames.contains(roomName)) {
-            clientConnectionHandler.send(ServerMessages.ALREADY_CREATED_ROOM);
+            throw new Exception(ServerMessages.ALREADY_CREATED_ROOM);
         } else {
             clientConnectionHandler.createRoom(roomName);
             clientConnectionHandler.send(ServerMessages.ROOM_CREATED + message.substring(12));

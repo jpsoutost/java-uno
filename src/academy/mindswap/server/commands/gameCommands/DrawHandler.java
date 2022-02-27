@@ -9,7 +9,7 @@ import academy.mindswap.server.messages.GameMessages;
  */
 public class DrawHandler implements GameCommandHandler {
     @Override
-    public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) {
+    public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) throws Exception {
 
         if (game.hasCardsToDraw()) {
             game.goFishingCards();
@@ -20,9 +20,9 @@ public class DrawHandler implements GameCommandHandler {
             game.drawCard();
             game.setCanFinishTurn(true);
         } else if (game.getHasToChooseAColor()) {
-            clientConnectionHandler.send(GameMessages.CHOOSE_COLOR);
+            throw new Exception(GameMessages.CHOOSE_COLOR);
         } else {
-            clientConnectionHandler.send(GameMessages.JUST_ONE_CARD);
+            throw new Exception(GameMessages.JUST_ONE_CARD);
         }
     }
 }

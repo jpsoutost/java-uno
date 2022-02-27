@@ -10,7 +10,7 @@ import academy.mindswap.server.messages.GameMessages;
  */
 public class ColorChangeHandler implements GameCommandHandler {
     @Override
-    public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) {
+    public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) throws Exception {
         String play = game.getPlay();
 
         if (game.getHasToChooseAColor()) {
@@ -21,7 +21,7 @@ public class ColorChangeHandler implements GameCommandHandler {
                 case "r" -> game.changeColor(CardColors.RED);
             }
         } else {
-            clientConnectionHandler.send(GameMessages.CANT_CHANGE_COLOR);
+            throw new Exception(GameMessages.CANT_CHANGE_COLOR);
         }
     }
 }

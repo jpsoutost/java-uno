@@ -15,16 +15,15 @@ public class ReadyHandler implements CommandHandler{
      * @param clientConnectionHandler The player.
      */
     @Override
-    public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
+    public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) throws Exception {
         Game game = clientConnectionHandler.getGame();
 
         if (game == null) {
-            clientConnectionHandler.send(ServerMessages.PLAYER_OUT);
-            return;
+            throw new Exception(ServerMessages.PLAYER_OUT);
+
         }
         if (game.getPlayers().size() == 1) {
-            clientConnectionHandler.send(ServerMessages.PLAYER_ALONE);
-            return;
+            throw new Exception(ServerMessages.PLAYER_ALONE);
         }
 
         boolean ready = !clientConnectionHandler.isReady();

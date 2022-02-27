@@ -61,7 +61,7 @@ public class Server {
     /**
      * Method that add a player.
      * The client is added into two Array lists (server and lobby).
-     * A message is send to the client when he enters in lobby.
+     * A message is sent to the client when he enters in lobby.
      * @param clientConnectionHandler The client.
      */
     private void addClient(ClientConnectionHandler clientConnectionHandler) {
@@ -189,7 +189,6 @@ public class Server {
             try {
                 this.name = generateName();
             } catch (IOException e) {
-                e.printStackTrace();
             }
             addClient(this);
 
@@ -256,18 +255,20 @@ public class Server {
          * @param message The message.
          * @throws IOException Throws IOException.
          */
-        private void dealWithCommand(String message) throws IOException {
+        private void dealWithCommand(String message) {
             String description = message.split(" ")[0];
             Command command = Command.getCommandFromDescription(description);
 
             if (command == null) {
-                out.write(ServerMessages.NO_SUCH_COMMAND);
-                out.newLine();
-                out.flush();
+                send(ServerMessages.NO_SUCH_COMMAND);
                 return;
             }
 
-            command.getHandler().execute(Server.this, this);
+            try {
+                command.getHandler().execute(Server.this, this);
+            } catch (Exception e) {
+                send(e.getMessage());
+            }
         }
 
         /**
@@ -281,7 +282,6 @@ public class Server {
                 out.flush();
             } catch (IOException e) {
                 removeClient(this);
-                e.printStackTrace();
             }
         }
 
@@ -294,7 +294,6 @@ public class Server {
             try {
                 clientSocket.close();
             } catch (IOException e) {
-                e.printStackTrace();
             }
         }
 

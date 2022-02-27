@@ -15,12 +15,11 @@ public class QuitRoomHandler implements CommandHandler {
      * @param clientConnectionHandler The player.
      */
     @Override
-    public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
+    public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) throws Exception {
         Game game = clientConnectionHandler.getGame();
 
         if (game == null){
-            clientConnectionHandler.send(ServerMessages.PLAYER_NOT_IN_ROOM);
-            return;
+            throw new Exception(ServerMessages.PLAYER_NOT_IN_ROOM);
         }
 
         clientConnectionHandler.quitGame();

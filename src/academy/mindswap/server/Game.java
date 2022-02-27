@@ -1,7 +1,5 @@
 package academy.mindswap.server;
 
-
-
 import academy.mindswap.server.commands.gameCommands.GameCommand;
 import academy.mindswap.server.messages.GameMessages;
 import academy.mindswap.server.messages.ServerMessages;
@@ -113,8 +111,7 @@ public class Game implements Runnable {
             this.playerToPlay = players.get(indexOfPlayerTurn);
 
 
-            if(players.size()<=1){
-                playerToPlay.send(ServerMessages.PLAYER_ALONE);
+            if(checkNumberOfPlayers()){
                 break;
             }
 
@@ -153,10 +150,18 @@ public class Game implements Runnable {
         server.roomBroadcast(this, player.getName(), GameMessages.UNO);
     }
 
+    private boolean checkNumberOfPlayers(){
+        if(players.size()<=1){
+            playerToPlay.send(ServerMessages.PLAYER_ALONE);
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Method that verify the player's play and executes the GameCommand Class.
      */
-    private void play(){
+    private void play() {
         GameCommand gameCommand = GameCommand.getGameCommandFromDescription(play);
 
         if (playIsACardFromDeck(play)) {
@@ -167,7 +172,11 @@ public class Game implements Runnable {
             gameCommand = GameCommand.getGameCommandFromDescription(GameMessages.NOTLEGAL);
         }
 
-        gameCommand.getCommandHandler().execute(this, playerToPlay);
+        try {
+            gameCommand.getCommandHandler().execute(this, playerToPlay);
+        } catch (Exception e) {
+            playerToPlay.send(e.getMessage());
+        }
     }
 
     /**

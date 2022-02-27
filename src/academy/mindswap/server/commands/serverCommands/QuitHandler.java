@@ -17,7 +17,7 @@ public class QuitHandler implements CommandHandler {
      * @param clientConnectionHandler The player.
      */
     @Override
-    public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
+    public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) throws Exception {
         Game game=clientConnectionHandler.getGame();
 
         if(game.gameIsRunning()){

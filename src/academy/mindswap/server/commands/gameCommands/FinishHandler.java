@@ -10,10 +10,9 @@ import academy.mindswap.server.messages.GameMessages;
 public class FinishHandler implements GameCommandHandler {
 
     @Override
-    public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) {
+    public void execute(Game game, Server.ClientConnectionHandler clientConnectionHandler) throws Exception {
         if (game.getHasToChooseAColor()) {
-            clientConnectionHandler.send(GameMessages.CHOOSE_COLOR);
-            return;
+            throw new Exception(GameMessages.CHOOSE_COLOR);
         }
 
         if (game.canFinishTurn()) {
@@ -23,7 +22,7 @@ public class FinishHandler implements GameCommandHandler {
             game.resetBooleansAndAccumulators();
 
         } else {
-            clientConnectionHandler.send(GameMessages.NOT_PLAYED);
+            throw new Exception(GameMessages.NOT_PLAYED);
         }
     }
 }

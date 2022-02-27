@@ -15,7 +15,7 @@ public class Client {
         try {
             client.start("localhost", 8080);
         } catch (IOException e) {
-            System.out.println("Connection closed...");
+            System.out.println(ClientMessages.CONECTION_CLOSED);
         }
 
     }
@@ -74,10 +74,8 @@ public class Client {
                     try {
                         socket.close();
                     } catch (IOException ex) {
-                        ex.printStackTrace();
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         }
