@@ -146,9 +146,11 @@ public class Server {
                     message = in.readLine();
 
                     if (isCommand(message)) {
-                        if (gameIsRunning()) {
+                        if(commandIsQuit(message)){
+                            dealWithCommand(message);
+                        }else if (gameIsRunning()) {
                             send("You can't use server commands while playing.");
-                        } else {
+                        }else{
                             dealWithCommand(message);
                         }
                         continue;
@@ -176,6 +178,10 @@ public class Server {
             } finally {
                 removeClient(this);
             }
+        }
+
+        private boolean commandIsQuit(String message){
+            return message.equals("/quit");
         }
 
         private boolean isCommand(String message) {
