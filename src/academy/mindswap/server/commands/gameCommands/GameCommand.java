@@ -1,5 +1,7 @@
 package academy.mindswap.server.commands.gameCommands;
 
+import academy.mindswap.server.ConsoleColors;
+
 /**
  * A ENUM class that represents the commands of the game.
  */
@@ -14,8 +16,8 @@ public enum GameCommand {
     PLAY("play", new PlayHandler()),
     SEE_PLAYER_DECK("h", new SeeHandHandler()),
     SEE_CARD_ON_THE_TABLE("c", new CardOnTheTableHandler()),
-    QUIT("q", new QuitGameHandler());
-
+    QUIT("q", new QuitGameHandler()),
+    HELP("help", new HelpGameHandler());
 
     private final String description;
     private final GameCommandHandler gameHandler;

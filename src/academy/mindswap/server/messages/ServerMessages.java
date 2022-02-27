@@ -41,6 +41,7 @@ public class ServerMessages {
             /ready -> you get ready to play;
             /quitRoom -> you leave the room in which you are in;
             /quit -> you leave the server.""";
+
     public static final String WELCOME = ConsoleColors.WHITE +
 
             "\n" +

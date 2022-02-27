@@ -35,7 +35,6 @@ public class Game implements Runnable {
     private String play;
     private Server.ClientConnectionHandler playerToPlay;
 
-
     //ACCUMULATORS FOR SPECIAL CARDS
     private int cardsToDraw;
     private int playersToSkip;
@@ -214,15 +213,6 @@ public class Game implements Runnable {
         drewACard=false;
     }
 
-    public boolean playIsACardFromDeck(String play) {
-        try {
-            int card = Integer.parseInt(play);
-            return card>=0 && card < playerToPlay.getDeck().size();
-        } catch(NumberFormatException e){
-            return false;
-        }
-    }
-
     /**
      * Method that add the player(s) to the list of the players in the lobby and send message, when the game finish.
      */
@@ -238,24 +228,6 @@ public class Game implements Runnable {
     }
 
     /**
-     * Boolean method that validates if the player can draw a card, by comparing to the card on the table.
-     * @param card The card on the table.
-     * @return True if the player don't have any card with the same number, if is the first card to play in that turn,
-     * and the list of cards to draw isn't empty.
-     */
-    public boolean hasCardsToDraw(Card card){
-        return card.getNumber() != lastCardPlayed.getNumber() && cardsToDraw!=0 && isFirstCardOfTurn() ;
-    }
-
-    /**
-     * Boolean method that validates if the player can draw a card.
-     * @return True if the counter of cardsToDraw is superior to zero and if it's the first card of turn to this player.
-     */
-    public boolean hasCardsToDraw(){
-        return cardsToDraw!=0 && isFirstCardOfTurn();
-    }
-
-    /**
      * Method that implements the rules of the special card Plus4.
      * The plus 4 card allows the player to change the color of the card in play.
      * The next player have to draw 4 cards into the table deck.
@@ -268,6 +240,8 @@ public class Game implements Runnable {
         updateBooleans();
         hasToChooseAColor = true;
     }
+
+
 
     /**
      * Method that remove the card on table after a turn, and add to the list of played cards.
@@ -317,25 +291,6 @@ public class Game implements Runnable {
     }
 
     /**
-     * Method that validates with true the text written by the players in the lobby.
-     * It's possible send messages to the players, like a chat.
-     * @param play The text.
-     * @return True if the fist word starts with that character.
-     */
-    private boolean isChat(String play){
-        return play.startsWith("-");
-    }
-
-    /**
-     * Method that validates the text written by the players in the lobby, validating a server command to apply.
-     * @param play The text.
-     * @return True if the fist word starts with that character.
-     */
-    private boolean isServerCommand(String play){
-        return play.startsWith("/");
-    }
-
-    /**
      * Method that throws a thread.
      * @return A message.
      */
@@ -356,9 +311,9 @@ public class Game implements Runnable {
     private void setPlayersDecks(){
         this.players.stream().map(Server.ClientConnectionHandler::getDeck).forEach(playerDeck -> {
             for (int i = 0; i < 7; i++) {
-              playerDeck.add(this.deck.poll());
-          }
-      });
+                playerDeck.add(this.deck.poll());
+            }
+        });
     }
 
     /**
@@ -430,49 +385,6 @@ public class Game implements Runnable {
     }
 
     /**
-     * Boolean method that validates if a player can play a card.
-     * @return True if the player can play again and if don't have to choose a color.
-     */
-    public boolean canPlayACard(){
-        return canPlayAgain && !hasToChooseAColor;
-    }
-
-    /**
-     * Boolean method that validates the special Skip card .
-     * @param card The card.
-     * @return True if the card is the 10 number.
-     */
-    public boolean isASkipCard(Card card){
-        return card.getNumber() == 10;
-    }
-
-    /**
-     * Boolean method that validates the special Plus 2 card.
-     * @param card The card.
-     * @return True if the card is the 11 number.
-     */
-    public boolean isAPlus2Card(Card card){
-        return card.getNumber() == 11;
-    }
-    /**
-     * Boolean method that validates the special Reverse card.
-     * @param card The card.
-     * @return True if the card is the 12 number.
-     */
-    public boolean isAReverseCard(Card card){
-        return card.getNumber() == 12;
-    }
-
-    /**
-     * Boolean method that validates the special Plus 4 card.
-     * @param card The card.
-     * @return True if the card is the 13 number.
-     */
-    public boolean isAPlus4Card(Card card){
-        return card.getNumber() == 13;
-    }
-
-    /**
      * Method to deal with special cards.
      * A Skip card allows the player to pass the turn to the next player.
      * A Reverse card inverts the order to play.
@@ -499,6 +411,96 @@ public class Game implements Runnable {
 
 
     //BOOLEAN METHODS
+
+    public boolean playIsACardFromDeck(String play) {
+        try {
+            int card = Integer.parseInt(play);
+            return card>=0 && card < playerToPlay.getDeck().size();
+        } catch(NumberFormatException e){
+            return false;
+        }
+    }
+
+    /**
+     * Boolean method that validates if the player can draw a card, by comparing to the card on the table.
+     * @param card The card on the table.
+     * @return True if the player don't have any card with the same number, if is the first card to play in that turn,
+     * and the list of cards to draw isn't empty.
+     */
+    public boolean hasCardsToDraw(Card card){
+        return card.getNumber() != lastCardPlayed.getNumber() && cardsToDraw!=0 && isFirstCardOfTurn() ;
+    }
+
+    /**
+     * Boolean method that validates if the player can draw a card.
+     * @return True if the counter of cardsToDraw is superior to zero and if it's the first card of turn to this player.
+     */
+    public boolean hasCardsToDraw(){
+        return cardsToDraw!=0 && isFirstCardOfTurn();
+    }
+
+    /**
+     * Method that validates with true the text written by the players in the lobby.
+     * It's possible send messages to the players, like a chat.
+     * @param play The text.
+     * @return True if the fist word starts with that character.
+     */
+    private boolean isChat(String play){
+        return play.startsWith("-");
+    }
+
+    /**
+     * Method that validates the text written by the players in the lobby, validating a server command to apply.
+     * @param play The text.
+     * @return True if the fist word starts with that character.
+     */
+    private boolean isServerCommand(String play){
+        return play.startsWith("/");
+    }
+
+    /**
+     * Boolean method that validates if a player can play a card.
+     * @return True if the player can play again and if don't have to choose a color.
+     */
+    public boolean canPlayACard(){
+        return canPlayAgain && !hasToChooseAColor;
+    }
+
+    /**
+     * Boolean method that validates the special Skip card .
+     * @param card The card.
+     * @return True if the card is the 10 number.
+     */
+    public boolean isASkipCard(Card card){
+        return card.getNumber() == 10;
+    }
+
+    /**
+     * Boolean method that validates the special Plus 2 card.
+     * @param card The card.
+     * @return True if the card is the 11 number.
+     */
+    public boolean isAPlus2Card(Card card){
+        return card.getNumber() == 11;
+    }
+
+    /**
+     * Boolean method that validates the special Reverse card.
+     * @param card The card.
+     * @return True if the card is the 12 number.
+     */
+    public boolean isAReverseCard(Card card){
+        return card.getNumber() == 12;
+    }
+
+    /**
+     * Boolean method that validates the special Plus 4 card.
+     * @param card The card.
+     * @return True if the card is the 13 number.
+     */
+    public boolean isAPlus4Card(Card card){
+        return card.getNumber() == 13;
+    }
 
     /**
      * Boolean method that validates if a player can draw a card.
@@ -574,6 +576,7 @@ public class Game implements Runnable {
     public boolean gameIsRunning() {
         return gameIsRunning;
     }
+
 
     //SETTERS
 
