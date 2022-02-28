@@ -17,14 +17,13 @@ public class ServerMessages {
     public static final String PLAYER_ENTERED_ROOM = ConsoleColors.WHITE + " entered the room.";
     public static final String ALREADY_CREATED_ROOM = ConsoleColors.WHITE + "Room with that name already created.";
     public static final String ROOM_CREATED = ConsoleColors.WHITE + "You created room ";
-    public static final String PLAYER_LEFT = ConsoleColors.WHITE + "Someone left the room and you became unready.";
     public static final String PLAYER_OUT = ConsoleColors.WHITE + "You can't be ready if you are not in a room.";
     public static final String PLAYER_ALONE = ConsoleColors.WHITE + "You can't play alone.";
     public static final String PLAYER_READY = ConsoleColors.WHITE + "You are ready.";
     public static final String PLAYER_NOT_READY = ConsoleColors.WHITE + "You are not ready.";
     public static final String I_AM_READY = ConsoleColors.WHITE + "I am ready.";
     public static final String I_AM_NOT_READY = ConsoleColors.WHITE + "I am not ready.";
-    public static final String PLAYER_ERROR = ConsoleColors.WHITE + "Something went wrong with this player's " +
+    public static final String PLAYER_ERROR = ConsoleColors.WHITE + "Something went wrong with this player " +
             "connection. Error: ";
     public static final String CHOOSE_USERNAME = ConsoleColors.WHITE + "Choose username: ";
     public static final String USERNAME_INVALID = ConsoleColors.WHITE + "Username Already in use.";

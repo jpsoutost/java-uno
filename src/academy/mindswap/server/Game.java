@@ -30,6 +30,7 @@ public class Game implements Runnable {
     private boolean hasToChooseAColor;
     private boolean drewACard;
     private boolean saidUNO;
+    private boolean someoneWentDown;
 
     //STORAGE OF ROUND DATA
     private int indexOfPlayerTurn;
@@ -44,6 +45,8 @@ public class Game implements Runnable {
 
     /**
      * Game initialized by creating a new card deck.
+     * @param roomName The name of the room/game.
+     * @param server The server in which this game occurs.
      */
     public Game(String roomName, Server server) {
         this.roomName = roomName;
@@ -86,7 +89,7 @@ public class Game implements Runnable {
     }
 
     /**
-     * Method that add a new player.
+     * Method that add a new player to this game.
      * @param clientConnectionHandler The player.
      */
     public void addClient(Server.ClientConnectionHandler clientConnectionHandler){
@@ -96,7 +99,8 @@ public class Game implements Runnable {
     /**
      * Method that start the game, run the game and verify the winner.
      * The game is initialized by setting the deck of the players.
-     * While there isn't a winner, the game is running by verifying the player's turn and by validating the draw played.
+     * While there isn't a winner, the game is running by verifying who is the player to play
+     * and by validating the play.
      */
     @Override
     public void run() {
@@ -121,10 +125,12 @@ public class Game implements Runnable {
             }
 
             playerToPlay.send(playerToPlay.showDeck());
-            playerToPlay.send(GameMessages.TIME_TO_PLAY);
-            server.roomBroadcast(this, playerToPlay.getName(), GameMessages.ISPLAYING);
             playerToPlay.setGameCommandChanged(false);
             play = waitForPlay();
+
+            if(someoneWentDown){
+                break;
+            }
 
             if(isServerCommand(play)){
                 playerToPlay.send(ServerMessages.WHILE_PLAYING_COMMAND);
@@ -151,6 +157,9 @@ public class Game implements Runnable {
         server.roomBroadcast(this, player.getName(), GameMessages.UNO);
     }
 
+    /**
+     * Method checks if there are enough players to play each round.
+     */
     private boolean checkNumberOfPlayers(){
         if(players.size()<=1){
             playerToPlay.send(ServerMessages.PLAYER_ALONE);
@@ -226,6 +235,7 @@ public class Game implements Runnable {
             player.getDeck().clear();
             player.send(GameMessages.END_OF_GAME);
             player.send(ServerMessages.REDIRECTED_LOBBY);
+            server.broadcast(player.getName(), ServerMessages.PLAYER_ENTERED_LOBBY);
         });
     }
 
@@ -270,7 +280,6 @@ public class Game implements Runnable {
      * Method that implements the rules of the special card Reverse.
      * The Reverse card allows to reverse the order of playing in the next turn.
      */
-
     private void dealWithReverse(){
         Server.ClientConnectionHandler p = players.get(indexOfPlayerTurn);
         invertPlayers();
@@ -280,7 +289,7 @@ public class Game implements Runnable {
     }
 
     /**
-     * Method that invert the player that have to play.
+     * Method that invert the players list order.
      */
     private void invertPlayers(){
         int indexToReverse = players.size()-1;
@@ -293,22 +302,22 @@ public class Game implements Runnable {
     }
 
     /**
-     * Method that throws a thread.
-     * @return A message.
+     * Method that waits for the input of a client.
+     * @return play/input.
+     * @throws InterruptedException
      */
     private String waitForPlay (){
         while(!playerToPlay.isGameCommandChanged()){
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
         return playerToPlay.getMessage();
     }
 
     /**
-     * Method that set the players deck into an Array List.
+     * Method that set each player deck into an Array List.
      */
     private void setPlayersDecks(){
         this.players.stream().map(Server.ClientConnectionHandler::getDeck).forEach(playerDeck -> {
@@ -319,7 +328,8 @@ public class Game implements Runnable {
     }
 
     /**
-     * @return The first card of the player.
+     * Method that return the firs card of the game.
+     * @return The first card of the game.
      */
     private Card getFirstCard(){
         Card card=this.deck.poll();
@@ -347,9 +357,8 @@ public class Game implements Runnable {
     }
 
     /**
-     * Method to draw cards into the deck on the table.
+     * Method to draw cards if there are cards to draw from special cards.
      * The number of cards to draw, variates with the circumstance, but it's defined by the counter "cardsToDraw".
-     * The player only can draw cards if don´t have played any card.
      */
     public void goFishingCards(){
         if (cardsToDraw != 0 && !playedAtLeastOneCard){
@@ -363,7 +372,7 @@ public class Game implements Runnable {
     }
 
     /**
-     * Method to draw a card into the deck on the table.
+     * Method to draw a card from the deck.
      * The head card of the list is removed and added to the deck of the player.
      * A message with the card is printed on console.
      */
@@ -384,13 +393,14 @@ public class Game implements Runnable {
         if(indexOfPlayerTurn > players.size()-1){
             indexOfPlayerTurn-=players.size();
         }
+
+        Server.ClientConnectionHandler player = players.get(indexOfPlayerTurn);
+        player.send(GameMessages.TIME_TO_PLAY);
+        server.roomBroadcast(this, player.getName(), GameMessages.ISPLAYING);
     }
 
     /**
      * Method to deal with special cards.
-     * A Skip card allows the player to pass the turn to the next player.
-     * A Reverse card inverts the order to play.
-     * The plus cards
      * @param card The card.
      */
     public void dealWithSpecialCards(Card card){
@@ -401,7 +411,14 @@ public class Game implements Runnable {
         }else if (isAPlus2Card(card)) {
             cardsToDraw+=2;
         }
+    }
 
+    /**
+     * Method to check if some player left the server.
+     */
+    public void someoneWentDown(Server.ClientConnectionHandler player) {
+        this.someoneWentDown = true;
+        server.roomBroadcast(this,player.getName(), GameMessages.PLAYER_DISCONNECTED);
     }
 
     /**
@@ -414,6 +431,11 @@ public class Game implements Runnable {
 
     //BOOLEAN METHODS
 
+    /**
+     * Boolean method that validates if the play is a card in players deck.
+     * @param play play.
+     * @return True if the play is a number between 0 and decks size.
+     */
     public boolean playIsACardFromDeck(String play) {
         try {
             int card = Integer.parseInt(play);
@@ -424,17 +446,17 @@ public class Game implements Runnable {
     }
 
     /**
-     * Boolean method that validates if the player can draw a card, by comparing to the card on the table.
-     * @param card The card on the table.
-     * @return True if the player don't have any card with the same number, if is the first card to play in that turn,
-     * and the list of cards to draw isn't empty.
+     * Boolean method that validates if the player has cards to draw, checking the car that player intends to play.
+     * @param card The card that player intends to play.
+     * @return True if the card hasn't the same number as the card on the table,
+     * if is the first card to play in that turn, and there are cards to draw.
      */
     public boolean hasCardsToDraw(Card card){
         return card.getNumber() != lastCardPlayed.getNumber() && cardsToDraw!=0 && isFirstCardOfTurn() ;
     }
 
     /**
-     * Boolean method that validates if the player can draw a card.
+     * Boolean method that validates if the player has cards to draw.
      * @return True if the counter of cardsToDraw is superior to zero and if it's the first card of turn to this player.
      */
     public boolean hasCardsToDraw(){
@@ -452,7 +474,7 @@ public class Game implements Runnable {
     }
 
     /**
-     * Method that validates the text written by the players in the lobby, validating a server command to apply.
+     * Method that validates the text written by the players is a server command.
      * @param play The text.
      * @return True if the fist word starts with that character.
      */
@@ -506,7 +528,7 @@ public class Game implements Runnable {
 
     /**
      * Boolean method that validates if a player can draw a card.
-     * @return True if the player don't played a card and don't draw a card.
+     * @return True if the player don't played a card and didn't draw a card in the round.
      */
     public boolean canDrawACard(){
         return !playedAtLeastOneCard && !drewACard;
@@ -514,7 +536,7 @@ public class Game implements Runnable {
 
     /**
      * Boolean method that validates if a player can play a Plus 4 card.
-     * @return True if the card played number is 13, and it's your first card to play in that turn.
+     * @return True if the card played number is 13 or it's your first card to play in that turn.
      */
     public boolean canPlayAPlus4Card() {
         return lastCardPlayed.getNumber() == 13 || isFirstCardOfTurn();
@@ -600,4 +622,6 @@ public class Game implements Runnable {
     public void saidUNO(boolean saidUno) {
         this.saidUNO = saidUno;
     }
+
+
 }

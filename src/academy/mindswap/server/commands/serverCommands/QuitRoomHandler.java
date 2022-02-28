@@ -5,7 +5,7 @@ import academy.mindswap.server.Server;
 import academy.mindswap.server.messages.ServerMessages;
 
 /**
- * A class that represents the command to one player leave the room, that implements CommandHandler.
+ * A class that represents the command to one player leave the room/game, that implements CommandHandler.
  */
 public class QuitRoomHandler implements CommandHandler {
 

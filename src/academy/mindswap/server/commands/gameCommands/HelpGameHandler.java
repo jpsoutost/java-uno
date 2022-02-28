@@ -6,7 +6,7 @@ import academy.mindswap.server.messages.GameMessages;
 import academy.mindswap.server.messages.ServerMessages;
 
 /**
- * A class that represents the help game commands.
+ * A class that represents the command to see the game commands list.
  */
 public class HelpGameHandler implements GameCommandHandler{
 

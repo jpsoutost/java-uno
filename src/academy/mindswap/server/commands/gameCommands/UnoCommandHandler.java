@@ -4,6 +4,9 @@ import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
 import academy.mindswap.server.messages.GameMessages;
 
+/**
+ * A class that represents the command to say UNO when a player only has one card.
+ */
 public class UnoCommandHandler implements GameCommandHandler {
 
     @Override

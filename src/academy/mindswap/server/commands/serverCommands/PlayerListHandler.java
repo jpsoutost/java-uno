@@ -3,7 +3,7 @@ package academy.mindswap.server.commands.serverCommands;
 import academy.mindswap.server.Server;
 
 /**
- * A class that represents the command to shows/prints the list of the players.
+ * A class that represents the command to shows/print the list of the players.
  */
 public class PlayerListHandler implements CommandHandler {
 

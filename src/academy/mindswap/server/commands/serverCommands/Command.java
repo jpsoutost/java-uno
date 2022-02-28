@@ -11,7 +11,7 @@ public enum Command {
     JOIN_ROOM("/joinRoom", new JoinRoomHandler()),
     READY("/ready", new ReadyHandler()),
     QUIT_ROOM("/quitRoom", new QuitRoomHandler()),
-    QUIT_HANDLER("/quit", new QuitHandler());
+    QUIT("/quit", new QuitHandler());
 
     private final String description;
     private final CommandHandler handler;
@@ -41,7 +41,6 @@ public enum Command {
     }
 
     //GETTER
-
     public CommandHandler getHandler() {
         return handler;
     }

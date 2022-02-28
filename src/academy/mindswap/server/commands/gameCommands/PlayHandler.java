@@ -7,7 +7,7 @@ import academy.mindswap.server.messages.GameMessages;
 
 
 /**
- * A class that represents the game commands to execute when the player plays.
+ * A class that represents the game commands to execute card play.
  */
 public class PlayHandler implements GameCommandHandler{
     @Override

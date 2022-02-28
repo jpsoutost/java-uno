@@ -5,7 +5,7 @@ import academy.mindswap.server.Server;
 import academy.mindswap.server.messages.GameMessages;
 
 /**
- * A class that represents the finish handler.
+ * A class that represents the command to finish the turn of a player.
  */
 public class FinishHandler implements GameCommandHandler {
 

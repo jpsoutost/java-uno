@@ -131,6 +131,8 @@ public class Server {
         clients.remove(clientConnectionHandler);
     }
 
+    //GETTERS
+
     public List<Game> getOpenGames() {
         return openGames;
     }
@@ -143,8 +145,9 @@ public class Server {
         return closedGames;
     }
 
+
     /**
-     * A class that represents the client in the server that implements Runnable.
+     * A class that represents the client in the server.
      */
     public class ClientConnectionHandler implements Runnable {
 
@@ -158,7 +161,11 @@ public class Server {
         private boolean isReady;
         private boolean gameCommandChanged;
 
-
+        /**
+         * Constructor method for the client connection handler.
+         * @param clientSocket The socket to communicate with the relative client.
+         * @throws IOException Throws IOException.
+         */
         public ClientConnectionHandler(Socket clientSocket) throws IOException {
             this.clientSocket = clientSocket;
             this.out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
@@ -234,13 +241,27 @@ public class Server {
             }
         }
 
+        /**
+         * Method that verify if the message is a server command.
+         * @param message The message.
+         */
         private boolean isCommand(String message) {
             return message.startsWith("/");
         }
+
+        /**
+         * Method that verify if the message is a quit command.
+         * @param message The message.
+         */
         private boolean isQuitCommand(String message){
             return message.equals("/quit");
         }
 
+        /**
+         * Method that verify if the message is belongs to room chat.
+         * @param message The message.
+         * @param game The game room.
+         */
         private boolean isRoomChat(String message, Game game) {
             if (game != null) {
                 return message.startsWith("-");
@@ -250,7 +271,7 @@ public class Server {
         }
 
         /**
-         * Method that verify if the message is a command game.
+         * Method that gets the server command and executes it.
          * If message is not null, the command is executed.
          * @param message The message.
          */
@@ -284,11 +305,17 @@ public class Server {
             }
         }
 
+        /**
+         * Method to checks if the game is running.
+         */
         private boolean gameIsRunning() {
             if (game == null) return false;
             return game.gameIsRunning();
         }
 
+        /**
+         * Method to close the communication socket.
+         */
         public void close() {
             try {
                 clientSocket.close();
@@ -296,6 +323,10 @@ public class Server {
             }
         }
 
+        /**
+         * Method to create graphical view of players deck.
+         * @return String deckGraphicConstructor part of the graphic view of players deck.
+         */
         private String deck1(){
             String deckGraphicConstructor="";
             for (Card card:deck) {
@@ -309,6 +340,10 @@ public class Server {
             return deckGraphicConstructor;
         }
 
+        /**
+         * Method to create graphical view of players deck.
+         * @return String deckGraphicConstructor part of the graphic view of players deck.
+         */
         private String deck2(){
             String deckGraphicConstructor="";
             for (Card card:deck) {
@@ -321,6 +356,10 @@ public class Server {
             return deckGraphicConstructor;
         }
 
+        /**
+         * Method to create graphical view of players deck.
+         * @return String deckGraphicConstructor part of the graphic view of players deck.
+         */
         private String deck3(){
             String deckGraphicConstructor="";
             for (Card card:deck) {
@@ -333,6 +372,10 @@ public class Server {
             return deckGraphicConstructor;
         }
 
+        /**
+         * Method to create graphical view of players deck.
+         * @return String deckGraphicConstructor part of the graphic view of players deck.
+         */
         private String deck4(){
             String deckGraphicConstructor="";
             for (Card card:deck) {
@@ -345,6 +388,10 @@ public class Server {
             return deckGraphicConstructor;
         }
 
+        /**
+         * Method to create graphical view of players deck.
+         * @return String graphic view of players deck.
+         */
         public String showDeck(){
             return  deck1() + "\n" + deck2() + "\n" + deck3()
                     + "\n" + deck2() + "\n" + deck4();
@@ -357,7 +404,7 @@ public class Server {
         }
 
         /**
-         * Method to entering room.
+         * Method to entering room/game.
          * Defines the game, adds player to the game and removes the player of the general list.
          * @param game The game.
          */

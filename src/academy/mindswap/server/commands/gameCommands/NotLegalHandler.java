@@ -5,7 +5,7 @@ import academy.mindswap.server.Server;
 import academy.mindswap.server.messages.GameMessages;
 
 /**
- * A class that represents the game command to execute when the player has a not legal handler.
+ * A class that represents the game command to execute when the player has a not legal play.
  */
 public class NotLegalHandler implements GameCommandHandler{
     @Override

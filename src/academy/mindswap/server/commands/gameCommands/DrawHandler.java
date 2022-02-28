@@ -5,7 +5,7 @@ import academy.mindswap.server.Server;
 import academy.mindswap.server.messages.GameMessages;
 
 /**
- * A class that represents the draw handler in the game.
+ * A class that represents the command to draw a card from the deck.
  */
 public class DrawHandler implements GameCommandHandler {
     @Override

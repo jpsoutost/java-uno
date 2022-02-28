@@ -4,15 +4,16 @@ import academy.mindswap.server.Game;
 import academy.mindswap.server.Server;
 import academy.mindswap.server.commands.gameCommands.GameCommand;
 import academy.mindswap.server.messages.GameMessages;
+import academy.mindswap.server.messages.ServerMessages;
 
 
 /**
- * A class that represents the command to quit game, that implements CommandHandler.
+ * A class that represents the command to disconnect, that implements CommandHandler.
  */
 public class QuitHandler implements CommandHandler {
 
     /**
-     * An override method that executes the command to leave/quit the game.
+     * An override method that executes the command to disconnect.
      * @param server The server.
      * @param clientConnectionHandler The player.
      */
@@ -20,14 +21,13 @@ public class QuitHandler implements CommandHandler {
     public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) throws Exception {
         Game game=clientConnectionHandler.getGame();
 
-        if(game.gameIsRunning()){
-            GameCommand command = GameCommand.getGameCommandFromDescription("q");
-            command.getCommandHandler().execute(game, clientConnectionHandler);
+        server.broadcast(clientConnectionHandler.getName(), GameMessages.PLAYER_DISCONNECTED);
+        if(game.gameIsRunning()) {
+            game.someoneWentDown(clientConnectionHandler);
+            clientConnectionHandler.setGameCommandChanged(true);
         }
 
         server.removeClient(clientConnectionHandler);
-        server.broadcast(clientConnectionHandler.getName(), clientConnectionHandler.getName() +
-                GameMessages.PLAYER_DISCONNECTED);
         clientConnectionHandler.close();
     }
 }

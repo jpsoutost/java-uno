@@ -21,7 +21,7 @@ public class GameMessages {
     public static final String PLAYER_DRAW = ConsoleColors.PURPLE + " draw a card.";
     public static final String CHOOSE_COLOR = ConsoleColors.PURPLE + "Choose color: b-blue, y-yellow, r-red, g-green";
     public static final String PLAYER_QUIT_ROOM = ConsoleColors.PURPLE + " left the room and you became unready.";
-    public static final String PLAYER_DISCONNECTED = ConsoleColors.PURPLE + " left the lobby.";
+    public static final String PLAYER_DISCONNECTED = ConsoleColors.PURPLE + " left the server.";
     public static final String PLAY = "play";
     public static final String NOTLEGAL = "NotLegal";
     public static final String ISPLAYING = ConsoleColors.PURPLE +  "is playing...";
@@ -42,7 +42,8 @@ public class GameMessages {
             h -> to see the player deck;
             c -> to see the card on table;
             q -> to quit the game;
-            help -> to see the game commends""";
+            help -> to see the game commends
+            uno -> to say UNO!""";
 
     public static final String UNO = ConsoleColors.PURPLE +
 

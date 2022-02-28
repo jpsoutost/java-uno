@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Class that checks if all players in each game are ready to play.
+ * When all the player in a game are ready, that game starts.
+ */
 public class ReadyChecker implements Runnable {
     private final Server server;
     boolean someoneIsNotReady;
