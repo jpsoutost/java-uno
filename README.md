@@ -7,7 +7,7 @@ About Uno:
 Uno is the highly popular card game played by millions around the world. This game is played by matching and then discarding the cards in your hand until there are none left.
 
 The objective:
-The goal of UNO is to be the first person to play the last card in your hand. The fun of UNO is the requirement to shout "UNO!" when you are down to the last card. When playing multiple games, the winner is the player with the lowest score.
+The goal of UNO is to be the first person to play the last card in your hand. The fun of UNO is the requirement to shout "UNO!" when you are down to the last card.
 
 Game Setup: 
 The game is for 2-10 players, each player starts with seven cards, you must match by number, color or symbol/action. For example, if the last card played is a red card that is an 8, you must place a red card or a card with an 8 on it. You can also play a wild card (which can change the current color in play).
