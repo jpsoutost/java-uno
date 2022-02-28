@@ -1,7 +1,8 @@
 # java-uno
 First project for Mindswap academy
 
-![image](https://user-images.githubusercontent.com/64026232/155902157-e8b333dc-c3fa-42be-ab44-2bbbe35314a7.png)
+![image](https://user-images.githubusercontent.com/64026232/155964184-6037b696-94dc-40e5-9c58-81b3ae9e5c22.png)
+
 
 When a client connects to the server, he enters a lobby, where he can chat, writing in the console, with all the other 
 players that are in the lobby. He can also create a gaming room or join a previous created room. Inside the room, all 
