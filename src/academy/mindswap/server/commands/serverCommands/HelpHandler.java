@@ -4,7 +4,7 @@ import academy.mindswap.server.Server;
 import academy.mindswap.server.messages.ServerMessages;
 
 /**
- * A class that represents the command help, that implements CommandHandler.
+ * A class that represents the command to list all the server commands, that implements CommandHandler.
  */
 public class HelpHandler implements CommandHandler {
     /**

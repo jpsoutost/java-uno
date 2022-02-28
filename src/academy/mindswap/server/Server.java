@@ -309,7 +309,9 @@ public class Server {
          * Method to checks if the game is running.
          */
         private boolean gameIsRunning() {
-            if (game == null) return false;
+            if (game == null){
+                return false;
+            }
             return game.gameIsRunning();
         }
 
