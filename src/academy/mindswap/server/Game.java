@@ -308,6 +308,9 @@ public class Game implements Runnable {
      */
     private String waitForPlay (){
         while(!playerToPlay.isGameCommandChanged()){
+            if (someoneWentDown){
+                break;
+            }
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {

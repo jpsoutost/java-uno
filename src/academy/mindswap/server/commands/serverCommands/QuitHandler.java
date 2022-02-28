@@ -20,6 +20,7 @@ public class QuitHandler implements CommandHandler {
     @Override
     public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) throws Exception {
         Game game=clientConnectionHandler.getGame();
+        game.getPlayers().remove(clientConnectionHandler);
 
         server.broadcast(clientConnectionHandler.getName(), GameMessages.PLAYER_DISCONNECTED);
         if(game.gameIsRunning()) {
