@@ -9,11 +9,8 @@ public class ServerLauncher {
 
         try {
             server.start(8080);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 }

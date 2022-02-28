@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ReadyChecker implements Runnable{
-    private List<Game> og;
-    private List<Game> cg;
-    private Server server;
+/**
+ * Class that checks if all players in each game are ready to play.
+ * When all the player in a game are ready, that game starts.
+ */
+public class ReadyChecker implements Runnable {
+    private final Server server;
     boolean someoneIsNotReady;
-    private ExecutorService service;
+    private final ExecutorService service;
 
 
     public ReadyChecker(Server server) {
@@ -20,13 +22,12 @@ public class ReadyChecker implements Runnable{
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
 
-            this.og= new ArrayList<>(server.getOpenGames());
-            this.cg= new ArrayList<>(server.getClosedGames());
+            List<Game> og = new ArrayList<>(server.getOpenGames());
 
-            if(!og.isEmpty()) {
-                for (Game game:og) {
+            if (!og.isEmpty()) {
+                for (Game game : og) {
                     someoneIsNotReady = false;
                     for (Server.ClientConnectionHandler player : game.getPlayers()) {
                         if (!player.isReady()) {
@@ -34,11 +35,16 @@ public class ReadyChecker implements Runnable{
                             break;
                         }
                     }
-                    if (!someoneIsNotReady) {
+                    if (!someoneIsNotReady && game.getPlayers().size() > 1) {
                         server.getClosedGames().add(game);
                         server.getOpenGames().remove(game);
                         service.submit(game);
                         someoneIsNotReady = true;
+                    }
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
                     }
                 }
             }

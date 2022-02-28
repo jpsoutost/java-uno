@@ -1,4 +1,4 @@
-package academy.mindswap.server.commands;
+package academy.mindswap.server.commands.serverCommands;
 
 /**
  * A ENUM that sets the game commands.
@@ -7,20 +7,19 @@ public enum Command {
     LIST_PLAYERS("/players", new PlayerListHandler()),
     LIST_ROOMS("/openRooms", new RoomListHandler()),
     HELP("/help", new HelpHandler()),
-    MUTE("/mute", new QuitHandler()),
     NEW_ROOM("/createRoom", new NewRoomHandler()),
     JOIN_ROOM("/joinRoom", new JoinRoomHandler()),
     READY("/ready", new ReadyHandler()),
     QUIT_ROOM("/quitRoom", new QuitRoomHandler()),
-    QUIT_HANDLER("/quit", new QuitHandler());
+    QUIT("/quit", new QuitHandler());
 
-    private String description;
-    private CommandHandler handler;
+    private final String description;
+    private final CommandHandler handler;
 
     /**
      * Method that initializes the ENUM with two parameters.
      * @param description The name of the command.
-     * @param handler The class executed by the respective command.
+     * @param handler     The class executed by the respective command.
      */
     Command(String description, CommandHandler handler) {
         this.description = description;
@@ -30,7 +29,7 @@ public enum Command {
     /**
      * Method that get command from description.
      * @param description The name of the command.
-     * @return Respective command.
+     * @return Respective command or null.
      */
     public static Command getCommandFromDescription(String description) {
         for (Command command : values()) {
@@ -41,6 +40,7 @@ public enum Command {
         return null;
     }
 
+    //GETTER
     public CommandHandler getHandler() {
         return handler;
     }
